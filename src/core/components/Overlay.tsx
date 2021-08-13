@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import React from "react"
+import { UpcomingView } from "../../schedule/components/UpcomingView"
 
 const Container = styled.div`
   padding: 64px;
@@ -14,5 +15,9 @@ const Container = styled.div`
 `
 
 export function Overlay() {
-  return <Container></Container>
+  return (
+    <Container>
+      <UpcomingView />
+    </Container>
+  )
 }
