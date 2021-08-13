@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "@emotion/styled"
 import { ScheduleItem } from "../types"
+import { humanizeDate } from "../helpers/humanizeDate"
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +17,9 @@ const Container = styled.div`
 
 const PrimaryInfo = styled.div`
   flex: 1;
-  max-width: 460px;
+  width: 0;
+
+  margin-right: 16px;
 `
 
 const Name = styled.h2`
@@ -57,7 +60,7 @@ export function ScheduleItemSummary(props: ScheduleItemSummaryProps) {
         <Name>{video.name}</Name>
         <Organization>{video.organization.name}</Organization>
       </PrimaryInfo>
-      <Time>12:00</Time>
+      <Time>{humanizeDate(new Date(starttime))}</Time>
     </Container>
   )
 }
