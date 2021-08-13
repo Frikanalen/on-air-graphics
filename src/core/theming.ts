@@ -9,4 +9,8 @@ export const lightTheme: Theme = {
     normal: "rgba(0, 0, 0, 0.85)",
     muted: "rgba(0, 0, 0, 0.7)",
   },
+  gradient: {
+    overlay:
+      "linear-gradient(0deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 35%)",
+  },
 }
