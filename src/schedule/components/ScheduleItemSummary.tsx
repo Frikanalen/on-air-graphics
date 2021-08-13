@@ -23,7 +23,7 @@ const Name = styled.h2`
   margin-bottom: 7px;
 
   line-height: normal;
-  margin-top: -9px;
+  margin-top: -7px;
 
   white-space: nowrap;
   overflow: hidden;
