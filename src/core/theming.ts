@@ -2,7 +2,7 @@ import { Theme } from "@emotion/react"
 
 export const lightTheme: Theme = {
   color: {
-    card: "rgba(255, 255, 255, 0.8)",
+    card: "rgba(255, 255, 255, 0.6)",
     accent: "#E88840",
   },
   fontColor: {
@@ -11,6 +11,6 @@ export const lightTheme: Theme = {
   },
   gradient: {
     overlay:
-      "linear-gradient(0deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 35%)",
+      "linear-gradient(0deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 35%)",
   },
 }
