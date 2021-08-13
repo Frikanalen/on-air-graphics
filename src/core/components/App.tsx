@@ -22,6 +22,7 @@ const globalStyle = (theme: Theme) => css`
   h2,
   h3,
   h4 {
+    line-height: 75%;
     margin: 0px;
   }
 
