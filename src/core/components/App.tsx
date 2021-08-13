@@ -18,10 +18,21 @@ const globalStyle = (theme: Theme) => css`
     color: ${theme.fontColor.normal};
   }
 
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0px;
+  }
+
   h1 {
     font-size: 48px;
     font-weight: 900;
-    margin: 0px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
   }
 `
 
