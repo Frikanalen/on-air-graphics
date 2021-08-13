@@ -10,5 +10,8 @@ declare module "@emotion/react" {
       normal: string
       muted: string
     }
+    gradient: {
+      overlay: string
+    }
   }
 }

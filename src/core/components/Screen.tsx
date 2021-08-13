@@ -12,12 +12,27 @@ const Container = styled.div`
   border: solid 1px red;
   margin-top: -1px;
   margin-left: -1px;
+
+  position: relative;
+`
+
+const Overlay = styled.div`
+  padding: 64px;
+
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+
+  background: ${(props) => props.theme.gradient.overlay};
 `
 
 export function Screen() {
   return (
     <Container>
       <Background timeOfDay="day" />
+      <Overlay></Overlay>
     </Container>
   )
 }
