@@ -20,7 +20,7 @@ const PrimaryInfo = styled.div`
 `
 
 const Name = styled.h2`
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 
   line-height: normal;
   margin-top: -9px;
@@ -31,14 +31,14 @@ const Name = styled.h2`
 `
 
 const Organization = styled.span`
-  font-size: 24px;
+  font-size: 20px;
   line-height: 75%;
 
   color: ${(props) => props.theme.fontColor.muted};
 `
 
 const Time = styled.span`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
 
   color: ${(props) => props.theme.fontColor.muted};

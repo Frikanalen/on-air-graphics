@@ -6,7 +6,7 @@ import { lightTheme } from "../theming"
 import { Screen } from "../components/Screen"
 
 const globalStyle = (theme: Theme) => css`
-  @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700;900&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
 
   * {
     box-sizing: border-box;
@@ -14,7 +14,7 @@ const globalStyle = (theme: Theme) => css`
 
   body {
     margin: 0;
-    font-family: "Source Sans Pro", sans-serif;
+    font-family: "Roboto", sans-serif;
     color: ${theme.fontColor.normal};
   }
 
@@ -32,7 +32,7 @@ const globalStyle = (theme: Theme) => css`
   }
 
   h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
   }
 `
