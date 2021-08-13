@@ -7,7 +7,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: -3px;
+  margin-bottom: -5px;
 
   & + & {
     margin-top: 32px;
