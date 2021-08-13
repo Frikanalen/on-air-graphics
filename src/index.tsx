@@ -2,9 +2,9 @@ import React from "react"
 import ReactDOM from "react-dom"
 
 import { Global, css, ThemeProvider } from "@emotion/react"
-import { lightTheme } from "./theming"
+import { lightTheme } from "./core/theming"
 
-import { Screen } from "./components/Screen"
+import { Screen } from "./core/components/Screen"
 
 const globalStyle = css`
   body {
