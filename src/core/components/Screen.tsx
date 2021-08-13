@@ -17,7 +17,7 @@ const Container = styled.div`
 export function Screen() {
   return (
     <Container>
-      <Background timeOfDay="day" />
+      <Background />
       <Overlay />
     </Container>
   )
