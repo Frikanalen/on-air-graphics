@@ -1,15 +1,11 @@
 import React from "react"
 
 import { RESOLUTION } from "../constants"
-import { TimeOfDay } from "../types"
+import { store } from "../store"
 const [width, height] = RESOLUTION
 
-export type BackgroundProps = {
-  timeOfDay: TimeOfDay
-}
-
-export function Background(props: BackgroundProps) {
-  const { timeOfDay } = props
+export function Background() {
+  const { timeOfDay } = store
   const src = `/video/${timeOfDay}.mp4`
 
   return (

@@ -1,9 +1,10 @@
 import React from "react"
 
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
-import { lightTheme } from "../theming"
+import { darkTheme, lightTheme } from "../theming"
 
 import { Screen } from "../components/Screen"
+import { store } from "../store"
 
 const globalStyle = (theme: Theme) => css`
   @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
@@ -38,8 +39,10 @@ const globalStyle = (theme: Theme) => css`
 `
 
 export function App() {
+  const theme = store.timeOfDay === "day" ? lightTheme : darkTheme
+
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={theme}>
       <Global styles={globalStyle} />
       <Screen />
     </ThemeProvider>
