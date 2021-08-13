@@ -2,6 +2,7 @@ import React from "react"
 import styled from "@emotion/styled"
 
 import { RESOLUTION } from "../constants"
+import { Background } from "./Background"
 const [width, height] = RESOLUTION
 
 const Container = styled.div`
@@ -14,5 +15,9 @@ const Container = styled.div`
 `
 
 export function Screen() {
-  return <Container />
+  return (
+    <Container>
+      <Background timeOfDay="day" />
+    </Container>
+  )
 }
