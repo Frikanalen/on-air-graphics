@@ -21,7 +21,7 @@ export const darkTheme: Theme = {
     accent: "#FCBA20",
   },
   fontColor: {
-    normal: "rgba(255, 255, 255, 0.85);",
+    normal: "rgba(255, 255, 255, 0.85)",
     muted: "rgba(255, 255, 255, 0.7)",
   },
   gradient: {
