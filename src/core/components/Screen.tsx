@@ -12,6 +12,7 @@ const Container = styled.div`
   height: ${height}px;
 
   position: relative;
+  overflow: hidden;
 `
 
 export function Screen() {
