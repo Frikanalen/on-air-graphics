@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import React from "react"
 import { Card } from "../../core/components/Card"
+import { Logo } from "../../core/components/Logo"
 import { store } from "../../core/store"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
 
@@ -39,6 +40,18 @@ const LaterListCard = styled(Card)`
   margin-top: 24px;
 `
 
+const Aside = styled.div`
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const SizedLogo = styled(Logo)`
+  width: 450px;
+`
+
 export function UpcomingView() {
   const [next, ...scheduleItems] = store.safeScheduleItems
 
@@ -57,6 +70,9 @@ export function UpcomingView() {
             ))}
           </LaterListCard>
         </Content>
+        <Aside>
+          <SizedLogo />
+        </Aside>
       </Body>
       <Footer>
         Alt innhold sendes på medlemmers eget ansvar. Se frikanalen.no for
