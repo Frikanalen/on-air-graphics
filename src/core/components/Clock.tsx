@@ -84,12 +84,12 @@ export function Clock(props: ClockProps) {
 
     const preciseSeconds = now.getSeconds() + now.getMilliseconds() / 1000
     const preciseMinutes = now.getMinutes() + preciseSeconds / 60
-    const preciseHours = now.getHours() + preciseMinutes / 60
+    const preciseHours = (now.getHours() + preciseMinutes / 60) % 12
 
     drawMarkers()
 
     drawHandHand(preciseMinutes, 6, 0.75)
-    drawHandHand(preciseHours * 2.5, 6, 0.5)
+    drawHandHand(preciseHours * 5, 6, 0.5)
     drawCentralSpot()
     drawHandHand(preciseSeconds, 4, 0.7, theme.color.accent)
   })
