@@ -72,7 +72,7 @@ export function Clock(props: ClockProps) {
 
     const drawCentralSpot = () => {
       context.beginPath()
-      context.arc(0, 0, 5, 0, Math.PI * 2)
+      context.arc(0, 0, 7, 0, Math.PI * 2)
       context.fillStyle = theme.color.accent
       context.fill()
     }
