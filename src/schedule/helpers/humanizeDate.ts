@@ -3,8 +3,11 @@ import { nb } from "date-fns/locale"
 
 export const humanizeDate = (date: Date) => {
   const now = new Date()
-
   const hourDifference = differenceInHours(date, now)
+
+  if (hourDifference <= 0) {
+    return "nå"
+  }
 
   if (hourDifference < 1) {
     return formatDistance(date, now, {
