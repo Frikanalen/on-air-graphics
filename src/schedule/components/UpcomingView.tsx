@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import React from "react"
 import { Card } from "../../core/components/Card"
+import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
 import { store } from "../../core/store"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
@@ -52,6 +53,12 @@ const SizedLogo = styled(Logo)`
   width: 450px;
 `
 
+const ClockContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`
+
 export function UpcomingView() {
   const [next, ...scheduleItems] = store.safeScheduleItems
 
@@ -72,6 +79,9 @@ export function UpcomingView() {
         </Content>
         <Aside>
           <SizedLogo />
+          <ClockContainer>
+            <Clock size={320} />
+          </ClockContainer>
         </Aside>
       </Body>
       <Footer>
