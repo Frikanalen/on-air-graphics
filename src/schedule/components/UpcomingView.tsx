@@ -40,7 +40,7 @@ const LaterListCard = styled(Card)`
 `
 
 export function UpcomingView() {
-  const [next, ...scheduleItems] = store.scheduleItems
+  const [next, ...scheduleItems] = store.safeScheduleItems
 
   return (
     <Container>
