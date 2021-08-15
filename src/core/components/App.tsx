@@ -16,6 +16,7 @@ const globalStyle = (theme: Theme) => css`
   body {
     margin: 0;
     font-family: "Roboto", sans-serif;
+    background: #1e1e1e;
     color: ${theme.fontColor.normal};
   }
 
