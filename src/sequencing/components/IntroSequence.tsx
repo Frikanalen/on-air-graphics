@@ -88,7 +88,7 @@ export function IntroSequence(props: IntroSequenceProps) {
       await wait(2500)
       setState("end")
 
-      await wait(700)
+      await wait(200)
       props.onFinished()
     }
 
