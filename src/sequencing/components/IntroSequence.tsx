@@ -29,7 +29,7 @@ const Container = styled.div<{ state: AnimationState }>`
     right: 0px;
 
     transition: all 700ms ease-in-out;
-    transform: rotate(10deg) translateY(-200px);
+    transform: rotate(10deg) translateY(-220px);
 
     ${(props) => {
       if (props.state === "end")
