@@ -1,4 +1,3 @@
-import { differenceInSeconds } from "date-fns"
 import { fetchSceduleItems } from "../schedule/helpers/fetchScheduleItems"
 import { ScheduleItem } from "../schedule/types"
 import { TimeOfDay } from "./types"
@@ -13,9 +12,7 @@ class Store {
   }
 
   public get safeScheduleItems() {
-    return this.scheduleItems.filter(
-      (x) => differenceInSeconds(new Date(x.endtime), new Date()) > 0
-    )
+    return this.scheduleItems.filter((x) => new Date() > new Date(x.endtime))
   }
 }
 
