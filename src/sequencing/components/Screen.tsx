@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import styled from "@emotion/styled"
 
-import { Background } from "./Background"
-import { Overlay } from "./Overlay"
+import { Background } from "../../core/components/Background"
+import { Overlay } from "../../core/components/Overlay"
 
-import { RESOLUTION } from "../constants"
+import { RESOLUTION } from "../../core/constants"
 const [width, height] = RESOLUTION
 
 const Container = styled.div`

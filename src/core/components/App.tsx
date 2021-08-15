@@ -3,7 +3,7 @@ import React from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
 import { darkTheme, lightTheme } from "../theming"
 
-import { Screen } from "../components/Screen"
+import { Screen } from "../../sequencing/components/Screen"
 import { store } from "../store"
 
 const globalStyle = (theme: Theme) => css`
