@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 export const CardStyle = (props: { theme: Theme }) => css`
   background: ${props.theme.color.card};
   box-shadow: 2px 2px 11px 2px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(30px);
 `
 
 export const Card = styled.div`
