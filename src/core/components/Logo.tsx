@@ -3,7 +3,7 @@ import React from "react"
 export function Logo(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 240 52" fill="none">
-      <g clip-path="url(#clip0)">
+      <g clipPath="url(#clip0)">
         <path
           d="M43.58 0.0200273C43.7513 -0.0340191 43.9363 -0.0239476 44.1007 0.0483648C44.2651 0.120677 44.3976 0.250296 44.4734 0.413058C44.5493 0.575821 44.5634 0.760622 44.5131 0.933011C44.4628 1.1054 44.3515 1.25362 44.2 1.35003L27.69 15.43C27.0506 15.9994 26.2821 16.4044 25.451 16.61C24.6198 16.8156 23.7511 16.8156 22.92 16.61L0.780014 12.09C-0.219986 11.86 -0.299986 10.84 0.780014 10.59L43.58 0.0200273Z"
           fill="url(#paint0_linear)"
@@ -63,13 +63,13 @@ export function Logo(props: { className?: string }) {
           y2="14.38"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.09" stop-color="#F15645" />
-          <stop offset="0.26" stop-color="#ED5545" />
-          <stop offset="0.42" stop-color="#E15046" />
-          <stop offset="0.58" stop-color="#CE4948" />
-          <stop offset="0.74" stop-color="#B23F4A" />
-          <stop offset="0.9" stop-color="#8E324C" />
-          <stop offset="1" stop-color="#73284E" />
+          <stop offset="0.09" stopColor="#F15645" />
+          <stop offset="0.26" stopColor="#ED5545" />
+          <stop offset="0.42" stopColor="#E15046" />
+          <stop offset="0.58" stopColor="#CE4948" />
+          <stop offset="0.74" stopColor="#B23F4A" />
+          <stop offset="0.9" stopColor="#8E324C" />
+          <stop offset="1" stopColor="#73284E" />
         </linearGradient>
         <linearGradient
           id="paint1_linear"
@@ -79,14 +79,14 @@ export function Logo(props: { className?: string }) {
           y2="9.95002"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#CE5542" />
-          <stop offset="0.04" stop-color="#D25C42" />
-          <stop offset="0.3" stop-color="#E78640" />
-          <stop offset="0.5" stop-color="#F5A03F" />
-          <stop offset="0.62" stop-color="#FAAA3F" />
-          <stop offset="0.74" stop-color="#FBB132" />
-          <stop offset="0.96" stop-color="#FEC40F" />
-          <stop offset="1" stop-color="#FFC709" />
+          <stop stopColor="#CE5542" />
+          <stop offset="0.04" stopColor="#D25C42" />
+          <stop offset="0.3" stopColor="#E78640" />
+          <stop offset="0.5" stopColor="#F5A03F" />
+          <stop offset="0.62" stopColor="#FAAA3F" />
+          <stop offset="0.74" stopColor="#FBB132" />
+          <stop offset="0.96" stopColor="#FEC40F" />
+          <stop offset="1" stopColor="#FFC709" />
         </linearGradient>
         <linearGradient
           id="paint2_linear"
@@ -96,12 +96,12 @@ export function Logo(props: { className?: string }) {
           y2="29.62"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.1" stop-color="#64BC50" />
-          <stop offset="0.3" stop-color="#61B850" />
-          <stop offset="0.48" stop-color="#56AD4F" />
-          <stop offset="0.66" stop-color="#449A4F" />
-          <stop offset="0.84" stop-color="#2C7F4D" />
-          <stop offset="1" stop-color="#0E5F4C" />
+          <stop offset="0.1" stopColor="#64BC50" />
+          <stop offset="0.3" stopColor="#61B850" />
+          <stop offset="0.48" stopColor="#56AD4F" />
+          <stop offset="0.66" stopColor="#449A4F" />
+          <stop offset="0.84" stopColor="#2C7F4D" />
+          <stop offset="1" stopColor="#0E5F4C" />
         </linearGradient>
         <clipPath id="clip0">
           <rect width="239.85" height="51.79" fill="white" />
