@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import React from "react"
-import { Card } from "../../core/components/Card"
+import { Card, CardStyle } from "../../core/components/Card"
 import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
 import { store } from "../../core/store"
@@ -11,11 +11,27 @@ const Container = styled.div`
   flex-direction: column;
 
   height: 100%;
+
+  &:before {
+    content: "";
+    width: 65%;
+    height: 140%;
+
+    right: 0px;
+    top: 0px;
+    position: absolute;
+
+    transform: rotate(10deg) translateY(-90px) translateX(70px);
+    ${CardStyle}
+  }
 `
 
 const Body = styled.div`
   display: flex;
   flex: 1;
+
+  position: relative;
+  z-index: 1;
 `
 
 const Footer = styled.div`
@@ -25,6 +41,9 @@ const Footer = styled.div`
   font-size: 16px;
 
   color: ${(props) => props.theme.fontColor.muted};
+
+  position: relative;
+  z-index: 1;
 `
 
 const Content = styled.div`
