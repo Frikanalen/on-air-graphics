@@ -81,14 +81,24 @@ const ClockContainer = styled.div`
 export function UpcomingView() {
   const [next, ...scheduleItems] = store.safeScheduleItems
 
+  const renderNext = () => {
+    if (!next) return null
+
+    return (
+      <>
+        <h1>Neste program</h1>
+        <NextCard>
+          <ScheduleItemSummary item={next} />
+        </NextCard>
+      </>
+    )
+  }
+
   return (
     <Container>
       <Body>
         <Content>
-          <h1>Neste program</h1>
-          <NextCard>
-            <ScheduleItemSummary item={next} />
-          </NextCard>
+          {renderNext()}
           <h1>Senere</h1>
           <LaterListCard>
             {scheduleItems.slice(0, 3).map((item) => (
