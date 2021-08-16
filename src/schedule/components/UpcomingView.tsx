@@ -168,8 +168,6 @@ export function UpcomingView(props: UpcomingViewProps) {
     onFinished,
   })
 
-  console.log(state)
-
   return (
     <Container state={state}>
       <Body>
