@@ -70,15 +70,15 @@ export function Screen() {
 
   const createSequence = () => {
     // For testing purposes
-    setSequence([
-      { type: "upcoming", duration: 5000 },
-      { type: "upcoming", duration: 5000 },
-      { type: "upcoming", duration: 10000 },
-    ])
+    setSequence([{ type: "upcoming", duration: 10000 }])
   }
 
-  const advance = () => {
+  const advance = async () => {
     setIndex(index + 1)
+
+    if (index > sequence.length - 2) {
+      setVisible(false)
+    }
   }
 
   useEffect(() => {
