@@ -11,17 +11,15 @@ export type UseTimedTransitionOptions = {
 }
 
 export const useTimedTransition = (options: UseTimedTransitionOptions) => {
-  const { appear, duration, disappear, onFinished } = options
+  const { duration, disappear, onFinished } = options
   const [state, setState] = useState<TransitionState>("start")
 
   useEffect(() => {
     const run = async () => {
-      const remainingDuration = duration - (appear + disappear)
-
       await wait(1)
       setState("appear")
 
-      await wait(remainingDuration)
+      await wait(duration - disappear)
       setState("disappear")
 
       await wait(disappear)
