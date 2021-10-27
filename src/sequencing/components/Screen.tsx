@@ -9,6 +9,9 @@ import { wait } from "../../core/helpers/wait"
 import { UpcomingView } from "../../schedule/components/UpcomingView"
 const [width, height] = RESOLUTION
 
+const FADE_TRANSITION_MS = 500
+const MINIMUM_TIME = 15000
+
 const Container = styled.div`
   width: ${width}px;
   height: ${height}px;
@@ -27,7 +30,7 @@ const Content = styled.div<{ visible: boolean }>`
   bottom: 0px;
   left: 0px;
 
-  transition: opacity 500ms ease;
+  transition: opacity ${FADE_TRANSITION_MS}ms ease;
   opacity: ${(props) => (props.visible ? 1 : 0)};
 `
 
@@ -50,7 +53,7 @@ const Overlay = styled.div<{ visible: boolean }>`
     bottom: 0px;
     left: 0px;
 
-    transition: opacity 500ms ease;
+    transition: opacity ${FADE_TRANSITION_MS}ms ease;
     opacity: ${(props) => (props.visible ? 1 : 0)};
   }
 `
@@ -59,6 +62,12 @@ type SequenceItem = {
   type: "upcoming"
   duration: number
 }
+
+const start = Date.now()
+const params = new URLSearchParams(window.location.search)
+
+const duration = Number(params.get("duration")) || MINIMUM_TIME
+const availableTime = Math.max(duration - FADE_TRANSITION_MS, MINIMUM_TIME)
 
 export function Screen() {
   const [visible, setVisible] = useState(false)
@@ -69,8 +78,12 @@ export function Screen() {
   const current = sequence[index]
 
   const createSequence = () => {
-    // For testing purposes
-    setSequence([{ type: "upcoming", duration: 10000 }])
+    const timeElapsed = Date.now() - start
+    const remainingTime = availableTime - timeElapsed
+
+    console.log({ timeElapsed, remainingTime })
+
+    setSequence([{ type: "upcoming", duration: remainingTime }])
   }
 
   const advance = async () => {
