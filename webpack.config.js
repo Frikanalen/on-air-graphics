@@ -16,6 +16,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "public", "index.html"),
+        publicPath: '/graphics/',
     }),
   ],
   resolve: {
@@ -24,7 +25,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "public"),
     compress: true,
-    publicPath: '/graphics',
+    publicPath: '/graphics/',
     port: 9000,
   },
   output: {

@@ -6,7 +6,7 @@ const [width, height] = RESOLUTION
 
 export function Background() {
   const { timeOfDay } = store
-  const src = `/video/${timeOfDay}.mp4`
+  const src = `video/${timeOfDay}.mp4`
 
   return (
     <video
