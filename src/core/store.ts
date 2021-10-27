@@ -1,10 +1,13 @@
+import { getHours } from "date-fns"
 import { fetchSceduleItems } from "../schedule/helpers/fetchScheduleItems"
 import { ScheduleItem } from "../schedule/types"
 import { TimeOfDay } from "./types"
 
+const hours = getHours(new Date())
+
 // A simple store that ensures data is present before rendering
 class Store {
-  public timeOfDay: TimeOfDay = "day"
+  public timeOfDay: TimeOfDay = hours > 12 && hours < 18 ? "day" : "night"
   public scheduleItems: ScheduleItem[] = []
 
   public async init() {
