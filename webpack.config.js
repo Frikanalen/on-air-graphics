@@ -24,6 +24,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "public"),
     compress: true,
+    publicPath: '/graphics',
     port: 9000,
   },
   output: {
