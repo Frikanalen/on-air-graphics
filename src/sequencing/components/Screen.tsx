@@ -81,8 +81,6 @@ export function Screen() {
     const timeElapsed = Date.now() - start
     const remainingTime = availableTime - timeElapsed
 
-    console.log({ timeElapsed, remainingTime })
-
     setSequence([{ type: "upcoming", duration: remainingTime }])
   }
 
