@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 
 module.exports = {
@@ -16,7 +17,17 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "public", "index.html"),
-        publicPath: '/graphics/',
+      publicPath: "/graphics",
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "public",
+          globOptions: {
+            ignore: ["**/*index.html"],
+          },
+        },
+      ],
     }),
   ],
   resolve: {
@@ -25,7 +36,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "public"),
     compress: true,
-    publicPath: '/graphics/',
+    publicPath: "/graphics",
     port: 9000,
   },
   output: {
