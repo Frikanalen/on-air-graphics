@@ -1,12 +1,12 @@
 import React from "react"
 
-import { RESOLUTION } from "../constants"
+import { RESOLUTION, URL_PREFIX } from "../constants"
 import { store } from "../store"
 const [width, height] = RESOLUTION
 
 export function Background() {
   const { timeOfDay } = store
-  const src = `video/${timeOfDay}.mp4`
+  const src = `${URL_PREFIX}/video/${timeOfDay}.mp4`
 
   return (
     <video
