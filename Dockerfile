@@ -13,6 +13,8 @@ ENV NEXT_PUBLIC_ENV production
 
 COPY . .
 
+RUN sudo echo "Europe/Oslo" > /etc/timezone
+
 USER node
 
 CMD yarn run start
