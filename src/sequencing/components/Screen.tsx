@@ -63,19 +63,28 @@ type SequenceItem = {
   duration: number
 }
 
-const start = Date.now()
 const params = new URLSearchParams(window.location.search)
-
 const duration = Number(params.get("duration")) || MINIMUM_TIME
 const availableTime = Math.max(duration - FADE_TRANSITION_MS, MINIMUM_TIME)
 
 export function Screen() {
+  const [start, setStart] = useState(0)
   const [visible, setVisible] = useState(false)
 
   const [index, setIndex] = useState(0)
   const [sequence, setSequence] = useState<SequenceItem[]>([])
 
   const current = sequence[index]
+
+  useEffect(() => {
+    // CasparCG hook
+    ;(window as any).play = async () => {
+      setStart(Date.now())
+
+      await delay(500)
+      setVisible(true)
+    }
+  })
 
   const createSequence = () => {
     const timeElapsed = Date.now() - start
@@ -91,15 +100,6 @@ export function Screen() {
       setVisible(false)
     }
   }
-
-  useEffect(() => {
-    const run = async () => {
-      await delay(500)
-      setVisible(true)
-    }
-
-    run()
-  }, [])
 
   const renderContent = () => {
     if (!current) return
@@ -119,7 +119,7 @@ export function Screen() {
     <Container>
       <Content visible={visible}>
         <Background />
-        <IntroSequence onFinished={createSequence} />
+        {visible ? <IntroSequence onFinished={createSequence} /> : null}
         <Overlay visible={!!current}>{renderContent()}</Overlay>
       </Content>
     </Container>
