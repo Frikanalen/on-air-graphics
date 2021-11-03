@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { wait } from "../../core/helpers/wait"
+import { delay } from "../../core/helpers/delay"
 
 export type TransitionState = "start" | "appear" | "disappear"
 
@@ -16,13 +16,13 @@ export const useTimedTransition = (options: UseTimedTransitionOptions) => {
 
   useEffect(() => {
     const run = async () => {
-      await wait(1)
+      await delay(1)
       setState("appear")
 
-      await wait(duration - (disappear + appear))
+      await delay(duration - (disappear + appear))
       setState("disappear")
 
-      await wait(disappear)
+      await delay(disappear)
       onFinished()
     }
 

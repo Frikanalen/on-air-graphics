@@ -5,8 +5,8 @@ import { Background } from "../../core/components/Background"
 
 import { RESOLUTION } from "../../core/constants"
 import { IntroSequence } from "./IntroSequence"
-import { wait } from "../../core/helpers/wait"
 import { UpcomingView } from "../../schedule/components/UpcomingView"
+import { delay } from "../../core/helpers/delay"
 const [width, height] = RESOLUTION
 
 const FADE_TRANSITION_MS = 500
@@ -94,7 +94,7 @@ export function Screen() {
 
   useEffect(() => {
     const run = async () => {
-      await wait(500)
+      await delay(500)
       setVisible(true)
     }
 

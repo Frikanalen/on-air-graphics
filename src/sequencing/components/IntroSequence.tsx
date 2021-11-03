@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 import React, { useEffect, useState } from "react"
 import { CardStyle } from "../../core/components/Card"
 import { Logo } from "../../core/components/Logo"
-import { wait } from "../../core/helpers/wait"
+import { delay } from "../../core/helpers/delay"
 
 export type AnimationState = "start" | "unblur" | "end"
 
@@ -82,13 +82,13 @@ export function IntroSequence(props: IntroSequenceProps) {
 
   useEffect(() => {
     const run = async () => {
-      await wait(700)
+      await delay(700)
       setState("unblur")
 
-      await wait(2500)
+      await delay(2500)
       setState("end")
 
-      await wait(300)
+      await delay(300)
       props.onFinished()
     }
 
