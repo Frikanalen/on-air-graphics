@@ -6,7 +6,6 @@ export const delay = (ms: number) => {
       const difference = Date.now() - now
 
       if (difference >= ms) {
-        console.log(difference)
         return resolve(undefined)
       }
 

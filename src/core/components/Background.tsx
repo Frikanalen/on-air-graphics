@@ -2,6 +2,7 @@ import React from "react"
 
 import { RESOLUTION, URL_PREFIX } from "../constants"
 import { store } from "../store"
+
 const [width, height] = RESOLUTION
 
 export function Background() {
