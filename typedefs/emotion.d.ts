@@ -7,11 +7,15 @@ declare module "@emotion/react" {
       accent: string
     }
     fontColor: {
+      overlay: string
       normal: string
       muted: string
     }
     gradient: {
       overlay: string
+    }
+    stateColor: {
+      warning: string
     }
   }
 }

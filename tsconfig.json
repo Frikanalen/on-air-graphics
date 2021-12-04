@@ -1,12 +1,13 @@
 {
-    "compilerOptions": {
-      "outDir": "./build",
-      "strict": true,
-      "module": "es6",
-      "target": "es5",
-      "lib": ["DOM", "ESNext"],
-      "jsx": "react",
-      "moduleResolution": "node",
-      "esModuleInterop": true
-    }
+  "compilerOptions": {
+    "outDir": "./build",
+    "strict": true,
+    "module": "es6",
+    "target": "es5",
+    "downlevelIteration": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react",
+    "moduleResolution": "node",
+    "esModuleInterop": true
   }
+}
