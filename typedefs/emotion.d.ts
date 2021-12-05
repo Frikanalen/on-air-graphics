@@ -4,6 +4,7 @@ declare module "@emotion/react" {
   export interface Theme {
     color: {
       card: string
+      cardFallback: string
       accent: string
     }
     fontColor: {
@@ -16,6 +17,9 @@ declare module "@emotion/react" {
     }
     stateColor: {
       warning: string
+    }
+    shadow: {
+      card: string
     }
   }
 }
