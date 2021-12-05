@@ -33,6 +33,8 @@ const View = styled.div`
   height: 100%;
 `
 
+const DELAY = 200
+
 export type SequenceEntry = {
   name: string
   duration: number
@@ -49,6 +51,7 @@ export function ViewSequence(props: ViewSequenceProps) {
   const { sequence } = props
 
   const [index, setIndex] = useState(0)
+  const [showView, setShowView] = useState(true)
 
   useEffect(() => {
     const entry = sequence[index]
@@ -56,7 +59,11 @@ export function ViewSequence(props: ViewSequenceProps) {
     const advance = async () => {
       if (!Number.isFinite(entry.duration)) return
 
-      await delay(entry.duration)
+      await delay(entry.duration - DELAY)
+      setShowView(false)
+      await delay(DELAY)
+
+      setShowView(true)
       setIndex(index + 1)
     }
 
@@ -68,7 +75,7 @@ export function ViewSequence(props: ViewSequenceProps) {
   const renderView = () => {
     const entry = sequence[index]
 
-    if (!entry || app.state !== "active") return null
+    if (!showView || !entry || app.state !== "active") return null
 
     return (
       <Transition key={entry.name} timeout={2000}>
