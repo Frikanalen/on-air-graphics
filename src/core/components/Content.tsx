@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext } from "react"
 import styled from "@emotion/styled"
 import { FADE_TRANSITION_MS, RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { App } from "./App"
@@ -10,7 +10,6 @@ import {
   SequenceEntry,
   ViewSequence,
 } from "../../sequencing/components/ViewSequence"
-import { INTRO_VIEW_SEQUENCE_ENTRY } from "./IntroView"
 import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionSequence"
 
 const [width, height] = RESOLUTION
@@ -22,7 +21,6 @@ const Container = styled.div<{ keyed: boolean }>`
   position: relative;
   overflow: hidden;
 
-  border: solid 2px ${(props) => props.theme.color.accent};
   margin-top: -2px;
   margin-left: -2px;
 
