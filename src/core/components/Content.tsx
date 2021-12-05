@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react"
 import styled from "@emotion/styled"
-import {
-  FADE_TRANSITION_MS,
-  RESOLUTION,
-  VIEW_TRANSITION_MS,
-  VIEW_TYPES,
-} from "../constants"
+import { FADE_TRANSITION_MS, RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { App } from "./App"
 import { Background } from "./Background"
 import { useParams } from "../hooks/useParams"
 import { PosterView } from "../../poster/components/PosterView"
-import { Transition, TransitionGroup } from "react-transition-group"
-import { delay } from "../helpers/delay"
+import { TransitionGroup } from "react-transition-group"
+import {
+  SequenceEntry,
+  ViewSequence,
+} from "../../sequencing/components/ViewSequence"
+import { INTRO_VIEW_SEQUENCE_ENTRY } from "./IntroView"
+import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionSequence"
 
 const [width, height] = RESOLUTION
 
@@ -45,25 +45,24 @@ const View = styled(TransitionGroup)`
 export function Content() {
   const app = useContext(App.context)
 
-  const [showView, setShowView] = useState(false)
-  const [showSelf, setShowSelf] = useState(false)
-
-  const { view } = useParams({
-    view: "default",
+  const { sequence } = useParams({
+    sequence: "default",
   })
 
-  const safeView = VIEW_TYPES.find((v) => v === view) ?? "default"
+  const sequenceName = SEQUENCE_NAMES.find((s) => s === sequence) ?? "default"
 
   const renderView = () => {
-    if (!showView) return null
+    if (sequenceName === "poster") {
+      const entry: SequenceEntry = {
+        name: "poster",
+        duration: Infinity,
+        render: (status) => <PosterView transition={status} />,
+      }
 
-    if (safeView === "poster") {
-      return (
-        <Transition timeout={VIEW_TRANSITION_MS} key={safeView}>
-          {(status) => <PosterView transition={status} />}
-        </Transition>
-      )
+      return <ViewSequence sequence={[entry]} />
     }
+
+    return <ViewSequence sequence={getIntermissionSequence(app.duration)} />
   }
 
   const renderBackground = () => {
@@ -71,30 +70,9 @@ export function Content() {
     return <Background />
   }
 
-  useEffect(() => {
-    const show = async () => {
-      setShowSelf(true)
-      setShowView(true)
-    }
-
-    const hide = async () => {
-      setShowView(false)
-      await delay(200)
-      setShowSelf(false)
-    }
-
-    if (app.state === "active") {
-      show()
-    }
-
-    if (app.state === "exit") {
-      hide()
-    }
-  }, [app.state])
-
   return (
     <Container keyed={app.keyed}>
-      <Inner visible={showSelf}>
+      <Inner visible={app.state === "active"}>
         {renderBackground()}
         <View>{renderView()}</View>
       </Inner>
