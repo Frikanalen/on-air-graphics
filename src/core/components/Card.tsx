@@ -3,8 +3,12 @@ import styled from "@emotion/styled"
 
 export const CardStyle = (props: { theme: Theme }) => css`
   background: ${props.theme.color.card};
-  box-shadow: 2px 2px 11px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: ${props.theme.shadow.card};
   backdrop-filter: blur(30px);
+
+  @supports not (backdrop-filter: blur(30px)) {
+    background: ${props.theme.color.cardFallback};
+  }
 `
 
 export const Card = styled.div`
