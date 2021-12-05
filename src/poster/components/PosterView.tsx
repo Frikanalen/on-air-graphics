@@ -2,35 +2,22 @@ import React, { useContext } from "react"
 import styled from "@emotion/styled"
 import { App } from "../../core/components/App"
 import { useParams } from "../../core/hooks/useParams"
-import { css, keyframes, Theme } from "@emotion/react"
+import { css, keyframes } from "@emotion/react"
 import { CardStyle } from "../../core/components/Card"
 import { SVGIcon } from "../../core/components/SVGIcon"
-import { cover, size, transitions, transparentize } from "polished"
+import { size, transparentize } from "polished"
 import { PosterType } from "../types"
 import { POSTER_TYPES } from "../constants"
 import { TransitionStatus } from "react-transition-group"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 
-const Container = styled.div<{ keyed: boolean; transition: TransitionStatus }>`
+const Container = styled.div`
   padding: 64px;
 
   display: flex;
   align-items: flex-end;
   justify-content: center;
   height: 100%;
-
-  &:before {
-    content: "";
-    background: ${(props) =>
-      props.keyed ? "transparent" : props.theme.gradient.overlay};
-
-    position: absolute;
-    ${cover()}
-
-    transition: opacity ${FADE_TRANSITION_MS}ms ease;
-    opacity: ${(props) =>
-      ["entering", "entered"].includes(props.transition) ? 1 : 0};
-  }
 `
 
 const ContentTransition = (reversed: boolean) => keyframes`
@@ -113,7 +100,7 @@ export function PosterView(props: PosterViewProps) {
   const safeType = POSTER_TYPES.find((t) => t === type) ?? "info"
 
   return (
-    <Container transition={transition} keyed={app.keyed}>
+    <Container>
       <Content transition={transition} type={safeType} keyed={app.keyed}>
         <Icon name={safeType} />
         <Message>{message}</Message>

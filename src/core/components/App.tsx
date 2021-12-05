@@ -3,7 +3,6 @@ import React, { createContext, useState } from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
 import { darkTheme, lightTheme } from "../theming"
 
-import { Screen } from "../../sequencing/components/Screen"
 import { store } from "../store"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
@@ -74,8 +73,6 @@ export function App() {
       MINIMUM_SCREEN_TIME
     ),
   }
-
-  console.log(context)
 
   return (
     <ThemeProvider theme={theme}>

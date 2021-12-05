@@ -1,4 +1,4 @@
-import { VIEW_TYPES } from "./constants"
+import { SEQUENCE_NAMES } from "./constants"
 import * as icons from "./icons"
 
 export type TimeOfDay = "day" | "night"
@@ -10,4 +10,4 @@ export type ApiCollection<T> = {
 }
 
 export type IconType = keyof typeof icons
-export type ViewType = typeof VIEW_TYPES[number]
+export type SequenceName = typeof SEQUENCE_NAMES[number]
