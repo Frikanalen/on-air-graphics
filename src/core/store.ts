@@ -12,7 +12,6 @@ class Store {
 
   public async init() {
     this.scheduleItems = await fetchSceduleItems()
-    this.timeOfDay = "night"
   }
 
   public get safeScheduleItems() {
