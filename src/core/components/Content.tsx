@@ -21,9 +21,6 @@ const Container = styled.div<{ keyed: boolean }>`
   position: relative;
   overflow: hidden;
 
-  margin-top: -2px;
-  margin-left: -2px;
-
   background: ${(props) => (props.keyed ? "transparent" : "black")};
 `
 
