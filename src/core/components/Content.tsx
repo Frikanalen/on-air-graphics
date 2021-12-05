@@ -25,7 +25,7 @@ const Container = styled.div<{ keyed: boolean }>`
 `
 
 const Inner = styled.div<{ visible: boolean }>`
-  transition: opacity ${FADE_TRANSITION_MS}ms ease;
+  transition: opacity ${FADE_TRANSITION_MS}ms ease-in-out;
   opacity: ${(props) => (props.visible ? 1 : 0)};
 `
 
