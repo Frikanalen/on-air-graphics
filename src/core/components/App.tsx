@@ -7,6 +7,7 @@ import { store } from "../store"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
+import { getTheme } from "../../mood/helpers/getTheme"
 
 const globalStyle = (theme: Theme) => css`
   @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
@@ -53,7 +54,7 @@ export type AppContext = {
 }
 
 export function App() {
-  const theme = store.timeOfDay === "day" ? lightTheme : darkTheme
+  const theme = getTheme(store.timeOfDay)
   const [state, setState] = useState<AppState>("idle")
 
   window.start = () => setState("active")

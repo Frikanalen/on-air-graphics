@@ -5,6 +5,7 @@
     "module": "es6",
     "target": "es5",
     "downlevelIteration": true,
+    "resolveJsonModule": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react",
     "moduleResolution": "node",
