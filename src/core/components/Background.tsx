@@ -23,8 +23,8 @@ export function Background() {
       controls={false}
       muted
     >
+      {renderSource("webm", "video/webm")}
       {renderSource("mp4", "video/mp4")}
-      {renderSource("mkv", "video/x-matroska")}
     </video>
   )
 }
