@@ -5,5 +5,4 @@ export const FADE_TRANSITION_MS = 500
 
 export const SEQUENCE_NAMES = ["default", "poster"] as const
 
-export const URL_PREFIX = process.env.URL_PREFIX ?? "/graphics"
-export const IS_CASPARCG_CONTEXT = process.env.CONTEXT === "casparcg"
+export const URL_PREFIX = "/graphics"
