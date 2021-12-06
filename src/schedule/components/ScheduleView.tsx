@@ -1,5 +1,6 @@
 import { css, keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
+import { darken } from "polished"
 import React from "react"
 import { TransitionStatus } from "react-transition-group"
 import { Card, CardStyle } from "../../core/components/Card"
@@ -77,6 +78,10 @@ const Container = styled.div<{ status: TransitionStatus }>`
       500ms ease both;
 
     ${CardStyle}
+
+    @supports not (backdrop-filter: blur(30px)) {
+      background: ${(props) => darken(0.02, props.theme.color.cardFallback)};
+    }
   }
 `
 
@@ -180,8 +185,6 @@ export type ScheduleViewProps = {
 export function ScheduleView(props: ScheduleViewProps) {
   const { status } = props
   const [next, ...scheduleItems] = store.safeScheduleItems
-
-  console.log(status)
 
   return (
     <Container status={status}>

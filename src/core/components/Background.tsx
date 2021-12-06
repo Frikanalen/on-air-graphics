@@ -1,14 +1,15 @@
 import React from "react"
+import { getMoodVideo } from "../../mood/helpers/getMoodVideo"
 
-import { RESOLUTION, URL_PREFIX } from "../constants"
+import { RESOLUTION } from "../constants"
 import { store } from "../store"
 
 const [width, height] = RESOLUTION
 
-export function Background() {
-  const { timeOfDay } = store
-  const src = `${URL_PREFIX}/video/${timeOfDay}.mkv`
+const { timeOfDay } = store
+const src = getMoodVideo(timeOfDay)
 
+export function Background() {
   return (
     <video
       src={src}
@@ -17,6 +18,7 @@ export function Background() {
       loop={true}
       autoPlay={true}
       controls={false}
+      muted
     />
   )
 }

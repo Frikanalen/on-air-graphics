@@ -1,13 +1,11 @@
-import { getHours } from "date-fns"
+import { OSLO_COORDINATES } from "../mood/constants"
+import { getTimeOfDay } from "../mood/helpers/getTimeOfDay"
 import { fetchSceduleItems } from "../schedule/helpers/fetchScheduleItems"
 import { ScheduleItem } from "../schedule/types"
-import { TimeOfDay } from "./types"
-
-const hours = getHours(new Date())
 
 // A simple store that ensures data is present before rendering
 class Store {
-  public timeOfDay: TimeOfDay = hours > 12 && hours < 18 ? "day" : "night"
+  public timeOfDay = getTimeOfDay(new Date(), ...OSLO_COORDINATES)
   public scheduleItems: ScheduleItem[] = []
 
   public async init() {
