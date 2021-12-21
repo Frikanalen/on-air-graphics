@@ -197,7 +197,7 @@ export function ScheduleView(props: ScheduleViewProps) {
           <Heading status={status}>Senere</Heading>
           <LaterListCard status={status}>
             {scheduleItems.slice(0, 3).map((item) => (
-              <ScheduleItemSummary key={item.id} item={item} />
+              <ScheduleItemSummary key={item.video.id} item={item} />
             ))}
           </LaterListCard>
         </Content>

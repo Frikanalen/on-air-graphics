@@ -5,13 +5,13 @@ export type Organization = {
 
 export type Video = {
   id: number
-  name: string
+  title: string
   organization: Organization
 }
 
 export type ScheduleItem = {
-  id: number
+  type: "jukebox"
   video: Video
-  starttime: string
-  endtime: string
+  startsAt: string
+  endsAt: string
 }

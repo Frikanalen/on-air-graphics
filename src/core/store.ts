@@ -13,7 +13,7 @@ class Store {
   }
 
   public get safeScheduleItems() {
-    return this.scheduleItems.filter((x) => new Date() < new Date(x.endtime))
+    return this.scheduleItems.filter((x) => new Date() < new Date(x.endsAt))
   }
 }
 

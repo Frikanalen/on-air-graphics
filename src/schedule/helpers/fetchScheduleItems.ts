@@ -4,13 +4,8 @@ import { ScheduleItem } from "../types"
 
 export const fetchSceduleItems = async () => {
   const { data } = await api.get<ApiCollection<ScheduleItem>>(
-    "/scheduleitems",
-    {
-      params: {
-        ordering: "starttime",
-      },
-    }
+    "/scheduling/entries"
   )
 
-  return data.results
+  return data
 }

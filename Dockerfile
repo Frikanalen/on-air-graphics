@@ -8,13 +8,16 @@ RUN yarn install --quiet
 
 FROM builder
 
+ENV NODE_PORT 80
 ENV NODE_ENV production
 ENV NEXT_PUBLIC_ENV production
 
 COPY . .
 
-RUN sudo echo "Europe/Oslo" > /etc/timezone
+RUN echo "Europe/Oslo" > /etc/timezone
 
 USER node
 
-CMD yarn run start
+ENTRYPOINT ["/usr/local/bin/yarn"]
+
+CMD ["run", "start"]

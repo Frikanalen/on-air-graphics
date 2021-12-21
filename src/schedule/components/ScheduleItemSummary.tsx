@@ -53,16 +53,16 @@ export type ScheduleItemSummaryProps = {
 }
 
 export function ScheduleItemSummary(props: ScheduleItemSummaryProps) {
-  const { video, starttime } = props.item
+  const { video, startsAt } = props.item
 
   return (
     <Container>
       <PrimaryInfo>
-        <Name>{video.name}</Name>
+        <Name>{video.title}</Name>
         <Organization>{video.organization.name}</Organization>
       </PrimaryInfo>
       <Time>
-        <HumanizedDate date={new Date(starttime)} />
+        <HumanizedDate date={new Date(startsAt)} />
       </Time>
     </Container>
   )
