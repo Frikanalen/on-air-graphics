@@ -4,6 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 
 const PROD = process.env.NODE_ENV === "production"
+const PORT = Number(process.env.PORT) || 8050
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -19,7 +20,9 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": JSON.stringify(process.env),
+      "process.env": {
+        FK_API: JSON.stringify(process.env.FK_API),
+      },
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "public", "index.html"),
@@ -43,7 +46,7 @@ module.exports = {
     contentBase: path.join(__dirname, "public"),
     compress: true,
     publicPath: "/graphics",
-    port: 9000,
+    port: PORT,
   },
   output: {
     filename: "bundle.js",
