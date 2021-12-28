@@ -53,11 +53,14 @@ export type AppContext = {
   keyed: boolean
 }
 
+window.update = () => {}
+window.next = () => {}
+
 export function App() {
   const theme = getTheme(store.timeOfDay)
   const [state, setState] = useState<AppState>("idle")
 
-  window.start = () => setState("active")
+  window.play = () => setState("active")
   window.stop = () => setState("exit")
 
   const params = useParams({
