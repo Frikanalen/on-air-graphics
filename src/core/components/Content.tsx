@@ -14,14 +14,14 @@ import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionS
 
 const [width, height] = RESOLUTION
 
-const Container = styled.div<{ keyed: boolean }>`
+const Container = styled.div`
   width: ${width}px;
   height: ${height}px;
 
   position: relative;
   overflow: hidden;
 
-  background: ${(props) => (props.keyed ? "transparent" : "black")};
+  background: transparent;
 `
 
 const Inner = styled.div<{ visible: boolean }>`
@@ -66,7 +66,7 @@ export function Content() {
   }
 
   return (
-    <Container keyed={app.keyed}>
+    <Container>
       <Inner visible={app.state === "active"}>
         {renderBackground()}
         <View>{renderView()}</View>
