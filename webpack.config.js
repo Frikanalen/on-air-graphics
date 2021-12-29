@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 
+require("dotenv/config")
+
 const PROD = process.env.NODE_ENV === "production"
 const PORT = Number(process.env.PORT) || 8050
 
