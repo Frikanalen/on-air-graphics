@@ -1,10 +1,10 @@
-FROM node:18-alpine AS deps
+FROM node:16-alpine AS deps
 
 WORKDIR /usr/app
 
 COPY package.json package-lock.json .
 
-RUN npm install --omit=dev
+RUN npm install # --omit=dev
 
 FROM deps AS builder
 
