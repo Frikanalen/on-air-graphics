@@ -1,4 +1,4 @@
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS deps
 
 WORKDIR /usr/app
 
@@ -6,9 +6,9 @@ COPY package.json .
 
 RUN yarn install --quiet
 
-FROM builder
+FROM deps AS builder
 
-ENV NODE_PORT 80
+ENV NODE_PORT 3000
 ENV NODE_ENV production
 ENV NEXT_PUBLIC_ENV production
 
