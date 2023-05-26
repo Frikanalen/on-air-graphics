@@ -2,9 +2,9 @@ FROM node:18-alpine AS deps
 
 WORKDIR /usr/app
 
-COPY package.json .
+COPY package.json package-lock.json .
 
-RUN yarn install --quiet
+RUN npm install --production
 
 FROM deps AS builder
 
