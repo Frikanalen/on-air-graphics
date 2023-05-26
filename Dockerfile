@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 COPY package.json package-lock.json .
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 FROM deps AS builder
 
