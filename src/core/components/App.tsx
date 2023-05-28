@@ -42,6 +42,10 @@ const globalStyle = (theme: Theme) => css`
   }
 `
 
+
+window.update = () => {}
+window.next = () => {}
+
 export type AppState = "idle" | "active" | "exit"
 
 export type AppContext = {
@@ -57,7 +61,7 @@ export function App() {
   const theme = getTheme(store.timeOfDay)
   const [state, setState] = useState<AppState>("idle")
 
-  window.start = () => setState("active")
+  window.play = () => setState("active")
   window.stop = () => setState("exit")
 
   const params = useParams({
