@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 COPY package.json package-lock.json .
 
-RUN npm install # --omit=dev
+RUN yarn install # --omit=dev
 
 FROM deps AS builder
 
