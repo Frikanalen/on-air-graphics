@@ -1,5 +1,3 @@
-import React from "react"
-
 export const info = (
   <svg viewBox="0 0 24 24" fill="none">
     <path

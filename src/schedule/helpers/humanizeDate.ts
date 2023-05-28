@@ -1,9 +1,7 @@
 import {
-  differenceInHours,
   differenceInMinutes,
   differenceInSeconds,
   format,
-  formatDistance,
   isToday,
 } from "date-fns"
 import { nb } from "date-fns/locale"

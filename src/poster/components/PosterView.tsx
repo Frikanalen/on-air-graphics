@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import styled from "@emotion/styled"
 import { App } from "../../core/components/App"
 import { useParams } from "../../core/hooks/useParams"

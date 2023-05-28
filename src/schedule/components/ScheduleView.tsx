@@ -1,7 +1,6 @@
 import { css, keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import { darken } from "polished"
-import React from "react"
 import { TransitionStatus } from "react-transition-group"
 import { Card, CardStyle } from "../../core/components/Card"
 import { Clock } from "../../core/components/Clock"

@@ -1,4 +1,3 @@
-import React from "react"
 import { getMoodVideo } from "../../mood/helpers/getMoodVideo"
 
 import { RESOLUTION, URL_PREFIX } from "../constants"

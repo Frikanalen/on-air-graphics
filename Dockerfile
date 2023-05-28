@@ -1,23 +1,14 @@
-FROM node:16-alpine AS deps
+FROM node:16-alpine AS builder
 
-WORKDIR /usr/app
-
-COPY package.json yarn.lock .
-
-RUN yarn install # --omit=dev
-
-FROM deps AS builder
-
-ENV NODE_PORT 3000
-ENV NODE_ENV production
-ENV NEXT_PUBLIC_ENV production
+WORKDIR /app
 
 COPY . .
 
-RUN echo "Europe/Oslo" > /etc/timezone
+RUN yarn
 
-USER node
+RUN yarn build
 
-ENTRYPOINT ["/usr/local/bin/yarn"]
+FROM nginx
 
-CMD ["run", "start"]
+RUN mkdir /usr/share/nginx/html/graphics
+COPY --from=builder /app/dist /usr/share/nginx/html/graphics

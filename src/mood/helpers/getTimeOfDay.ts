@@ -1,4 +1,4 @@
-import { isAfter, isBefore } from "date-fns"
+import { isAfter } from "date-fns"
 import SunCalc from "suncalc"
 import { TimeOfDay } from "../types"
 

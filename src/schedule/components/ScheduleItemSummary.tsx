@@ -1,7 +1,5 @@
-import React from "react"
 import styled from "@emotion/styled"
 import { ScheduleItem } from "../types"
-import { humanizeDate } from "../helpers/humanizeDate"
 import { HumanizedDate } from "./HumanizedDate"
 
 const Container = styled.div`
