@@ -6,7 +6,7 @@ import { catalog } from "../../catalog.ts"
 const getSelection = (time: TimeOfDay) => {
   const primary = catalog.filter((m) => m.time === time)
 
-  if (primary.length === 0) {
+  if (!primary.length) {
     const substitutions = catalog.filter((m) =>
       TIMES_OF_DAY_SUBSTITUTIONS[time].includes(m.time as TimeOfDay)
     )

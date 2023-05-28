@@ -34,7 +34,11 @@ export function App() {
   const [state, setState] = useState<AppState>("idle")
   const [show, setShow] = useState<boolean>(false)
 
-  store.init().then(() => setShow(true))
+  store.init().then(() => {
+    console.log("Done")
+    setShow(true)
+    setState("active")
+  })
 
   window.play = () => setState("active")
   window.stop = () => setState("exit")
