@@ -4,7 +4,7 @@ interface Window {
   /** CasparCG stop command */
   stop: () => void
   /** CasparCG update command */
-  update: () => void
+  update: (data: any) => void
   /** CasparCG next command */
   next: () => void
 }
