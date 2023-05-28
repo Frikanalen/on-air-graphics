@@ -1,7 +1,7 @@
-import catalog from "../../catalog.json"
 import { getRandomItem } from "../../core/helpers/getRandomItem"
 import { TIMES_OF_DAY_SUBSTITUTIONS } from "../constants"
 import { TimeOfDay } from "../types"
+import { catalog } from "../../catalog.ts"
 
 const getSelection = (time: TimeOfDay) => {
   const primary = catalog.filter((m) => m.time === time)

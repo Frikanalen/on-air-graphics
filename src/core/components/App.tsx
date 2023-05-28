@@ -1,47 +1,19 @@
-import  { createContext, useState } from "react"
+import { createContext, useState } from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
-import { store } from "../store"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
 import { getTheme } from "../../mood/helpers/getTheme"
+import { store } from "../store.ts"
 
 const globalStyle = (theme: Theme) => css`
-  @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: "Roboto", sans-serif;
-    background: transparent;
-    color: ${theme.fontColor.normal};
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    line-height: 75%;
-    margin: 0px;
-  }
-
-  h1 {
-    font-size: 48px;
-    font-weight: 900;
-  }
-
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-  }
+  color: ${theme.fontColor.normal};
 `
 
-window.update = () => {
-  console.log("Update was called")
+window.update = (data: any) => {
+  console.log(`Update was called with ${JSON.stringify(data)}`)
 }
+
 window.next = () => {
   console.log("Next was called")
 }
@@ -60,6 +32,9 @@ export type AppContext = {
 export function App() {
   const theme = getTheme(store.timeOfDay)
   const [state, setState] = useState<AppState>("idle")
+  const [show, setShow] = useState<boolean>(false)
+
+  store.init().then(() => setShow(true))
 
   window.play = () => setState("active")
   window.stop = () => setState("exit")
@@ -78,6 +53,8 @@ export function App() {
       MINIMUM_SCREEN_TIME
     ),
   }
+
+  if (!show) return null
 
   return (
     <ThemeProvider theme={theme}>
