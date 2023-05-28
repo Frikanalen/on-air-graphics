@@ -2,7 +2,7 @@ FROM node:16-alpine AS deps
 
 WORKDIR /usr/app
 
-COPY package.json package-lock.json .
+COPY package.json yarn.lock .
 
 RUN yarn install # --omit=dev
 
