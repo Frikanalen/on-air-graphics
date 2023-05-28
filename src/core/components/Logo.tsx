@@ -1,5 +1,3 @@
-import React from "react"
-
 export function Logo(props: { className?: string }) {
   return (
     <svg className={props.className} viewBox="0 0 240 52" fill="none">

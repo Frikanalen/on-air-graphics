@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useContext } from "react"
 import styled from "@emotion/styled"
 import { FADE_TRANSITION_MS, RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { App } from "./App"
@@ -57,20 +57,18 @@ export function Content() {
       return <ViewSequence sequence={[entry]} />
     }
 
-    return <ViewSequence sequence={getIntermissionSequence(app.duration)} />
-  }
-
-  const renderBackground = () => {
-    if (app.keyed) return null
-    return <Background />
+    return <ViewSequence sequence={getIntermissionSequence()} />
   }
 
   return (
-    <Container keyed={app.keyed}>
-      <Inner visible={app.state === "active"}>
-        {renderBackground()}
-        <View>{renderView()}</View>
-      </Inner>
-    </Container>
+    <main>
+      <Container keyed={app.keyed}>
+        <div>Hi</div>
+        <Inner visible={app.state === "active"}>
+          {!app.keyed && <Background />}
+          <View>{renderView()}</View>
+        </Inner>
+      </Container>
+    </main>
   )
 }

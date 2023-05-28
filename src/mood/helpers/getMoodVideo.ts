@@ -1,4 +1,4 @@
-import catalog from "../../../public/video/catalog.json"
+import catalog from "../../catalog.json"
 import { getRandomItem } from "../../core/helpers/getRandomItem"
 import { TIMES_OF_DAY_SUBSTITUTIONS } from "../constants"
 import { TimeOfDay } from "../types"

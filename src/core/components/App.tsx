@@ -1,8 +1,5 @@
-import React, { createContext, useState } from "react"
-
+import  { createContext, useState } from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
-import { darkTheme, lightTheme } from "../theming"
-
 import { store } from "../store"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
@@ -42,9 +39,12 @@ const globalStyle = (theme: Theme) => css`
   }
 `
 
-
-window.update = () => {}
-window.next = () => {}
+window.update = () => {
+  console.log("Update was called")
+}
+window.next = () => {
+  console.log("Next was called")
+}
 
 export type AppState = "idle" | "active" | "exit"
 
@@ -84,6 +84,15 @@ export function App() {
       <Global styles={globalStyle} />
       <App.context.Provider value={context}>
         <Content />
+        {import.meta.env.DEV && (
+          <div
+            onClick={() => {
+              setState("active")
+            }}
+          >
+            Play
+          </div>
+        )}
       </App.context.Provider>
     </ThemeProvider>
   )

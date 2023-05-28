@@ -3,7 +3,7 @@ import { INTRO_VIEW_SEQUENCE_ENTRY } from "../../core/components/IntroView"
 import { SequenceEntry } from "../../sequencing/components/ViewSequence"
 import { ScheduleView } from "../components/ScheduleView"
 
-export const getIntermissionSequence = (duration: number): SequenceEntry[] => {
+export const getIntermissionSequence = (): SequenceEntry[] => {
   // const available = duration - INTRO_VIEW_SEQUENCE_ENTRY.duration
 
   return [
