@@ -7,4 +7,6 @@ interface Window {
   update: (data: any) => void
   /** CasparCG next command */
   next: () => void
+  handleError: (e: any) => void
+  handleWarning: (e: any) => void
 }
