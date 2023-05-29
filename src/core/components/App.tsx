@@ -18,6 +18,9 @@ window.next = () => {
   console.log("Next was called")
 }
 
+window.handleError = console.error
+window.handleWarning = console.log
+
 export type AppState = "idle" | "active" | "exit"
 
 export type AppContext = {
