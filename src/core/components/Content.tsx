@@ -21,54 +21,48 @@ const Container = styled.div<{ keyed: boolean }>`
   position: relative;
   overflow: hidden;
 
-  background: ${(props) => (props.keyed ? "transparent" : "black")};
+  background: ${({ keyed }) => (keyed ? "transparent" : "black")};
 `
 
 const Inner = styled.div<{ visible: boolean }>`
   transition: opacity ${FADE_TRANSITION_MS}ms ease-in-out;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
 `
 
 const View = styled(TransitionGroup)`
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 `
 
-export function Content() {
-  const app = useContext(App.context)
+export const Content = () => {
+  const { keyed, state } = useContext(App.context)
 
   const { sequence } = useParams({
     sequence: "default",
   })
 
   const sequenceName = SEQUENCE_NAMES.find((s) => s === sequence) ?? "default"
-
-  const renderView = () => {
-    if (sequenceName === "poster") {
-      const entry: SequenceEntry = {
-        name: "poster",
-        duration: Infinity,
-        render: (status) => <PosterView transition={status} />,
-      }
-
-      return <ViewSequence sequence={[entry]} />
-    }
-
-    return <ViewSequence sequence={getIntermissionSequence()} />
+  const posterEntry: SequenceEntry = {
+    name: "poster",
+    duration: Infinity,
+    render: (status) => <PosterView transition={status} />,
   }
 
   return (
-    <main>
-      <Container keyed={app.keyed}>
-        <div>Hi</div>
-        <Inner visible={app.state === "active"}>
-          {!app.keyed && <Background />}
-          <View>{renderView()}</View>
-        </Inner>
-      </Container>
-    </main>
+    <Container keyed={keyed}>
+      <Inner visible={state === "active"}>
+        {!keyed && <Background />}
+        <View>
+          {sequenceName === "poster" ? (
+            <ViewSequence sequence={[posterEntry]} />
+          ) : (
+            <ViewSequence sequence={getIntermissionSequence()} />
+          )}
+        </View>
+      </Inner>
+    </Container>
   )
 }

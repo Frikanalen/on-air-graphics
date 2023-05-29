@@ -25,10 +25,10 @@ const CardFall = keyframes`
 
 const Container = styled.div<{ status: TransitionStatus }>`
   position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 100;
 
   display: flex;
@@ -42,8 +42,8 @@ const Container = styled.div<{ status: TransitionStatus }>`
     height: 200%;
     width: 200%;
 
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
 
     transform: rotate(10deg) translateY(-220px);
 
