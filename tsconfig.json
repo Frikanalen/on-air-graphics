@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2019",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "module": "es2020",
+    "module": "ESNext",
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -18,7 +18,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "composite": true,
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
