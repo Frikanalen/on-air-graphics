@@ -39,7 +39,7 @@ export function App() {
   const theme = getTheme(getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
   const { loading } = useSchedule()
 
-  const [state, setState] = useState<AppState>("active")
+  const [state, setState] = useState<AppState>("idle")
 
   window.play = () => setState("active")
   window.stop = () => setState("exit")
