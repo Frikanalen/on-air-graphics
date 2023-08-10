@@ -35,6 +35,7 @@ const Container = styled.div<{ status: TransitionStatus }>`
   align-items: center;
   justify-content: center;
 
+  color: ${(props) => props.theme.fontColor.normal};
   &:before {
     content: "";
     position: absolute;
