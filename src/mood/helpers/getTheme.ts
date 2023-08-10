@@ -1,8 +1,8 @@
-import { TimeOfDay } from "../types"
+import { PhaseOfDay } from "../types"
 import * as themes from "../../core/theming"
 import { Theme } from "@emotion/react"
 
-const themeMap: Record<TimeOfDay, Theme> = {
+const themeMap: Record<PhaseOfDay, Theme> = {
   sunrise: themes.lightTheme,
   noon: themes.lightTheme,
   sunset: themes.lightTheme,
@@ -11,4 +11,4 @@ const themeMap: Record<TimeOfDay, Theme> = {
   dawn: themes.darkTheme,
 }
 
-export const getTheme = (time: TimeOfDay) => themeMap[time]
+export const getTheme = (time: PhaseOfDay) => themeMap[time]

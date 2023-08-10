@@ -1,4 +1,4 @@
-export type TimeOfDay =
+export type PhaseOfDay =
   | "sunrise"
   | "noon"
   | "sunset"
@@ -11,6 +11,6 @@ export type Season = "summer" | "winter" | "autumn"
 
 export type MoodVideo = {
   url: string
-  time: TimeOfDay
+  time: PhaseOfDay
   season: Season
 }

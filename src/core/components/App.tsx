@@ -4,7 +4,10 @@ import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
 import { getTheme } from "../../mood/helpers/getTheme"
-import { store } from "../store.ts"
+import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
+import { OSLO_COORDINATES } from "../../mood/constants"
+import { useSchedule } from "../useSchedule"
+import { DevPanel } from "./DevPanel"
 
 const globalStyle = (theme: Theme) => css`
   color: ${theme.fontColor.normal};
@@ -33,15 +36,10 @@ export type AppContext = {
 }
 
 export function App() {
-  const theme = getTheme(store.timeOfDay)
-  const [state, setState] = useState<AppState>("idle")
-  const [show, setShow] = useState<boolean>(false)
+  const theme = getTheme(getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
+  const { loading } = useSchedule()
 
-  store.init().then(() => {
-    console.log("Done")
-    setShow(true)
-    setState("active")
-  })
+  const [state, setState] = useState<AppState>("active")
 
   window.play = () => setState("active")
   window.stop = () => setState("exit")
@@ -51,7 +49,7 @@ export function App() {
     keyed: false,
   })
 
-  const context = {
+  const context: AppContext = {
     state,
     keyed: params.keyed,
     // Ensures the duration is never less than the minimum
@@ -61,22 +59,16 @@ export function App() {
     ),
   }
 
-  if (!show) return null
+  if (loading) return null
 
   return (
     <ThemeProvider theme={theme}>
       <Global styles={globalStyle} />
       <App.context.Provider value={context}>
-        <Content />
-        {import.meta.env.DEV && (
-          <div
-            onClick={() => {
-              setState("active")
-            }}
-          >
-            Play
-          </div>
-        )}
+        <div className="bg-black w-screen h-screen flex justify-center items-center">
+          <Content />
+          <DevPanel />
+        </div>
       </App.context.Provider>
     </ThemeProvider>
   )
