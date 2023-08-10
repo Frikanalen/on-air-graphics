@@ -5,9 +5,9 @@ import { TransitionStatus } from "react-transition-group"
 import { Card, CardStyle } from "../../core/components/Card"
 import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
-import { store } from "../../core/store"
 
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
+import { useSchedule } from "../../core/useSchedule"
 
 const SlideTransition = (px: number, reversed: boolean) => keyframes`
   ${reversed ? 0 : 100}% {
@@ -147,6 +147,7 @@ const Aside = styled.div`
 
 const SizedLogo = styled(Logo)`
   width: 450px;
+  color: ${(props) => props.theme.fontColor.normal};
 
   animation: 500ms ease both;
   ${slideFade(50)}
@@ -173,6 +174,7 @@ const HeadingTransition = (reversed: boolean) => keyframes`
 const Heading = styled.h1<{ status: TransitionStatus }>`
   transition: all 500ms ease;
 
+  color: ${(props) => props.theme.fontColor.normal};
   animation: ${(props) => HeadingTransition(props.status !== "exiting")} 500ms
     ease forwards;
 `
@@ -182,8 +184,11 @@ export type ScheduleViewProps = {
 }
 
 export function ScheduleView(props: ScheduleViewProps) {
+  const { schedule } = useSchedule()
+
   const { status } = props
-  const [next, ...scheduleItems] = store.safeScheduleItems
+  const [next, ...scheduleItems] =
+    schedule?.filter((x) => new Date() < new Date(x.endtime)) ?? []
 
   return (
     <Container status={status}>

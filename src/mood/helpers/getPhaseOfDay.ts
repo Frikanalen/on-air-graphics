@@ -1,8 +1,8 @@
 import { isAfter } from "date-fns"
 import SunCalc from "suncalc"
-import { TimeOfDay } from "../types"
+import { PhaseOfDay } from "../types"
 
-const timeMap: Record<keyof SunCalc.GetTimesResult, TimeOfDay> = {
+const timeMap: Record<keyof SunCalc.GetTimesResult, PhaseOfDay> = {
   sunrise: "sunrise",
   sunriseEnd: "sunrise",
   goldenHourEnd: "noon",
@@ -19,12 +19,12 @@ const timeMap: Record<keyof SunCalc.GetTimesResult, TimeOfDay> = {
   dawn: "dawn",
 }
 
-export const getTimeOfDay = (
+export const getPhaseOfDay = (
   date: Date,
-  lattitude: number,
+  latitude: number,
   longitude: number
-): TimeOfDay => {
-  const times = SunCalc.getTimes(date, lattitude, longitude)
+): PhaseOfDay => {
+  const times = SunCalc.getTimes(date, latitude, longitude)
   const entries = Object.entries(times) as [
     keyof SunCalc.GetTimesResult,
     Date
@@ -35,7 +35,8 @@ export const getTimeOfDay = (
     .find(([, target]) => isAfter(date, target))
 
   if (!result) {
-    throw new Error("Result is undefined!")
+    console.error("No phase of day found for date", date)
+    return "noon"
   }
 
   return timeMap[result[0]]

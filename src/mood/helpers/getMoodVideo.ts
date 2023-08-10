@@ -1,14 +1,14 @@
 import { getRandomItem } from "../../core/helpers/getRandomItem"
 import { TIMES_OF_DAY_SUBSTITUTIONS } from "../constants"
-import { TimeOfDay } from "../types"
+import { PhaseOfDay } from "../types"
 import { catalog } from "../../catalog.ts"
 
-const getSelection = (time: TimeOfDay) => {
+const getSelection = (time: PhaseOfDay) => {
   const primary = catalog.filter((m) => m.time === time)
 
   if (!primary.length) {
     const substitutions = catalog.filter((m) =>
-      TIMES_OF_DAY_SUBSTITUTIONS[time].includes(m.time as TimeOfDay)
+      TIMES_OF_DAY_SUBSTITUTIONS[time].includes(m.time as PhaseOfDay)
     )
 
     return substitutions
@@ -17,7 +17,7 @@ const getSelection = (time: TimeOfDay) => {
   return primary
 }
 
-export const getMoodVideo = (time: TimeOfDay) => {
+export const getMoodVideo = (time: PhaseOfDay) => {
   const video = getRandomItem(getSelection(time))
   return video.url
 }

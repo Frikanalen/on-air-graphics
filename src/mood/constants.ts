@@ -1,4 +1,4 @@
-import { TimeOfDay } from "./types"
+import { PhaseOfDay } from "./types"
 
 export const TIMES_OF_DAY = [
   "sunrise",
@@ -9,7 +9,7 @@ export const TIMES_OF_DAY = [
   "dawn",
 ] as const
 
-export const TIMES_OF_DAY_SUBSTITUTIONS: Record<TimeOfDay, TimeOfDay[]> = {
+export const TIMES_OF_DAY_SUBSTITUTIONS: Record<PhaseOfDay, PhaseOfDay[]> = {
   sunrise: ["dawn"],
   noon: ["sunset"],
   sunset: ["dusk"],

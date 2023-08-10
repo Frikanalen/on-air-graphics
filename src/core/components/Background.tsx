@@ -1,12 +1,12 @@
 import { getMoodVideo } from "../../mood/helpers/getMoodVideo"
 
 import { RESOLUTION, URL_PREFIX } from "../constants"
-import { store } from "../store"
+import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
+import { OSLO_COORDINATES } from "../../mood/constants"
 
 const [width, height] = RESOLUTION
 
-const { timeOfDay } = store
-const src = getMoodVideo(timeOfDay)
+const src = getMoodVideo(getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
 
 export function Background() {
   const renderSource = (ext: string, mime: string) => (
