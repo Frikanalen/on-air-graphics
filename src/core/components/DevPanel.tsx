@@ -45,20 +45,16 @@ const DevPanelButtons = styled.div`
     }
   }
 `
-export const DevPanel = () => {
-  if (import.meta.env.PROD) return null
-
-  return (
-    <DevContainerDiv>
-      <div>
-        <h1>Frikanalen sendegrafikk</h1>
-        <Content />
-        <DevPanelButtons>
-          <h2>Events</h2>
-          <button onClick={window.play}>PLAY</button>
-          <button onClick={window.stop}>STOP</button>
-        </DevPanelButtons>
-      </div>
-    </DevContainerDiv>
-  )
-}
+export const DevPanel = () => (
+  <DevContainerDiv>
+    <div>
+      <h1>Frikanalen sendegrafikk</h1>
+      <Content />
+      <DevPanelButtons>
+        <h2>Events</h2>
+        <button onClick={window.play}>PLAY</button>
+        <button onClick={window.stop}>STOP</button>
+      </DevPanelButtons>
+    </div>
+  </DevContainerDiv>
+)
