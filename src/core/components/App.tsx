@@ -1,13 +1,18 @@
 import { createContext, useState } from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
 import { useParams } from "../hooks/useParams"
-import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
+import {
+  FADE_TRANSITION_MS,
+  MINIMUM_SCREEN_TIME,
+  RESOLUTION,
+} from "../constants"
 import { Content } from "./Content"
 import { getTheme } from "../../mood/helpers/getTheme"
 import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
 import { OSLO_COORDINATES } from "../../mood/constants"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
+import styled from "@emotion/styled"
 
 const globalStyle = (theme: Theme) => css`
   color: ${theme.fontColor.normal};
@@ -25,6 +30,26 @@ window.handleError = console.error
 window.handleWarning = console.log
 
 export type AppState = "idle" | "active" | "exit"
+
+const LoadingDiv = styled.div`
+  flex-grow: 1;
+  background: #333;
+  color: #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100vh;
+
+  div {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    font-size: 3em;
+    font-family: monospace;
+  }
+`
 
 export type AppContext = {
   /** Animation state */
@@ -59,16 +84,18 @@ export function App() {
     ),
   }
 
-  if (loading) return null
+  if (loading)
+    return (
+      <LoadingDiv>
+        <div>Loading...</div>
+      </LoadingDiv>
+    )
 
   return (
     <ThemeProvider theme={theme}>
       <Global styles={globalStyle} />
       <App.context.Provider value={context}>
-        <div className="bg-black w-screen h-screen flex justify-center items-center">
-          <Content />
-          <DevPanel />
-        </div>
+        {import.meta.env.DEV ? <DevPanel /> : <Content />}
       </App.context.Provider>
     </ThemeProvider>
   )
