@@ -1,11 +1,7 @@
 import { createContext, useState } from "react"
 import { Global, css, ThemeProvider, Theme } from "@emotion/react"
 import { useParams } from "../hooks/useParams"
-import {
-  FADE_TRANSITION_MS,
-  MINIMUM_SCREEN_TIME,
-  RESOLUTION,
-} from "../constants"
+import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
 import { getTheme } from "../../mood/helpers/getTheme"
 import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
