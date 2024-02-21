@@ -8,8 +8,8 @@
   <body>
     <div id="root"></div>
     <script>
-      window.onerror = (message, url, linenumber, trace, foo) =>
-        console.log(`JavaScript error: ${message} on ${url}:${linenumber}`)
+      window.onerror = (message, url, linenumber) =>
+        console.error(`JavaScript error: ${message} on ${url}:${linenumber}`)
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
