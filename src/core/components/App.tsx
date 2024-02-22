@@ -15,17 +15,19 @@ const globalStyle = (theme: Theme) => css`
 `
 
 window.update = (data: any) => {
-  console.log(`Update was called with ${JSON.stringify(data)}`)
+  console.error(`Update was called with ${JSON.stringify(data)}`)
 }
 
 window.next = () => {
-  console.log("Next was called")
+  console.error("Next was called")
 }
 
 window.handleError = console.error
-window.handleWarning = console.log
+window.handleWarning = console.error
 
 export type AppState = "idle" | "active" | "exit"
+
+console.warn("Test warning")
 
 const LoadingDiv = styled.div`
   flex-grow: 1;
