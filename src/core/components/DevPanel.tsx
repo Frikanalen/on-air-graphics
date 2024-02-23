@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { RESOLUTION } from "../constants"
 import { Content } from "./Content"
+import { useState } from "react"
 const DevContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,16 +46,28 @@ const DevPanelButtons = styled.div`
     }
   }
 `
-export const DevPanel = () => (
-  <DevContainerDiv>
-    <div>
-      <h1>Frikanalen sendegrafikk</h1>
-      <Content />
-      <DevPanelButtons>
-        <h2>Events</h2>
-        <button onClick={window.play}>PLAY</button>
-        <button onClick={window.stop}>STOP</button>
-      </DevPanelButtons>
-    </div>
-  </DevContainerDiv>
-)
+export const DevPanel = () => {
+  const [show, setShow] = useState(true)
+  const reset = () => {
+    setShow(false)
+    setTimeout(() => {
+      setShow(true)
+      window.play()
+    }, 100)
+  }
+
+  return (
+    <DevContainerDiv>
+      <div>
+        <h1>Frikanalen sendegrafikk</h1>
+        {show && <Content />}
+        <DevPanelButtons>
+          <button onClick={reset}>RESET</button>
+          <h2>Events</h2>
+          <button onClick={window.play}>PLAY</button>
+          <button onClick={window.stop}>STOP</button>
+        </DevPanelButtons>
+      </div>
+    </DevContainerDiv>
+  )
+}

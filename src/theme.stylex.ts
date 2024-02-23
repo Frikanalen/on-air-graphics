@@ -14,7 +14,7 @@ export const theme = stylex.defineVars({
     [DARK_BLUR]: "rgba(26, 42, 64, 0.7)",
   },
   colorAccent: { default: "#E88840", [DARK]: "#FCBA20" },
-  fontColorOverlay: { default: "white", [DARK]: "white" }, // Overlay doesn't change between themes
+  fontColorOverlay: "white",
   fontColorNormal: {
     default: "rgba(0, 0, 0, 0.85)",
     [DARK]: "rgba(255, 255, 255, 0.85)",
@@ -23,7 +23,7 @@ export const theme = stylex.defineVars({
     default: "rgba(0, 0, 0, 0.7)",
     [DARK]: "rgba(255, 255, 255, 0.7)",
   },
-  stateColorWarning: { default: "#ff5400", [DARK]: "#ff5400" }, // Assuming warning color doesn't change
+  stateColorWarning: { default: "#ff5400", [DARK]: "#ff5400" },
   gradientOverlay: {
     default:
       "linear-gradient(0deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 35%)",

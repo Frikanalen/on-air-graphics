@@ -5,8 +5,6 @@ import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
 import { getTheme } from "../../mood/helpers/getTheme"
-import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
-import { OSLO_COORDINATES } from "../../mood/constants"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
@@ -49,7 +47,7 @@ const LoadingDiv = styled.div`
 `
 
 export function App() {
-  const theme = getTheme(getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
+  const theme = getTheme("noon") //getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
   const { loading } = useSchedule()
 
   const [state, setState] = useState<AppState>("idle")
