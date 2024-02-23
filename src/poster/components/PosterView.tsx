@@ -12,15 +12,6 @@ import { AppContext } from "../../core/components/AppContext.tsx"
 import stylex from "@stylexjs/stylex"
 import { cardStyle } from "../../core/components/Card.tsx"
 
-const Container = styled.div`
-  padding: 64px;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: 100%;
-`
-
 const ContentTransition = (reversed: boolean) => keyframes`
   ${reversed ? "0%" : "100%"} {
     transform: translateY(calc(100% + 32px));
@@ -100,7 +91,7 @@ export function PosterView(props: PosterViewProps) {
   const safeType = POSTER_TYPES.find((t) => t === type) ?? "info"
 
   return (
-    <Container>
+    <div className={"p-16 flex items-end justify-center h-full"}>
       <Content
         {...stylex.props(cardStyle.baseCard)}
         transition={transition}
@@ -110,6 +101,6 @@ export function PosterView(props: PosterViewProps) {
         <Icon name={safeType} />
         <Message>{message}</Message>
       </Content>
-    </Container>
+    </div>
   )
 }
