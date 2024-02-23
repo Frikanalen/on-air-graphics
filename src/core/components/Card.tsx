@@ -1,19 +1,27 @@
-import { css, Theme } from "@emotion/react"
-import styled from "@emotion/styled"
+import * as stylex from "@stylexjs/stylex"
+import { theme } from "../../theme.stylex.ts"
+import { ComponentPropsWithoutRef, forwardRef } from "react"
 
-export const CardStyle = (props: { theme: Theme }) => css`
-  background: ${props.theme.color.card};
-  box-shadow: ${props.theme.shadow.card};
-  backdrop-filter: blur(30px);
+// Define the basic card style
+export const cardStyle = stylex.create({
+  baseCard: {
+    boxShadow: theme.shadowCard,
+    padding: "24px",
+    borderRadius: "8px",
+    background: theme.colorCard,
+    backdropFilter: "blur(30px)",
+  },
+})
 
-  @supports not (backdrop-filter: blur(30px)) {
-    background: ${props.theme.color.cardFallback};
-  }
-`
-
-export const Card = styled.div`
-  padding: 24px;
-  border-radius: 8px;
-
-  ${CardStyle}
-`
+/**
+ * This is here for styled-component backwards compatibility.
+ */
+export const Card = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<"div">>(
+  ({ children, ...props }, ref) => {
+    return (
+      <div ref={ref} {...stylex.props(cardStyle.baseCard)} {...props}>
+        {children}
+      </div>
+    )
+  },
+)
