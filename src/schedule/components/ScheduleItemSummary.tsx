@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { ScheduleItem } from "../types"
+import { type ScheduleItem } from "../types"
 import { HumanizedDate } from "./HumanizedDate"
 
 const Container = styled.div`
@@ -47,7 +47,7 @@ const Time = styled.span`
   color: ${(props) => props.theme.fontColor.muted};
 `
 
-export type ScheduleItemSummaryProps = {
+export interface ScheduleItemSummaryProps {
   item: ScheduleItem
 }
 

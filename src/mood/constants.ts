@@ -1,4 +1,4 @@
-import { PhaseOfDay } from "./types"
+import { PhaseOfDay } from "./types.ts"
 
 export const TIMES_OF_DAY = [
   "sunrise",

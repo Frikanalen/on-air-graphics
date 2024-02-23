@@ -1,13 +1,13 @@
 import { useContext } from "react"
 import styled from "@emotion/styled"
-import { useParams } from "../../core/hooks/useParams"
 import { css, keyframes } from "@emotion/react"
+import { size, transparentize } from "polished"
+import { type TransitionStatus } from "react-transition-group"
+import { useParams } from "../../core/hooks/useParams"
 import { CardStyle } from "../../core/components/Card"
 import { SVGIcon } from "../../core/components/SVGIcon"
-import { size, transparentize } from "polished"
-import { PosterType } from "../types"
+import { type PosterType } from "../types"
 import { POSTER_TYPES } from "../constants"
-import { TransitionStatus } from "react-transition-group"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { AppContext } from "../../core/components/AppContext.tsx"
 
@@ -21,12 +21,12 @@ const Container = styled.div`
 `
 
 const ContentTransition = (reversed: boolean) => keyframes`
-  ${reversed ? 0 : 100}% {
+  ${reversed ? "0%" : "100%"} {
     transform: translateY(calc(100% + 32px));
     opacity: 0;
   }
 
-  ${reversed ? 100 : 0}% {
+  ${reversed ? "100%" : "0%"} {
     transform: translateY(0%);
     opacity: 1;
   }
@@ -84,7 +84,7 @@ const Message = styled.span`
   font-weight: 500;
 `
 
-export type PosterViewProps = {
+export interface PosterViewProps {
   transition: TransitionStatus
 }
 

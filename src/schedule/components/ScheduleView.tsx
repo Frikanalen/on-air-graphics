@@ -10,22 +10,22 @@ import { ScheduleItemSummary } from "./ScheduleItemSummary"
 import { useSchedule } from "../../core/useSchedule"
 
 const SlideTransition = (px: number, reversed: boolean) => keyframes`
-  ${reversed ? 0 : 100}% {
+  ${reversed ? "0%" : "100%"} {
     transform: translateX(${px}px);
   }
 
-  ${reversed ? 100 : 0}% {
+  ${reversed ? "100%" : "0%"} {
     transform: translateY(0px);
   }
 `
 
 const SlideFadeTransition = (px: number, reversed: boolean) => keyframes`
-  ${reversed ? 0 : 100}% {
+  ${reversed ? "0%" : "100%"} {
     opacity: 0;
     transform: translateX(${px}px);
   }
 
-  ${reversed ? 100 : 0}% {
+  ${reversed ? "100%" : "0%"} {
     transform: translateY(0px);
     opacity: 1;
   }
@@ -48,12 +48,12 @@ const slideFade = (px: number) => (props: { status: TransitionStatus }) => {
 }
 
 const ContainerTransition = (reversed: boolean) => keyframes`
-  ${reversed ? 0 : 100}% {
+  ${reversed ? "0%" : "100%"} {
     opacity: 0;
     transform: rotate(10deg) translateY(-90px) translateX(200px);
   }
 
-  ${reversed ? 100 : 0}% {}
+  ${reversed ? "100%" : "0%"} {}
 `
 
 const Container = styled.div<{ status: TransitionStatus }>`
@@ -93,12 +93,12 @@ const Body = styled.div`
 `
 
 const FooterTransition = (reversed: boolean) => keyframes`
-${reversed ? 0 : 100}% {
+${reversed ? "0%" : "100%"} {
   opacity: 0;
   transform: translateY(200px);
 }
 
-${reversed ? 100 : 0}% {}
+${reversed ? "100%" : "0%"} {}
 `
 
 const Footer = styled.div<{ status: TransitionStatus }>`
@@ -164,11 +164,11 @@ const ClockContainer = styled.div`
 `
 
 const HeadingTransition = (reversed: boolean) => keyframes`
-  ${reversed ? 0 : 100}% {
+  ${reversed ? "0%" : "100%"} {
     opacity: 0;
   }
 
-  ${reversed ? 100 : 0}% {}
+  ${reversed ? "100%" : "0%"} {}
 `
 
 const Heading = styled.h1<{ status: TransitionStatus }>`

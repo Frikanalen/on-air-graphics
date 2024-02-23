@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { fetchSceduleItems } from "../schedule/helpers/fetchScheduleItems"
-import { ScheduleItem } from "../schedule/types"
+import { type ScheduleItem } from "../schedule/types"
 
 export const useSchedule = () => {
   const [schedule, setSchedule] = useState<ScheduleItem[]>([])
