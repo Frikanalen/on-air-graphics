@@ -1,9 +1,10 @@
 import styled from "@emotion/styled"
 import { css, keyframes } from "@emotion/react"
-import { CardStyle } from "./Card"
+import { cardStyle } from "./Card"
 import { Logo } from "./Logo"
 import { TransitionStatus } from "react-transition-group"
 import { SequenceEntry } from "../../sequencing/components/ViewSequence"
+import stylex from "@stylexjs/stylex"
 
 const ENTER_MS = 1200
 const EXIT_MS = 700
@@ -54,8 +55,6 @@ const Container = styled.div<{ status: TransitionStatus }>`
           animation: ${CardFall} ${EXIT_MS}ms ease-in-out forwards;
         `
     }}
-
-    ${CardStyle};
   }
 `
 
@@ -115,7 +114,7 @@ export function IntroView(props: IntroView) {
   const { status } = props
 
   return (
-    <Container status={status}>
+    <Container {...stylex.props(cardStyle.baseCard)} status={status}>
       <LogoContainer status={status}>
         <Logo />
       </LogoContainer>

@@ -4,12 +4,13 @@ import { css, keyframes } from "@emotion/react"
 import { size, transparentize } from "polished"
 import { type TransitionStatus } from "react-transition-group"
 import { useParams } from "../../core/hooks/useParams"
-import { CardStyle } from "../../core/components/Card"
 import { SVGIcon } from "../../core/components/SVGIcon"
 import { type PosterType } from "../types"
 import { POSTER_TYPES } from "../constants"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { AppContext } from "../../core/components/AppContext.tsx"
+import stylex from "@stylexjs/stylex"
+import { cardStyle } from "../../core/components/Card.tsx"
 
 const Container = styled.div`
   padding: 64px;
@@ -65,7 +66,6 @@ const Content = styled.div<{
       position: relative;
       z-index: 2;
 
-      ${CardStyle(props)}
       border-radius: 8px;
     `
   }};
@@ -101,7 +101,12 @@ export function PosterView(props: PosterViewProps) {
 
   return (
     <Container>
-      <Content transition={transition} type={safeType} keyed={app.keyed}>
+      <Content
+        {...stylex.props(cardStyle.baseCard)}
+        transition={transition}
+        type={safeType}
+        keyed={app.keyed}
+      >
         <Icon name={safeType} />
         <Message>{message}</Message>
       </Content>

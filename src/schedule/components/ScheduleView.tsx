@@ -2,22 +2,24 @@ import { css, keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import { darken } from "polished"
 import { TransitionStatus } from "react-transition-group"
-import { Card, CardStyle } from "../../core/components/Card"
+import { Card, cardStyle } from "../../core/components/Card"
 import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
 
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
 import { useSchedule } from "../../core/useSchedule"
+import * as stylex from "@stylexjs/stylex"
 
-const SlideTransition = (px: number, reversed: boolean) => keyframes`
-  ${reversed ? "0%" : "100%"} {
-    transform: translateX(${px}px);
-  }
+// Define the keyframe animations
+const slideIn = stylex.keyframes({
+  from: { transform: "translateX(-700px)" },
+  to: { transform: "translateY(0)" },
+})
 
-  ${reversed ? "100%" : "0%"} {
-    transform: translateY(0px);
-  }
-`
+const slideOut = stylex.keyframes({
+  from: { transform: "translateY(0)" },
+  to: { transform: "translateX(-700px)" },
+})
 
 const SlideFadeTransition = (px: number, reversed: boolean) => keyframes`
   ${reversed ? "0%" : "100%"} {
@@ -30,14 +32,6 @@ const SlideFadeTransition = (px: number, reversed: boolean) => keyframes`
     opacity: 1;
   }
 `
-
-const slide = (px: number) => (props: { status: TransitionStatus }) => {
-  const { status } = props
-
-  return css`
-    animation-name: ${SlideTransition(px, status !== "exiting")};
-  `
-}
 
 const slideFade = (px: number) => (props: { status: TransitionStatus }) => {
   const { status } = props
@@ -68,15 +62,13 @@ const Container = styled.div<{ status: TransitionStatus }>`
     width: 65%;
     height: 140%;
 
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     position: absolute;
 
     transform: rotate(10deg) translateY(-90px) translateX(70px);
     animation: ${(props) => ContainerTransition(props.status !== "exiting")}
       500ms ease both;
-
-    ${CardStyle}
 
     @supports not (backdrop-filter: blur(30px)) {
       background: ${(props) => darken(0.02, props.theme.color.cardFallback)};
@@ -121,21 +113,28 @@ const Content = styled.div`
   flex: 1;
 `
 
-const NextCard = styled(Card)`
-  margin-top: 24px;
-  margin-bottom: 42px;
-
-  animation: 1000ms ease both;
-  ${slide(-700)}
-`
-
-const LaterListCard = styled(Card)`
-  margin-top: 24px;
-
-  animation: 1000ms ease both;
-  animation-delay: 100ms;
-  ${slide(-700)}
-`
+const styles = stylex.create({
+  entering: {
+    animationName: slideIn,
+    animationDuration: "1000ms",
+    animationFillMode: "both",
+    animationTimingFunction: "ease",
+  },
+  exiting: {
+    animationName: slideOut,
+    animationDuration: "1000ms",
+    animationFillMode: "both",
+    animationTimingFunction: "ease",
+  },
+  nextCardBase: {
+    marginTop: "24px",
+    marginBottom: "42px",
+  },
+  laterListCardBase: {
+    marginTop: "24px",
+    animationDelay: "100ms",
+  },
+})
 
 const Aside = styled.div`
   flex: 1;
@@ -195,15 +194,27 @@ export function ScheduleView(props: ScheduleViewProps) {
       <Body>
         <Content>
           <Heading status={status}>Neste program</Heading>
-          <NextCard status={status}>
+          <Card
+            {...stylex.props(
+              cardStyle.baseCard,
+              styles.nextCardBase,
+              status !== "exiting" ? styles.entering : styles.exiting,
+            )}
+          >
             {next ? <ScheduleItemSummary item={next} /> : null}
-          </NextCard>
+          </Card>
           <Heading status={status}>Senere</Heading>
-          <LaterListCard status={status}>
+          <div
+            {...stylex.props(
+              cardStyle.baseCard,
+              styles.laterListCardBase,
+              status !== "exiting" ? styles.entering : styles.exiting,
+            )}
+          >
             {scheduleItems.slice(0, 3).map((item) => (
               <ScheduleItemSummary key={item.id} item={item} />
             ))}
-          </LaterListCard>
+          </div>
         </Content>
         <Aside>
           <SizedLogo status={status} />
