@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build && cp -r public/video dist/",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky && husky install",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -29,18 +31,32 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-transition-group": "^4.4.6",
     "@types/suncalc": "^1.9.0",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.3.0",
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.17",
-    "eslint": "^8.46.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "husky": "^9.0.11",
+    "lint-staged": ">=10",
     "postcss": "^8.4.35",
-    "prettier": "^3.0.1",
+    "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.1.6",
+    "typescript": "*",
     "vite": "^4.4.9",
     "vite-plugin-stylex": "^0.5.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "eslint --cache --fix",
+    "*.--write": "prettier --write"
   }
 }
