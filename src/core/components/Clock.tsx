@@ -8,7 +8,7 @@ const drawRoundRect = (
   y: number,
   width: number,
   height: number,
-  radius: number
+  radius: number,
 ) => {
   context.beginPath()
   context.arc(x + radius, y + radius, radius, Math.PI, Math.PI + Math.PI / 2)
@@ -28,8 +28,7 @@ export type ClockProps = {
   size: number
 }
 
-export function Clock(props: ClockProps) {
-  const { size } = props
+export function Clock({ size }: ClockProps) {
   const theme = useTheme()
 
   const [handleRef, canvas] = useCanvasAnimation((context) => {
@@ -56,7 +55,7 @@ export function Clock(props: ClockProps) {
       time: number,
       thickness: number,
       length: number,
-      color = theme.fontColor.normal
+      color = theme.fontColor.normal,
     ) => {
       context.save()
       const width = thickness

@@ -1,10 +1,9 @@
-import styled from "@emotion/styled"
-import { css, keyframes } from "@emotion/react"
-import { cardStyle } from "./Card"
 import { Logo } from "./Logo"
 import { TransitionStatus } from "react-transition-group"
 import { SequenceEntry } from "../../sequencing/components/ViewSequence"
 import stylex from "@stylexjs/stylex"
+import { theme } from "../../theme.stylex.ts"
+import { cardStyle } from "./Card.tsx"
 
 const ENTER_MS = 1200
 const EXIT_MS = 700
@@ -16,108 +15,107 @@ export const INTRO_VIEW_SEQUENCE_ENTRY: SequenceEntry = {
   overlay: false,
 }
 
-const CardFall = keyframes`
-  0% {}
+const CardFall = stylex.keyframes({
+  from: {},
+  to: { transform: "rotate(10deg) translateY(60%)" },
+})
 
-  100% {
-    transform: rotate(10deg) translateY(60%);
-  }
-`
+const LogoUnblur = stylex.keyframes({
+  from: {
+    filter: "blur(120px)",
+    opacity: 0,
+  },
+  to: { opacity: 1 },
+})
 
-const Container = styled.div<{ status: TransitionStatus }>`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
+const LogoFall = stylex.keyframes({
+  from: {},
+  "50%": { opacity: 0 },
+  to: {
+    transform: "translateY(800px)",
+    opacity: 0,
+  },
+})
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const backdropStyle = stylex.create({
+  base: {
+    position: "absolute",
+    width: "200%",
+    height: "200%",
+    top: 0,
+    right: 0,
+    transform: "rotate(10deg) translateY(-220px)",
+    content: "",
+  },
+  exiting: {
+    animationName: CardFall,
+    animationDuration: `${EXIT_MS}ms`,
+    animationFillMode: "forwards",
+  },
+})
 
-  color: ${(props) => props.theme.fontColor.normal};
-  &:before {
-    content: "";
-    position: absolute;
+const containerStyle = stylex.create({
+  base: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 100,
+    color: theme.fontColorNormal,
+  },
+})
 
-    height: 200%;
-    width: 200%;
-
-    top: 0;
-    right: 0;
-
-    transform: rotate(10deg) translateY(-220px);
-
-    ${(props) => {
-      if (props.status === "exiting")
-        return css`
-          animation: ${CardFall} ${EXIT_MS}ms ease-in-out forwards;
-        `
-    }}
-  }
-`
-
-const LogoUnblur = keyframes`
-  0% {
-    filter: blur(120px);
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-`
-
-const LogoFall = keyframes`
-  0% {}
-
-  50% {
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateY(800px);
-    opacity: 0;
-  }
-`
-
-const LogoContainer = styled.div<{ status: TransitionStatus }>`
-  width: 600px;
-
-  position: relative;
-  z-index: 1;
-
-  animation: ${(props) => {
-    if (props.status === "entering") {
-      return css`
-        ${LogoUnblur} ${ENTER_MS}ms ease-in-out forwards;
-        animation-delay: 200ms;
-
-        opacity: 0;
-      `
-    }
-
-    if (props.status === "exiting") {
-      return css`
-        ${LogoFall} ${EXIT_MS}ms ease-in-out forwards
-      `
-    }
-  }};
-`
+const logoContainerStyles = stylex.create({
+  base: {
+    width: 600, // Assuming you want to set width to 600px
+    position: "relative",
+    zIndex: 1,
+    animationTimingFunction: "ease-in-out",
+  },
+  entering: {
+    animationName: LogoUnblur,
+    animationDuration: `${ENTER_MS}ms`, // ENTER_MS should be a predefined constant
+    animationDelay: "200ms",
+    opacity: 0,
+    animationFillMode: "forwards",
+  },
+  exiting: {
+    animationName: LogoFall,
+    animationFillMode: "forwards",
+    animationDuration: `${EXIT_MS}ms`, // EXIT_MS should be a predefined constant
+  },
+})
 
 export type IntroView = {
   status: TransitionStatus
 }
 
-export function IntroView(props: IntroView) {
-  const { status } = props
-
+export const IntroView = ({ status }: IntroView) => {
+  console.log(status)
   return (
-    <Container {...stylex.props(cardStyle.baseCard)} status={status}>
-      <LogoContainer status={status}>
-        <Logo />
-      </LogoContainer>
-    </Container>
+    <div>
+      <div
+        {...stylex.props(
+          cardStyle.baseCard,
+          backdropStyle.base,
+          status == "exiting" && backdropStyle.exiting,
+        )}
+      />
+      <div {...stylex.props(containerStyle.base)}>
+        <div
+          {...stylex.props(
+            logoContainerStyles.base,
+            status === "entering" && logoContainerStyles.entering,
+            status === "exiting" && logoContainerStyles.exiting,
+          )}
+        >
+          <Logo />
+        </div>
+      </div>
+    </div>
   )
 }
