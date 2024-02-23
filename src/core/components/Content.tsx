@@ -2,7 +2,6 @@ import { useContext } from "react"
 import styled from "@emotion/styled"
 import { TransitionGroup } from "react-transition-group"
 import { FADE_TRANSITION_MS, RESOLUTION, SEQUENCE_NAMES } from "../constants"
-import { Background } from "./Background"
 import { useParams } from "../hooks/useParams"
 import { PosterView } from "../../poster/components/PosterView"
 import {
@@ -54,7 +53,6 @@ export function Content() {
   return (
     <Container keyed={keyed}>
       <Inner visible={state === "active"}>
-        {!keyed && <Background />}
         <View>
           {sequenceName === "poster" ? (
             <ViewSequence sequence={[posterEntry]} />
