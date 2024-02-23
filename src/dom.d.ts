@@ -4,9 +4,9 @@ interface Window {
   /** CasparCG stop command */
   stop: () => void
   /** CasparCG update command */
-  update: (data: any) => void
+  update: (data: unknown) => void
   /** CasparCG next command */
   next: () => void
-  handleError: (e: any) => void
-  handleWarning: (e: any) => void
+  handleError: typeof console.error
+  handleWarning: typeof console.warn
 }

@@ -6,7 +6,7 @@ import {
 } from "date-fns"
 import { nb } from "date-fns/locale"
 
-export const humanizeDate = (date: Date) => {
+export const humanizeDate = (date: Date): string => {
   const now = new Date()
   const secondDifference = differenceInSeconds(date, now)
 

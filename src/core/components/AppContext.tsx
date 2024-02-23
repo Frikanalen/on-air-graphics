@@ -3,7 +3,7 @@ import { MINIMUM_SCREEN_TIME } from "../constants.ts"
 
 export type AppState = "idle" | "active" | "exit"
 
-export type AppContextT = {
+export interface AppContextT {
   /** Animation state */
   state: AppState
   /** The total duration of the graphics being shown */

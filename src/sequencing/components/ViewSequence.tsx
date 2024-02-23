@@ -1,14 +1,13 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import styled from "@emotion/styled"
-import { useState } from "react"
 import {
   Transition,
   TransitionGroup,
-  TransitionStatus,
+  type TransitionStatus,
 } from "react-transition-group"
+import { cover } from "polished"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { delay } from "../../core/helpers/delay"
-import { cover } from "polished"
 import { AppContext } from "../../core/components/AppContext.tsx"
 
 const Container = styled.div<{ keyed: boolean; overlay: boolean }>`
@@ -35,14 +34,14 @@ const View = styled.div`
 
 const DELAY = 200
 
-export type SequenceEntry = {
+export interface SequenceEntry {
   name: string
   duration: number
   render: (status: TransitionStatus) => JSX.Element
   overlay?: boolean
 }
 
-export type ViewSequenceProps = {
+export interface ViewSequenceProps {
   sequence: SequenceEntry[]
 }
 
@@ -85,7 +84,7 @@ export function ViewSequence(props: ViewSequenceProps) {
   }
 
   const entry = sequence[index]
-  const overlay = entry && entry.overlay !== false && app.state === "active"
+  const overlay = entry?.overlay !== false && app.state === "active"
 
   return (
     <Container overlay={overlay} keyed={app.keyed}>

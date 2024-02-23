@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { css, Global, Theme, ThemeProvider } from "@emotion/react"
+import { css, Global, type Theme, ThemeProvider } from "@emotion/react"
+import styled from "@emotion/styled"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
@@ -8,14 +9,13 @@ import { getPhaseOfDay } from "../../mood/helpers/getPhaseOfDay"
 import { OSLO_COORDINATES } from "../../mood/constants"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
-import styled from "@emotion/styled"
-import { AppContext, AppContextT, AppState } from "./AppContext.tsx"
+import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
 
 const globalStyle = (theme: Theme) => css`
   color: ${theme.fontColor.normal};
 `
 
-window.update = (data: any) => {
+window.update = (data: unknown) => {
   console.error(`Update was called with ${JSON.stringify(data)}`)
 }
 
@@ -54,8 +54,12 @@ export function App() {
 
   const [state, setState] = useState<AppState>("idle")
 
-  window.play = () => setState("active")
-  window.stop = () => setState("exit")
+  window.play = () => {
+    setState("active")
+  }
+  window.stop = () => {
+    setState("exit")
+  }
 
   const params = useParams({
     duration: MINIMUM_SCREEN_TIME,

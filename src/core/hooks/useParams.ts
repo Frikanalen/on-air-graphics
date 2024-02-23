@@ -1,18 +1,15 @@
-const parse = <T>(defaultValue: T, value: string | null): any => {
+const parse = <T>(
+  defaultValue: T,
+  value: string | null,
+): number | boolean | string | T | undefined => {
   if (value === null) return defaultValue
 
-  if (typeof defaultValue === "string") {
-    return value
-  }
+  if (typeof defaultValue === "string") return value
 
-  if (typeof defaultValue === "number") {
-    const parsed = Number(value)
-    return isNaN(parsed) ? defaultValue : parsed
-  }
+  if (typeof defaultValue === "number")
+    return isNaN(Number(value)) ? defaultValue : Number(value)
 
-  if (typeof defaultValue === "boolean") {
-    return value !== null
-  }
+  if (typeof defaultValue === "boolean") return value
 }
 
 export const useParams = <O extends object>(defaultValues: O): O => {

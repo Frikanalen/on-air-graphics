@@ -1,12 +1,12 @@
 import { useContext } from "react"
 import styled from "@emotion/styled"
+import { TransitionGroup } from "react-transition-group"
 import { FADE_TRANSITION_MS, RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { Background } from "./Background"
 import { useParams } from "../hooks/useParams"
 import { PosterView } from "../../poster/components/PosterView"
-import { TransitionGroup } from "react-transition-group"
 import {
-  SequenceEntry,
+  type SequenceEntry,
   ViewSequence,
 } from "../../sequencing/components/ViewSequence"
 import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionSequence"
@@ -37,7 +37,7 @@ const View = styled(TransitionGroup)`
   height: 100%;
 `
 
-export const Content = () => {
+export function Content() {
   const { keyed, state } = useContext(AppContext)
 
   const { sequence } = useParams({

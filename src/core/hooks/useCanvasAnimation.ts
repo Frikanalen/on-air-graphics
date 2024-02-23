@@ -2,19 +2,20 @@ import { useEffect, useRef, useState } from "react"
 
 export type CanvasAnimationHandler = (
   context: CanvasRenderingContext2D,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
 ) => void
 
 export const useCanvasAnimation = (
   frame: CanvasAnimationHandler,
-  enabled = true
+  enabled = true,
 ) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | undefined>()
   const frameRef = useRef<number>()
 
   const handleRef = (element: HTMLCanvasElement | null) => {
     if (element) {
-      return setCanvas(element)
+      setCanvas(element)
+      return
     }
 
     setCanvas(undefined)
@@ -23,9 +24,9 @@ export const useCanvasAnimation = (
   useEffect(() => {
     const frameHandler: CanvasAnimationHandler = (context, canvas) => {
       frame(context, canvas)
-      frameRef.current = requestAnimationFrame(() =>
+      frameRef.current = requestAnimationFrame(() => {
         frameHandler(context, canvas)
-      )
+      })
     }
 
     if (canvas && enabled) {
@@ -36,7 +37,7 @@ export const useCanvasAnimation = (
     }
 
     return () => {
-      cancelAnimationFrame(frameRef.current as number)
+      cancelAnimationFrame(frameRef.current!)
     }
   }, [enabled, frame, canvas])
 
