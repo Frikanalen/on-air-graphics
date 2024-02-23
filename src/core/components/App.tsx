@@ -1,5 +1,5 @@
-import { createContext, useState } from "react"
-import { Global, css, ThemeProvider, Theme } from "@emotion/react"
+import { useState } from "react"
+import { css, Global, Theme, ThemeProvider } from "@emotion/react"
 import { useParams } from "../hooks/useParams"
 import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
 import { Content } from "./Content"
@@ -9,6 +9,7 @@ import { OSLO_COORDINATES } from "../../mood/constants"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import styled from "@emotion/styled"
+import { AppContext, AppContextT, AppState } from "./AppContext.tsx"
 
 const globalStyle = (theme: Theme) => css`
   color: ${theme.fontColor.normal};
@@ -24,8 +25,6 @@ window.next = () => {
 
 window.handleError = console.error
 window.handleWarning = console.error
-
-export type AppState = "idle" | "active" | "exit"
 
 console.warn("Test warning")
 
@@ -49,15 +48,6 @@ const LoadingDiv = styled.div`
   }
 `
 
-export type AppContext = {
-  /** Animation state */
-  state: AppState
-  /** The total duration of the graphics being shown */
-  duration: number
-  /** Is the graphics superimposed on top of the stream? */
-  keyed: boolean
-}
-
 export function App() {
   const theme = getTheme(getPhaseOfDay(new Date(), ...OSLO_COORDINATES))
   const { loading } = useSchedule()
@@ -72,13 +62,13 @@ export function App() {
     keyed: false,
   })
 
-  const context: AppContext = {
+  const context: AppContextT = {
     state,
     keyed: params.keyed,
     // Ensures the duration is never less than the minimum
     duration: Math.max(
       params.duration - FADE_TRANSITION_MS,
-      MINIMUM_SCREEN_TIME
+      MINIMUM_SCREEN_TIME,
     ),
   }
 
@@ -92,15 +82,9 @@ export function App() {
   return (
     <ThemeProvider theme={theme}>
       <Global styles={globalStyle} />
-      <App.context.Provider value={context}>
+      <AppContext.Provider value={context}>
         {import.meta.env.DEV ? <DevPanel /> : <Content />}
-      </App.context.Provider>
+      </AppContext.Provider>
     </ThemeProvider>
   )
 }
-
-App.context = createContext<AppContext>({
-  duration: MINIMUM_SCREEN_TIME,
-  state: "idle",
-  keyed: false,
-})
