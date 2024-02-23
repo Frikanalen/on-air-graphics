@@ -8,8 +8,8 @@ import {
 } from "react-transition-group"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { delay } from "../../core/helpers/delay"
-import { App } from "../../core/components/App"
 import { cover } from "polished"
+import { AppContext } from "../../core/components/AppContext.tsx"
 
 const Container = styled.div<{ keyed: boolean; overlay: boolean }>`
   &:before {
@@ -47,7 +47,7 @@ export type ViewSequenceProps = {
 }
 
 export function ViewSequence(props: ViewSequenceProps) {
-  const app = useContext(App.context)
+  const app = useContext(AppContext)
   const { sequence } = props
 
   const [index, setIndex] = useState(0)

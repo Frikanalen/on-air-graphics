@@ -1,6 +1,5 @@
 import { useContext } from "react"
 import styled from "@emotion/styled"
-import { App } from "../../core/components/App"
 import { useParams } from "../../core/hooks/useParams"
 import { css, keyframes } from "@emotion/react"
 import { CardStyle } from "../../core/components/Card"
@@ -10,6 +9,7 @@ import { PosterType } from "../types"
 import { POSTER_TYPES } from "../constants"
 import { TransitionStatus } from "react-transition-group"
 import { FADE_TRANSITION_MS } from "../../core/constants"
+import { AppContext } from "../../core/components/AppContext.tsx"
 
 const Container = styled.div`
   padding: 64px;
@@ -90,7 +90,7 @@ export type PosterViewProps = {
 
 export function PosterView(props: PosterViewProps) {
   const { transition } = props
-  const app = useContext(App.context)
+  const app = useContext(AppContext)
 
   const { message, type } = useParams({
     message: "Tekstplakat melding",
