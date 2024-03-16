@@ -1,5 +1,7 @@
 import * as stylex from "@stylexjs/stylex"
 
+export const RESOLUTION = [1280, 720] as const
+
 const DARK = "@media (prefers-color-scheme: dark)"
 const DARK_BLUR =
   "@media (prefers-color-scheme: dark) and (@supports (backdrop-filter: blur(30px)))"
@@ -33,4 +35,11 @@ export const theme = stylex.defineVars({
     default: "3px 3px 11px 1px rgb(0 0 0 / 10%)",
     [DARK]: "3px 3px 15px 1px rgb(0 0 0 / 15%)",
   },
+  transition: {
+    default: `opacity 500ms ease-in-out`,
+  },
+})
+export const introVars = stylex.defineVars({
+  animationInDuration: "1200ms",
+  animationOutDuration: "700ms",
 })

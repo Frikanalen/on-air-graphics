@@ -79,6 +79,9 @@ export const scheduleStyles = stylex.create({
     marginTop: "24px",
     animationDelay: "100ms",
   },
+  hidden: {
+    opacity: 0,
+  },
 })
 export const titleStyle = stylex.create({
   base: {

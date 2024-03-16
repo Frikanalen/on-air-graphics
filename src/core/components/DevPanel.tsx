@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
-import { RESOLUTION } from "../constants"
-import { Content } from "./Content"
+import { Sequencer } from "./Sequencer.tsx"
 import { useState } from "react"
+import { RESOLUTION } from "../../theme.stylex.ts"
 const DevContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -60,7 +60,7 @@ export const DevPanel = () => {
     <DevContainerDiv>
       <div>
         <h1>Frikanalen sendegrafikk</h1>
-        {show && <Content />}
+        {show && <Sequencer />}
         <DevPanelButtons>
           <button onClick={reset}>RESET</button>
           <h2>Events</h2>

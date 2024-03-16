@@ -3,14 +3,14 @@ import styled from "@emotion/styled"
 import { css, keyframes } from "@emotion/react"
 import { size, transparentize } from "polished"
 import { type TransitionStatus } from "react-transition-group"
-import { useParams } from "../../core/hooks/useParams"
-import { SVGIcon } from "../../core/components/SVGIcon"
-import { type PosterType } from "../types"
-import { POSTER_TYPES } from "../constants"
-import { FADE_TRANSITION_MS } from "../../core/constants"
-import { AppContext } from "../../core/components/AppContext.tsx"
+import { useParams } from "../core/hooks/useParams.ts"
+import { SVGIcon } from "../core/components/SVGIcon.tsx"
+import { type PosterType } from "../poster/types.ts"
+import { POSTER_TYPES } from "../poster/constants.ts"
+import { FADE_TRANSITION_MS } from "../core/constants.ts"
+import { AppContext } from "../core/components/AppContext.tsx"
 import stylex from "@stylexjs/stylex"
-import { cardStyle } from "../../core/components/Card.tsx"
+import { cardStyle } from "../core/components/Card.tsx"
 
 const ContentTransition = (reversed: boolean) => keyframes`
   ${reversed ? "0%" : "100%"} {
@@ -75,12 +75,11 @@ const Message = styled.span`
   font-weight: 500;
 `
 
-export interface PosterViewProps {
+export const PosterView = ({
+  transition,
+}: {
   transition: TransitionStatus
-}
-
-export function PosterView(props: PosterViewProps) {
-  const { transition } = props
+}) => {
   const app = useContext(AppContext)
 
   const { message, type } = useParams({

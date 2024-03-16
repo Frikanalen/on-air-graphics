@@ -26,8 +26,8 @@ const Container = styled.div<{ keyed: boolean; overlay: boolean }>`
 
 const View = styled.div`
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 `
@@ -36,18 +36,13 @@ const DELAY = 200
 
 export interface SequenceEntry {
   name: string
-  duration: number
+  durationMs: number
   render: (status: TransitionStatus) => JSX.Element
   overlay?: boolean
 }
 
-export interface ViewSequenceProps {
-  sequence: SequenceEntry[]
-}
-
-export function ViewSequence(props: ViewSequenceProps) {
+export const SequencerStep = ({ sequence }: { sequence: SequenceEntry[] }) => {
   const app = useContext(AppContext)
-  const { sequence } = props
 
   const [index, setIndex] = useState(0)
   const [showView, setShowView] = useState(true)
@@ -56,9 +51,9 @@ export function ViewSequence(props: ViewSequenceProps) {
     const entry = sequence[index]
 
     const advance = async () => {
-      if (!Number.isFinite(entry.duration)) return
+      if (!Number.isFinite(entry.durationMs)) return
 
-      await delay(entry.duration - DELAY)
+      await delay(entry.durationMs - DELAY)
       setShowView(false)
       await delay(DELAY)
 
