@@ -1,6 +1,6 @@
 import stylex from "@stylexjs/stylex"
 
-const DevContainerStyle = stylex.create({
+const DevPageStyle = stylex.create({
   container: {
     display: "flex",
     flexDirection: "column",
@@ -10,6 +10,6 @@ const DevContainerStyle = stylex.create({
     background: "#333",
   },
 })
-export const DevContainer = ({ children }: { children: React.ReactNode }) => (
-  <div {...stylex.props(DevContainerStyle.container)}>{children}</div>
+export const DevModePage = ({ children }: { children: React.ReactNode }) => (
+  <div {...stylex.props(DevPageStyle.container)}>{children}</div>
 )

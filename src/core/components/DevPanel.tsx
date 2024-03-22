@@ -1,33 +1,36 @@
-import { Sequencer } from "./Sequencer.tsx"
-import { useState } from "react"
-import { Button } from "./Button.tsx"
-import { HStack } from "./HStack.tsx"
 import { Heading } from "./Heading.tsx"
 import { VStack } from "./VStack.tsx"
-import { DevContainer } from "./DevContainer.tsx"
+import { DevModePage } from "./DevModePage.tsx"
+import { SequencerDevPanel } from "./SequencerDevPanel.tsx"
+import { HStack } from "./HStack.tsx"
+import { useState } from "react"
+import { Button } from "./Button.tsx"
+import { FullsizeContainer } from "./FullsizeContainer.tsx"
+
+const ViewDevPanel = () => {
+  return (
+    <>
+      <FullsizeContainer>Hiello!</FullsizeContainer>
+      <HStack>
+        <Button onClick={() => {}}>NEXT</Button>
+      </HStack>{" "}
+    </>
+  )
+}
 
 export const DevPanel = () => {
-  const [show, setShow] = useState(true)
-  const reset = () => {
-    setShow(false)
-    setTimeout(() => {
-      setShow(true)
-      window.play()
-    }, 100)
-  }
-
+  const [mode, setMode] = useState<"sequencer" | "view">("sequencer")
   return (
-    <DevContainer>
+    <DevModePage>
       <VStack>
         <Heading level={1}>Frikanalen sendegrafikk</Heading>
-        {show && <Sequencer />}
         <HStack>
-          <Button onClick={reset}>RESET</Button>
-          <Heading level={2}>Events</Heading>
-          <Button onClick={window.play}>PLAY</Button>
-          <Button onClick={window.stop}>STOP</Button>
+          <Button onClick={() => setMode("sequencer")}>Sequencer</Button>
+          <Button onClick={() => setMode("view")}>Logo</Button>
         </HStack>
+        {mode === "sequencer" ? <SequencerDevPanel /> : null}
+        {mode === "view" ? <ViewDevPanel /> : null}
       </VStack>
-    </DevContainer>
+    </DevModePage>
   )
 }
