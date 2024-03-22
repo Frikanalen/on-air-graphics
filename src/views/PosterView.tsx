@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import styled from "@emotion/styled"
 import { css, keyframes } from "@emotion/react"
-import { size, transparentize } from "polished"
 import { type TransitionStatus } from "react-transition-group"
 import { useParams } from "../core/hooks/useParams.ts"
 import { SVGIcon } from "../core/components/SVGIcon.tsx"
@@ -33,12 +32,9 @@ const Content = styled.div<{
   justify-content: center;
   align-items: center;
 
-  color: ${(props) => {
-    const { theme, keyed, type } = props
-
+  color: ${({ keyed, theme, type }) => {
     if (type !== "info") return theme.stateColor[type]
     if (keyed) return theme.fontColor.overlay
-
     return theme.fontColor.normal
   }};
 
@@ -47,7 +43,7 @@ const Content = styled.div<{
 
     if (keyed) {
       return css`
-        filter: drop-shadow(1px 1px 0px ${transparentize(0.2, "black")});
+        filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.8));
       `
     }
 
@@ -66,7 +62,8 @@ const Content = styled.div<{
 `
 
 const Icon = styled(SVGIcon)`
-  ${size(42)};
+  height: 42px;
+  width: 42px;
   margin-right: 16px;
 `
 
