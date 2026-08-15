@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Frikanalen/on-air-graphics/compare/v1.1.0...v1.1.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **ci:** let release-please read its config so the chart version tracks releases ([31db689](https://github.com/Frikanalen/on-air-graphics/commit/31db689c945d006601aff5feada6dea963790974))
+
 ## [1.1.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.0.0...v1.1.0) (2026-08-15)
 
 
