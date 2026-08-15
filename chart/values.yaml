@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/frikanalen/graphics
+  tag: ""
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  hostname: beta.frikanalen.no
+  path: /graphics
+  certResolver: letsencrypt
+
+resources: {}

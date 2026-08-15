@@ -1,0 +1,6 @@
+apiVersion: v2
+name: on-air-graphics
+description: Frikanalen on-air graphics overlay deployment
+type: application
+version: 1.0.0 # x-release-please-version
+appVersion: "1.0.0" # x-release-please-version
