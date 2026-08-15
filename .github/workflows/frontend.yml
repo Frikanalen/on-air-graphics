@@ -13,7 +13,11 @@ jobs:
         id: release
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
-          release-type: node
+          # No release-type here on purpose: passing it puts the action in
+          # single-package mode, where release-please-config.json is never read
+          # and its extra-files (chart/Chart.yaml) are silently ignored.
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
       - name: Checkout code
         uses: actions/checkout@v4
