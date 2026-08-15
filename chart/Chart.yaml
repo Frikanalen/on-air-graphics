@@ -3,4 +3,3 @@ name: on-air-graphics
 description: Frikanalen on-air graphics overlay deployment
 type: application
 version: 1.1.0 # x-release-please-version
-appVersion: "1.1.0" # x-release-please-version
