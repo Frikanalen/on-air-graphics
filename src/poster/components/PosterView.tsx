@@ -9,7 +9,7 @@ import { type PosterType } from "../types"
 import { POSTER_TYPES } from "../constants"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { AppContext } from "../../core/components/AppContext.tsx"
-import stylex from "@stylexjs/stylex"
+import * as stylex from "@stylexjs/stylex"
 import { cardStyle } from "../../core/components/Card.tsx"
 
 const ContentTransition = (reversed: boolean) => keyframes`
