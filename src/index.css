@@ -88,7 +88,8 @@
   /* Intro view */
   --animate-card-appear: card-appear var(--fk-fade-transition) ease both;
   --animate-card-fall: card-fall 700ms ease forwards;
-  --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms forwards;
+  /* `both` for the same reason as the schedule view's: it carries a delay. */
+  --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms both;
   --animate-logo-fall: logo-fall 700ms ease-in-out forwards;
 
   /*
