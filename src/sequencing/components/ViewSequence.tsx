@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { ReactNode, useContext, useEffect, useRef, useState } from "react"
 import styled from "@emotion/styled"
 import {
   Transition,
@@ -37,7 +37,7 @@ const DELAY = 200
 export interface SequenceEntry {
   name: string
   duration: number
-  render: (status: TransitionStatus) => JSX.Element
+  render: (status: TransitionStatus) => ReactNode
   overlay?: boolean
 }
 
@@ -46,6 +46,7 @@ export interface ViewSequenceProps {
 }
 
 export function ViewSequence(props: ViewSequenceProps) {
+  const nodeRef = useRef(null)
   const app = useContext(AppContext)
   const { sequence } = props
 
@@ -77,7 +78,7 @@ export function ViewSequence(props: ViewSequenceProps) {
     if (!showView || !entry || app.state !== "active") return null
 
     return (
-      <Transition key={entry.name} timeout={2000}>
+      <Transition nodeRef={nodeRef} key={entry.name} timeout={2000}>
         {(status) => <View>{entry.render(status)}</View>}
       </Transition>
     )
