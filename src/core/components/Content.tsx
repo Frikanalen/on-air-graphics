@@ -1,5 +1,3 @@
-import { useContext } from "react"
-import classNames from "classnames"
 import { TransitionGroup } from "react-transition-group"
 import { RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { useParams } from "../hooks/useParams"
@@ -9,13 +7,10 @@ import {
   ViewSequence,
 } from "../../sequencing/components/ViewSequence"
 import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionSequence"
-import { AppContext } from "./AppContext.tsx"
 
 const [width, height] = RESOLUTION
 
 export function Content() {
-  const { state } = useContext(AppContext)
-
   const { sequence } = useParams({
     sequence: "default",
   })
@@ -32,20 +27,19 @@ export function Content() {
       className="relative overflow-hidden bg-transparent text-normal"
       style={{ width, height }}
     >
-      <div
-        className={classNames(
-          "transition-opacity duration-(--fk-fade-transition) ease-in-out",
-          state === "active" ? "opacity-100" : "opacity-0",
+      {/*
+       * Nothing here may fade the views as a group. An ancestor at opacity < 1
+       * is a backdrop root, which cuts the cards' backdrop-filter off from what
+       * it is meant to blur and flattens them for the length of the fade. Each
+       * view carries its own entrance and exit instead.
+       */}
+      <TransitionGroup className="absolute top-0 left-0 h-full w-full">
+        {sequenceName === "poster" ? (
+          <ViewSequence sequence={[posterEntry]} />
+        ) : (
+          <ViewSequence sequence={getIntermissionSequence()} />
         )}
-      >
-        <TransitionGroup className="absolute top-0 left-0 h-full w-full">
-          {sequenceName === "poster" ? (
-            <ViewSequence sequence={[posterEntry]} />
-          ) : (
-            <ViewSequence sequence={getIntermissionSequence()} />
-          )}
-        </TransitionGroup>
-      </div>
+      </TransitionGroup>
     </div>
   )
 }

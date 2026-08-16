@@ -86,6 +86,7 @@
   --text-display--line-height: 0.75;
 
   /* Intro view */
+  --animate-card-appear: card-appear var(--fk-fade-transition) ease both;
   --animate-card-fall: card-fall 700ms ease forwards;
   --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms forwards;
   --animate-logo-fall: logo-fall 700ms ease-in-out forwards;
@@ -105,6 +106,20 @@
   /* Poster view */
   --animate-poster-in: poster-in var(--fk-fade-transition) ease both;
   --animate-poster-out: poster-out var(--fk-fade-transition) ease both;
+
+  /*
+   * The panel's own fade-in. It has to sit on the panel rather than on an
+   * ancestor: an ancestor at opacity < 1 is a backdrop root, and would cut the
+   * panel's own backdrop-filter off from what it is meant to blur.
+   */
+  @keyframes card-appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
   @keyframes card-fall {
     to {
