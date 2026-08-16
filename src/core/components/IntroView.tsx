@@ -1,7 +1,7 @@
 import { Logo } from "./Logo"
 import { TransitionStatus } from "react-transition-group"
 import { SequenceEntry } from "../../sequencing/components/ViewSequence"
-import stylex from "@stylexjs/stylex"
+import * as stylex from "@stylexjs/stylex"
 import { theme } from "../../theme.stylex.ts"
 import { cardStyle } from "./Card.tsx"
 

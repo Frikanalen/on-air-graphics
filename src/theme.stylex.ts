@@ -1,8 +1,7 @@
 import * as stylex from "@stylexjs/stylex"
 
 const DARK = "@media (prefers-color-scheme: dark)"
-const DARK_BLUR =
-  "@media (prefers-color-scheme: dark) and (@supports (backdrop-filter: blur(30px)))"
+const SUPPORTS_BLUR = "@supports (backdrop-filter: blur(30px))"
 
 const BLUR = "@supports (backdrop-filter: blur(30px))"
 
@@ -10,8 +9,10 @@ export const theme = stylex.defineVars({
   colorCard: {
     default: "rgba(255, 255, 255, 0.8)",
     [BLUR]: "rgba(255, 255, 255, 0.45)",
-    [DARK]: "rgba(26, 42, 64, 0.85)",
-    [DARK_BLUR]: "rgba(26, 42, 64, 0.7)",
+    [DARK]: {
+      default: "rgba(26, 42, 64, 0.85)",
+      [SUPPORTS_BLUR]: "rgba(26, 42, 64, 0.7)",
+    },
   },
   colorAccent: { default: "#E88840", [DARK]: "#FCBA20" },
   fontColorOverlay: "white",

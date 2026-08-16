@@ -7,7 +7,7 @@ export const cardStyle = stylex.create({
     boxShadow: theme.shadowCard,
     padding: "24px",
     borderRadius: "8px",
-    background: theme.colorCard,
+    backgroundColor: theme.colorCard,
     backdropFilter: "blur(30px)",
   },
 })
