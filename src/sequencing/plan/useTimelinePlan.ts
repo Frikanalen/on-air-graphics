@@ -2,6 +2,7 @@ import { useContext, useMemo } from "react"
 import { AppContext } from "../../core/components/AppContext"
 import { ScheduleContext } from "../../core/components/ScheduleContext"
 import { useSequenceName } from "../../core/hooks/useSequenceName"
+import { useNews } from "../../news/useNews"
 import { plan, tiersFor } from "./tiers"
 import { type Plan } from "./types"
 
@@ -15,10 +16,11 @@ import { type Plan } from "./types"
 export const useTimelinePlan = (): Plan => {
   const { budget } = useContext(AppContext)
   const schedule = useContext(ScheduleContext)
+  const news = useNews()
   const sequence = useSequenceName()
 
   return useMemo(
-    () => plan(budget, { schedule }, tiersFor(sequence)),
-    [budget, schedule, sequence],
+    () => plan(budget, { schedule, news }, tiersFor(sequence)),
+    [budget, schedule, news, sequence],
   )
 }

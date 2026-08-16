@@ -1,6 +1,14 @@
 import { FADE_TRANSITION_MS, type SequenceName } from "../../core/constants"
 import { allocate, minDuration } from "./allocate"
-import { intro, poster, schedule } from "./segments"
+import {
+  intro,
+  logoSting,
+  newsPosters,
+  nextProgram,
+  orgSlate,
+  poster,
+  schedule,
+} from "./segments"
 import { type Plan, type PlanInputs, type TimelineTier } from "./types"
 
 /**
@@ -12,15 +20,42 @@ export const tierThreshold = (tier: TimelineTier, data: PlanInputs): number =>
   tier.minBudget ?? minDuration(tier.build(data))
 
 /**
- * Ordered poorest to richest. Only "full" exists so far: the poorer tiers are
- * waiting on views of their own (a logo sting, a single upcoming programme),
- * and a tier whose views do not exist yet is simply left out -- selection skips
- * whatever is not in the array.
+ * Ordered poorest to richest.
+ *
+ * Each step is a different programme rather than the same one stretched: five
+ * seconds is the channel's mark and nothing else, half a minute is worth the
+ * full schedule, and once there is a minute or so there is room to say
+ * something -- the channel's news, and who the channel is, last, immediately
+ * before the video starts.
+ *
+ * The schedule carries `grow` throughout, so whatever a tier does not spend
+ * lands there rather than on a closing beat that would only be held longer.
  */
 export const INTERMISSION_TIERS: TimelineTier[] = [
   {
-    name: "full",
+    name: "logo-only",
+    build: () => [logoSting({ grow: 1, max: Infinity })],
+  },
+  {
+    name: "logo-and-next",
+    build: () => [logoSting(), nextProgram({ grow: 1, max: Infinity })],
+  },
+  {
+    name: "schedule",
     build: () => [intro(), schedule({ grow: 1, max: Infinity })],
+  },
+  {
+    name: "schedule-and-slate",
+    build: () => [intro(), schedule({ grow: 1, max: Infinity }), orgSlate()],
+  },
+  {
+    name: "full",
+    build: (data) => [
+      intro(),
+      schedule({ grow: 1, max: Infinity }),
+      ...newsPosters(data.news),
+      orgSlate(),
+    ],
   },
 ]
 

@@ -1,4 +1,5 @@
 import { type ReactNode } from "react"
+import { type NewsBulletin } from "../../news/types"
 import { type ScheduleItem } from "../../schedule/types"
 
 /**
@@ -74,6 +75,7 @@ export interface Plan {
 /** Everything a tier may consult when deciding what to put on screen. */
 export interface PlanInputs {
   schedule: ScheduleItem[]
+  news: NewsBulletin[]
 }
 
 /**
