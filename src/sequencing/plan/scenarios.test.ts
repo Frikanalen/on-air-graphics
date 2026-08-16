@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { planInputs, tier } from "./fixtures"
 import { scenarios } from "./scenarios"
-import { INTERMISSION_TIERS, plan, tierThreshold } from "./tiers"
+import { INTERMISSION_TIERS, POSTER_TIERS, plan } from "./tiers"
 
 const data = planInputs()
 const ladder = [
@@ -11,22 +11,15 @@ const ladder = [
 ]
 
 describe("scenarios", () => {
-  it("offers a budget that selects each tier it names", () => {
+  it("names the tier each budget actually selects", () => {
     for (const scenario of scenarios(ladder, data))
       expect(plan(scenario.budget, data, ladder).tierName).toBe(
         scenario.tierName,
       )
   })
 
-  it("brackets every threshold from both sides", () => {
-    const budgets = scenarios(ladder, data).map((s) => s.budget)
-
-    for (const t of ladder) {
-      const threshold = tierThreshold(t, data)
-
-      expect(budgets.some((b) => b <= threshold + 500)).toBe(true)
-      expect(budgets.some((b) => b > threshold)).toBe(true)
-    }
+  it("offers a short list rather than every boundary", () => {
+    expect(scenarios(ladder, data)).toHaveLength(5)
   })
 
   it("returns unique budgets in ascending order", () => {
@@ -36,37 +29,23 @@ describe("scenarios", () => {
     expect(new Set(budgets).size).toBe(budgets.length)
   })
 
-  it("labels each scenario with its tier and length", () => {
+  it("labels each scenario with its length and tier", () => {
     const [first] = scenarios(ladder, data)
 
-    expect(first.label).toContain("poor")
-    expect(first.label).toContain("s")
+    expect(first.label).toBe("10 s · poor")
   })
 
-  it("reaches past the richest tier so long slots can be checked", () => {
-    const budgets = scenarios(ladder, data).map((s) => s.budget)
+  it("reaches every kind of programme the shipped tiers offer", () => {
+    const named = scenarios(INTERMISSION_TIERS, data).map((s) => s.tierName)
 
-    expect(Math.max(...budgets)).toBeGreaterThanOrEqual(300000)
+    expect(new Set(named)).toEqual(
+      new Set(["logo-only", "schedule", "schedule-and-slate", "full"]),
+    )
   })
 
-  it("never offers a budget too small for the tier it names", () => {
-    // Thresholds 300ms apart, so the "stretched" budget for the lower tier
-    // would otherwise be pushed below its own threshold.
-    const crowded = [tier("a", 10000), tier("b", 10300)]
-
-    for (const scenario of scenarios(crowded, data))
-      expect(plan(scenario.budget, data, crowded).tierName).toBe(
-        scenario.tierName,
-      )
-  })
-
-  it("works for the shipped tiers", () => {
-    const shipped = scenarios(INTERMISSION_TIERS, data)
-
-    expect(shipped.length).toBeGreaterThan(0)
-
-    for (const scenario of shipped)
-      expect(plan(scenario.budget, data, INTERMISSION_TIERS).tierName).toBe(
+  it("works for the poster tier too", () => {
+    for (const scenario of scenarios(POSTER_TIERS, data))
+      expect(plan(scenario.budget, data, POSTER_TIERS).tierName).toBe(
         scenario.tierName,
       )
   })

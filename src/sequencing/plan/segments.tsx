@@ -92,6 +92,7 @@ export const schedule = (bounds: Bounds = {}): SegmentSpec => ({
   grow: 1,
   enter: SCHEDULE_ENTER_MS,
   exit: SCHEDULE_EXIT_MS,
+  chrome: true,
   render: ({ status }) => <ScheduleView status={status} />,
   ...bounds,
 })
@@ -130,6 +131,7 @@ export const nextProgram = (bounds: Bounds = {}): SegmentSpec => ({
   grow: 1,
   enter: SCHEDULE_EXIT_MS,
   exit: SCHEDULE_EXIT_MS,
+  chrome: true,
   render: ({ status }) => <NextProgramView status={status} />,
   ...bounds,
 })
@@ -147,6 +149,7 @@ export const newsPosters = (
     grow: 0,
     enter: POSTER_ENTER_MS,
     exit: POSTER_EXIT_MS,
+    chrome: true,
     render: ({ status }) => (
       <NewsPosterView status={status} bulletin={bulletin} />
     ),
@@ -161,6 +164,7 @@ export const orgSlate = (bounds: Bounds = {}): SegmentSpec => ({
   grow: 0,
   enter: POSTER_ENTER_MS,
   exit: POSTER_EXIT_MS,
+  chrome: true,
   render: ({ status }) => <OrgSlateView status={status} />,
   ...bounds,
 })
