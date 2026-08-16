@@ -23,6 +23,7 @@ export const IntroView = ({ status }: IntroView) => {
         className={classNames(
           "card absolute top-0 right-0 h-[200%] w-[200%] p-6",
           "[transform:rotate(10deg)_translateY(-220px)]",
+          status === "entering" && "animate-card-appear",
           status === "exiting" && "animate-card-fall",
         )}
       />
