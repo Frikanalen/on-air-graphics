@@ -5,6 +5,7 @@ import { Content } from "./Content"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
+import { ScheduleContext } from "./ScheduleContext.tsx"
 
 window.update = (data: unknown) => {
   console.error(`Update was called with ${JSON.stringify(data)}`)
@@ -20,7 +21,7 @@ window.handleWarning = console.error
 console.warn("Test warning")
 
 export function App() {
-  const { loading } = useSchedule()
+  const { schedule, loading } = useSchedule()
 
   const [state, setState] = useState<AppState>("idle")
 
@@ -57,7 +58,9 @@ export function App() {
 
   return (
     <AppContext.Provider value={context}>
-      {import.meta.env.DEV ? <DevPanel /> : <Content />}
+      <ScheduleContext.Provider value={schedule}>
+        {import.meta.env.DEV ? <DevPanel /> : <Content />}
+      </ScheduleContext.Provider>
     </AppContext.Provider>
   )
 }
