@@ -13,7 +13,6 @@ import {
   TransitionGroup,
   type TransitionStatus,
 } from "react-transition-group"
-import { delay } from "../../core/helpers/delay"
 import { AppContext } from "../../core/components/AppContext.tsx"
 
 const DELAY = 200
@@ -36,6 +35,8 @@ export function ViewSequence(props: ViewSequenceProps) {
   const [index, setIndex] = useState(0)
   const [showView, setShowView] = useState(true)
 
+  const entry = sequence[index]
+
   /*
    * <Transition> resolves its timeout against nodeRef.current and silently
    * finishes on the next tick when that is null, so the ref has to reach the
@@ -53,28 +54,37 @@ export function ViewSequence(props: ViewSequenceProps) {
     return created
   }
 
+  /*
+   * Hold the current view, then hand over to the next one after a brief gap.
+   * The caller rebuilds the sequence array on every render, so this depends on
+   * the entry's duration rather than the entry itself -- an unrelated re-render
+   * must not restart the hold. Cancelling on cleanup keeps a state change
+   * mid-hold from leaving an orphaned handover running against a stale index.
+   */
+  const duration = entry?.duration
+
   useEffect(() => {
-    const entry = sequence[index]
+    if (app.state !== "active" || duration === undefined) return
+    if (!Number.isFinite(duration)) return
 
-    const advance = async () => {
-      if (!Number.isFinite(entry.duration)) return
+    let handover: ReturnType<typeof setTimeout> | undefined
 
-      await delay(entry.duration - DELAY)
+    const hold = setTimeout(() => {
       setShowView(false)
-      await delay(DELAY)
 
-      setShowView(true)
-      setIndex(index + 1)
-    }
+      handover = setTimeout(() => {
+        setShowView(true)
+        setIndex((current) => current + 1)
+      }, DELAY)
+    }, duration - DELAY)
 
-    if (entry && app.state === "active") {
-      advance()
+    return () => {
+      clearTimeout(hold)
+      clearTimeout(handover)
     }
-  }, [app, index])
+  }, [app.state, duration, index])
 
   const renderView = () => {
-    const entry = sequence[index]
-
     if (!showView || !entry || app.state !== "active") return null
 
     const nodeRef = nodeRefFor(entry.name)
@@ -90,7 +100,6 @@ export function ViewSequence(props: ViewSequenceProps) {
     )
   }
 
-  const entry = sequence[index]
   const overlay = entry?.overlay !== false && app.state === "active"
 
   return (
