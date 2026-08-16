@@ -1,7 +1,8 @@
 # Budget-driven timeline: implementation plan
 
-**Status:** Phases 1 and 2 landed. The planner drives what airs; the playhead
-replaced the timer chains. Phase 3 (dev panel) is next.
+**Status:** Phases 1–3 landed. The planner drives what airs, the playhead
+replaced the timer chains, and the dev panel makes both inspectable. What is
+left is Phase 4: content, which is where the budget finally becomes visible.
 **Base:** `feature/timeline`, cut from main after the styling work merged.
 **Goal:** make the graphics fill _any_ allotted time intelligently — 5 s is a logo
 sting, 30 s adds the upcoming programme, a minute or more makes room for channel
@@ -545,9 +546,23 @@ the production path.
 This one panel serves both concerns: the strip evaluates _scheduling choices_
 before you press play, and scrubbing evaluates _rendering_.
 
-**Done when:** every scenario button shows its tier choice on the strip before
-play, and scrubbing across a boundary shows the out-fade and in-fade at the
-right timestamps.
+**Done — verified in a browser.** The scenarios derive to
+`full · 15.7 s (min)`, `full · 90 s`, `full · 300 s`; picking 90 s re-plans to
+`intro 3.2s | schedule 86.3s`; scrubbing to 1% and 2% lands on the intro and 5%
+on the schedule; and `?duration=6000` shows `budget 5.5s → planned 15.2s,
+overruns by 9.7s` with both segments at their minimums.
+
+Two things worth knowing when using it:
+
+- **Scrubbing replays the entrance animation** of whatever it lands on, so the
+  view takes up to its `enter` to settle into its resting look. That is the
+  accepted scrub-fidelity trade-off: the segment and the timing are exact, the
+  animation phase is not. Landing mid-plan and waiting a beat shows the true
+  resting frame.
+- **The budget override lives in `DevPanel`**, which re-provides `AppContext`
+  to everything below it. So the panel itself cannot read the overridden
+  budget — that is why it is split into `DevPanel` (owns the state, provides
+  the context) and `DevPanelBody` (reads it back).
 
 ---
 

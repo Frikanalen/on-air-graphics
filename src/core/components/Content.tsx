@@ -1,38 +1,14 @@
-import { useContext, useMemo } from "react"
-import { RESOLUTION, SEQUENCE_NAMES } from "../constants"
-import { useParams } from "../hooks/useParams"
+import { useContext } from "react"
+import { RESOLUTION } from "../constants"
 import { Player } from "../../sequencing/components/Player"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
-import {
-  INTERMISSION_TIERS,
-  POSTER_TIERS,
-  plan as planTimeline,
-} from "../../sequencing/plan/tiers"
-import { AppContext } from "./AppContext.tsx"
-import { ScheduleContext } from "./ScheduleContext.tsx"
+import { useTimelinePlan } from "../../sequencing/plan/useTimelinePlan"
 
 const [width, height] = RESOLUTION
 
 export function Content() {
-  const { budget } = useContext(AppContext)
-  const schedule = useContext(ScheduleContext)
   const playhead = useContext(PlayheadContext)
-
-  const { sequence } = useParams({
-    sequence: "default",
-  })
-
-  const sequenceName = SEQUENCE_NAMES.find((s) => s === sequence) ?? "default"
-
-  const plan = useMemo(
-    () =>
-      planTimeline(
-        budget,
-        { schedule },
-        sequenceName === "poster" ? POSTER_TIERS : INTERMISSION_TIERS,
-      ),
-    [budget, schedule, sequenceName],
-  )
+  const plan = useTimelinePlan()
 
   return (
     <div

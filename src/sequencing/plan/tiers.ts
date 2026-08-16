@@ -1,4 +1,4 @@
-import { FADE_TRANSITION_MS } from "../../core/constants"
+import { FADE_TRANSITION_MS, type SequenceName } from "../../core/constants"
 import { allocate, minDuration } from "./allocate"
 import { intro, poster, schedule } from "./segments"
 import { type Plan, type PlanInputs, type TimelineTier } from "./types"
@@ -31,6 +31,9 @@ export const POSTER_TIERS: TimelineTier[] = [
     build: () => [poster({ grow: 1, max: Infinity })],
   },
 ]
+
+export const tiersFor = (sequence: SequenceName): TimelineTier[] =>
+  sequence === "poster" ? POSTER_TIERS : INTERMISSION_TIERS
 
 /**
  * Choose the richest tier the budget can pay for, then fit it.
