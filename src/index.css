@@ -91,13 +91,21 @@
   --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms forwards;
   --animate-logo-fall: logo-fall 700ms ease-in-out forwards;
 
-  /* Schedule view */
-  --animate-title-in: title-in 500ms ease forwards;
-  --animate-title-out: title-out 500ms ease forwards;
-  --animate-schedule-in: schedule-in 1000ms ease forwards;
-  --animate-schedule-out: schedule-out 1000ms ease forwards;
-  --animate-slide-fade-in: slide-fade-in 500ms ease forwards;
-  --animate-slide-fade-out: slide-fade-out 500ms ease forwards;
+  /*
+   * Schedule view. These are `both` rather than `forwards` because several of
+   * them are paired with an animation-delay at the call site. `forwards` only
+   * covers the time after an animation ends, so through the delay the element
+   * would paint in its ordinary state -- which for these keyframes is the
+   * state being animated *to* -- and then snap back to the start once the
+   * delay elapsed. `both` adds `backwards`, holding the first keyframe for the
+   * length of the delay. It is a no-op for the ones with no delay.
+   */
+  --animate-title-in: title-in 500ms ease both;
+  --animate-title-out: title-out 500ms ease both;
+  --animate-schedule-in: schedule-in 1000ms ease both;
+  --animate-schedule-out: schedule-out 1000ms ease both;
+  --animate-slide-fade-in: slide-fade-in 500ms ease both;
+  --animate-slide-fade-out: slide-fade-out 500ms ease both;
   --animate-container-in: container-in 500ms ease both;
   --animate-container-out: container-out 500ms ease both;
   --animate-footer-in: footer-in 500ms ease both;
