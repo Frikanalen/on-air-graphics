@@ -1,8 +1,9 @@
 # Budget-driven timeline: implementation plan
 
-**Status:** all four phases landed. The graphics now fill the time they are
-given: a five second slot is the channel's mark, half a minute is the full
-schedule, and a minute makes room for channel news and a closing slate.
+**Status:** all four phases landed. The graphics fill the time they are given,
+and the planner can compose a five second slot, a half minute one and a
+minute-plus one differently — but only the schedule tier is switched on for
+launch. See "What actually ships" under Phase 4.
 **Base:** `feature/timeline`, cut from main after the styling work merged.
 **Goal:** make the graphics fill _any_ allotted time intelligently — 5 s is a logo
 sting, 30 s adds the upcoming programme, a minute or more makes room for channel
@@ -605,13 +606,13 @@ a view, a segment constructor, a line in a tier's `build`.
 
 The ladder, poorest to richest, with the raw `?duration=` that selects it:
 
-| Tier                 | From   | Composition                                     |
-| -------------------- | ------ | ----------------------------------------------- |
-| `logo-only`          | 3.7 s  | logo sting                                      |
-| `logo-and-next`      | 11.7 s | logo + what is on next                          |
-| `schedule`           | 15.7 s | intro + full schedule                           |
-| `schedule-and-slate` | 21.7 s | + who the channel is, last                      |
-| `full`               | 36.7 s | + three channel news bulletins before the slate |
+| Tier                 | From   | Composition                                     | On air  |
+| -------------------- | ------ | ----------------------------------------------- | ------- |
+| `logo-only`          | 3.7 s  | logo sting                                      | parked  |
+| `logo-and-next`      | 11.7 s | logo + what is on next                          | parked  |
+| `schedule`           | 15.7 s | intro + full schedule                           | **yes** |
+| `schedule-and-slate` | 21.7 s | + who the channel is, last                      | parked  |
+| `full`               | 36.7 s | + three channel news bulletins before the slate | parked  |
 
 Every threshold is derived from the segments' minimums, so retuning one moves
 the boundary and the dev panel's scenario buttons with it.
@@ -620,6 +621,22 @@ the boundary and the dev panel's scenario buttons with it.
 lengthens the schedule rather than holding a closing beat longer: at 180 s the
 schedule takes 146.3 s while the news posters stay at 8 s each and the slate at
 6 s.
+
+### What actually ships
+
+Only `schedule` is on air. The sting, the next-programme view, the channel news
+and the closing slate are all written, verified in a browser and covered by
+tests, but are not ready to launch — so the tier list in `tiers.ts` carries them
+commented out, and that list is the only thing holding them back. Switching one
+on means uncommenting it and adding its constructor back to the import above it.
+
+A "parked tiers" block in `tiers.test.ts` composes each of them and plans
+against it, so they keep working while they wait. Parked code that nothing
+exercises is parked code that quietly stops being true.
+
+The visible consequence: with only one tier there is nothing thinner to fall
+back to, so a slot too short for the schedule is squeezed and overruns — which
+is what happened before any of this existed.
 
 ### Two things left deliberately
 

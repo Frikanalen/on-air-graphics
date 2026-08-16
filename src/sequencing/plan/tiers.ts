@@ -1,15 +1,8 @@
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { type SequenceName } from "../../core/types"
 import { allocate, minDuration } from "./allocate"
-import {
-  intro,
-  logoSting,
-  newsPosters,
-  nextProgram,
-  orgSlate,
-  poster,
-  schedule,
-} from "./segments"
+// logoSting, nextProgram, newsPosters and orgSlate are parked -- see below.
+import { intro, poster, schedule } from "./segments"
 import { type Plan, type PlanInputs, type TimelineTier } from "./types"
 
 /**
@@ -21,42 +14,49 @@ export const tierThreshold = (tier: TimelineTier, data: PlanInputs): number =>
   tier.minBudget ?? minDuration(tier.build(data))
 
 /**
- * Ordered poorest to richest.
+ * Ordered poorest to richest. Each step is a different programme rather than
+ * the same one stretched, and the schedule carries `grow` throughout, so
+ * whatever a tier does not spend lands there rather than on a closing beat
+ * that would only be held longer.
  *
- * Each step is a different programme rather than the same one stretched: five
- * seconds is the channel's mark and nothing else, half a minute is worth the
- * full schedule, and once there is a minute or so there is room to say
- * something -- the channel's news, and who the channel is, last, immediately
- * before the video starts.
+ * Only one tier is on air. The logo sting, the channel news and the closing
+ * slate are written and tested but not launched, so the ladder they belong to
+ * is commented out here rather than deleted -- this list is the only thing
+ * holding them back. Everything they need is in place: the views, the segment
+ * constructors, the feed behind `useNews`, and tests that compose each of them
+ * so they cannot rot while they wait. Switching one on means uncommenting it
+ * and adding its constructor back to the import above.
  *
- * The schedule carries `grow` throughout, so whatever a tier does not spend
- * lands there rather than on a closing beat that would only be held longer.
+ *   {
+ *     name: "logo-only",
+ *     build: () => [logoSting({ grow: 1, max: Infinity })],
+ *   },
+ *   {
+ *     name: "logo-and-next",
+ *     build: () => [logoSting(), nextProgram({ grow: 1, max: Infinity })],
+ *   },
+ *   {
+ *     name: "schedule-and-slate",
+ *     build: () => [intro(), schedule({ grow: 1, max: Infinity }), orgSlate()],
+ *   },
+ *   {
+ *     name: "full",
+ *     build: (data) => [
+ *       intro(),
+ *       schedule({ grow: 1, max: Infinity }),
+ *       ...newsPosters(data.news),
+ *       orgSlate(),
+ *     ],
+ *   },
+ *
+ * The first two belong at the head of the list, the last two at the tail.
+ * Until then a slot too short for the schedule is squeezed and overruns, which
+ * is what happened before any of this existed.
  */
 export const INTERMISSION_TIERS: TimelineTier[] = [
   {
-    name: "logo-only",
-    build: () => [logoSting({ grow: 1, max: Infinity })],
-  },
-  {
-    name: "logo-and-next",
-    build: () => [logoSting(), nextProgram({ grow: 1, max: Infinity })],
-  },
-  {
     name: "schedule",
     build: () => [intro(), schedule({ grow: 1, max: Infinity })],
-  },
-  {
-    name: "schedule-and-slate",
-    build: () => [intro(), schedule({ grow: 1, max: Infinity }), orgSlate()],
-  },
-  {
-    name: "full",
-    build: (data) => [
-      intro(),
-      schedule({ grow: 1, max: Infinity }),
-      ...newsPosters(data.news),
-      orgSlate(),
-    ],
   },
 ]
 

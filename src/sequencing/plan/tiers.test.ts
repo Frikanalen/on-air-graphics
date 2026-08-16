@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest"
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { planInputs, segment, tier } from "./fixtures"
+import {
+  intro,
+  logoSting,
+  newsPosters,
+  nextProgram,
+  orgSlate,
+  schedule,
+} from "./segments"
 import { INTERMISSION_TIERS, POSTER_TIERS, plan, tierThreshold } from "./tiers"
 import { type TimelineTier } from "./types"
 
@@ -84,65 +92,50 @@ describe("plan", () => {
 })
 
 describe("the shipped tiers", () => {
-  it("fills a long slot with the full intermission", () => {
+  it("fills a long slot with the intro and the schedule", () => {
     const result = plan(290000, data, INTERMISSION_TIERS)
 
-    expect(result.tierName).toBe("full")
+    expect(result.tierName).toBe("schedule")
     expect(result.segments.map((s) => s.spec.name)).toEqual([
       "intro",
       "schedule",
-      "news:en",
-      "news:to",
-      "news:tre",
-      "slate",
     ])
     expect(result.total).toBe(290000 - FADE_TRANSITION_MS)
   })
 
-  it("closes on the slate, immediately before the video", () => {
-    const { segments } = plan(290000, data, INTERMISSION_TIERS)
-
-    expect(segments[segments.length - 1].spec.name).toBe("slate")
-  })
-
-  it("spends a surplus on the schedule rather than on the closing beats", () => {
+  it("gives the whole surplus to the schedule", () => {
     const short = plan(60000, data, INTERMISSION_TIERS)
     const long = plan(300000, data, INTERMISSION_TIERS)
 
     const durationOf = (result: typeof short, name: string) =>
       result.segments.find((s) => s.spec.name === name)?.duration
 
-    expect(durationOf(long, "slate")).toBe(durationOf(short, "slate"))
-    expect(durationOf(long, "news:en")).toBe(durationOf(short, "news:en"))
+    expect(durationOf(long, "intro")).toBe(durationOf(short, "intro"))
     expect(durationOf(long, "schedule")).toBeGreaterThan(
       durationOf(short, "schedule") ?? 0,
     )
   })
 
-  it("climbs the ladder as the slot grows", () => {
-    const tierAt = (budget: number) =>
-      plan(budget, data, INTERMISSION_TIERS).tierName
-
-    expect(tierAt(5000)).toBe("logo-only")
-    expect(tierAt(13000)).toBe("logo-and-next")
-    expect(tierAt(18000)).toBe("schedule")
-    expect(tierAt(25000)).toBe("schedule-and-slate")
-    expect(tierAt(60000)).toBe("full")
-  })
-
-  it("falls back to the logo when the slot is far too short", () => {
+  it("squeezes the schedule when the slot is far too short", () => {
     const result = plan(2000, data, INTERMISSION_TIERS)
 
-    expect(result.tierName).toBe("logo-only")
+    expect(result.tierName).toBe("schedule")
     expect(result.segments.every((s) => s.duration >= s.spec.min)).toBe(true)
+    // Nothing thinner to fall back to while the sting is parked.
+    expect(result.total).toBeGreaterThan(result.budget)
   })
 
-  it("plans no news when the feed is empty", () => {
-    const result = plan(290000, planInputs({ news: [] }), INTERMISSION_TIERS)
+  it("airs none of the parked views, at any length of slot", () => {
+    for (const budget of [2000, 5000, 13000, 30000, 300000]) {
+      const names = plan(budget, data, INTERMISSION_TIERS).segments.map(
+        (s) => s.spec.name,
+      )
 
-    expect(result.segments.some((s) => s.spec.name.startsWith("news"))).toBe(
-      false,
-    )
+      expect(names.some((name) => name.startsWith("news"))).toBe(false)
+      expect(names).not.toContain("logo")
+      expect(names).not.toContain("next")
+      expect(names).not.toContain("slate")
+    }
   })
 
   it("gives the whole slot to the poster", () => {
@@ -159,5 +152,80 @@ describe("the shipped tiers", () => {
         expect(
           t.build(data).some((s) => s.grow > 0 && s.max === Infinity),
         ).toBe(true)
+  })
+})
+
+/*
+ * The sting, the next-programme view and the news are written but held back
+ * from air, so nothing in INTERMISSION_TIERS reaches them. They are composed
+ * here instead: parked code that nothing exercises is parked code that quietly
+ * stops being true, and these are meant to be switched on by uncommenting a
+ * few lines rather than by being rewritten.
+ */
+describe("the parked tiers", () => {
+  it("still plans a logo sting on its own", () => {
+    const parked = [
+      {
+        name: "logo-only",
+        build: () => [logoSting({ grow: 1, max: Infinity })],
+      },
+    ]
+
+    const result = plan(6000, data, parked)
+
+    expect(result.tierName).toBe("logo-only")
+    expect(result.segments.map((s) => s.spec.name)).toEqual(["logo"])
+  })
+
+  it("still plans a sting followed by the next programme", () => {
+    const parked = [
+      {
+        name: "logo-and-next",
+        build: () => [logoSting(), nextProgram({ grow: 1, max: Infinity })],
+      },
+    ]
+
+    expect(plan(20000, data, parked).segments.map((s) => s.spec.name)).toEqual([
+      "logo",
+      "next",
+    ])
+  })
+
+  it("still plans one segment per bulletin, capped at three", () => {
+    const many = planInputs({
+      news: ["a", "b", "c", "d", "e"].map((id) => ({
+        id,
+        title: `Sak ${id}`,
+        body: "Plassholdertekst.",
+      })),
+    })
+
+    expect(newsPosters(many.news)).toHaveLength(3)
+  })
+
+  it("still composes the full intermission around the news", () => {
+    const parked = [
+      {
+        name: "full",
+        build: (inputs: typeof data) => [
+          intro(),
+          schedule({ grow: 1, max: Infinity }),
+          ...newsPosters(inputs.news),
+          orgSlate(),
+        ],
+      },
+    ]
+
+    const result = plan(90000, data, parked)
+
+    expect(result.segments.map((s) => s.spec.name)).toEqual([
+      "intro",
+      "schedule",
+      "news:en",
+      "news:to",
+      "news:tre",
+      "slate",
+    ])
+    expect(result.total).toBe(90000 - FADE_TRANSITION_MS)
   })
 })

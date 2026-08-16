@@ -38,9 +38,7 @@ describe("scenarios", () => {
   it("reaches every kind of programme the shipped tiers offer", () => {
     const named = scenarios(INTERMISSION_TIERS, data).map((s) => s.tierName)
 
-    expect(new Set(named)).toEqual(
-      new Set(["logo-only", "schedule", "schedule-and-slate", "full"]),
-    )
+    expect(new Set(named)).toEqual(new Set(["schedule"]))
   })
 
   it("works for the poster tier too", () => {
