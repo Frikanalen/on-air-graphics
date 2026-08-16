@@ -71,7 +71,7 @@ export function ViewSequence(props: ViewSequenceProps) {
     <div
       className={classNames(
         "before:absolute before:inset-0 before:content-['']",
-        "before:[transition:opacity_500ms_ease]",
+        "before:transition-opacity before:duration-(--fk-fade-transition) before:ease-[ease]",
         app.keyed
           ? "before:bg-transparent"
           : "before:bg-[image:var(--fk-gradient-overlay)]",

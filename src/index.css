@@ -26,6 +26,10 @@
     rgba(255, 255, 255, 0.4) 35%
   );
   --fk-shadow-card: 3px 3px 11px 1px rgb(0 0 0 / 10%);
+
+  /* Keep in sync with FADE_TRANSITION_MS in core/constants.ts, which drives
+     the JS-side sequencing. */
+  --fk-fade-transition: 500ms;
 }
 
 @supports (backdrop-filter: blur(30px)) {
@@ -69,6 +73,18 @@
 }
 
 @theme {
+  /*
+   * Type scale. Headings carry a deliberately tight line box so vertical
+   * rhythm is set by margins rather than leading; the sizes without a paired
+   * line-height inherit the document default.
+   */
+  --text-footnote: 16px;
+  --text-body: 20px;
+  --text-body--line-height: 0.75;
+  --text-lead: 32px;
+  --text-display: 48px;
+  --text-display--line-height: 0.75;
+
   /* Intro view */
   --animate-card-fall: card-fall 700ms ease forwards;
   --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms forwards;
@@ -87,8 +103,8 @@
   --animate-footer-out: footer-out 500ms ease both;
 
   /* Poster view */
-  --animate-poster-in: poster-in 500ms ease both;
-  --animate-poster-out: poster-out 500ms ease both;
+  --animate-poster-in: poster-in var(--fk-fade-transition) ease both;
+  --animate-poster-out: poster-out var(--fk-fade-transition) ease both;
 
   @keyframes card-fall {
     to {
@@ -254,6 +270,18 @@
   backdrop-filter: blur(30px);
 }
 
+/*
+ * A heading that ellipsises needs `overflow: hidden`, which would clip
+ * Roboto's ascenders and descenders against the tight heading line box. Give
+ * it a full line box instead, then pull it back onto the surrounding rhythm by
+ * removing half the difference between the two at each end.
+ */
+@utility ellipsis-heading {
+  line-height: 1.5;
+  margin-top: calc((0.75 - 1.5) * var(--text-body) / 2);
+  margin-bottom: calc((1.5 - 0.75) * var(--text-body) / 2);
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -266,20 +294,15 @@
   }
 
   h1,
-  h2,
-  h3,
-  h4 {
-    line-height: 75%;
+  h2 {
     margin: 0;
   }
 
   h1 {
-    font-size: 48px;
-    font-weight: 900;
+    @apply text-display font-black;
   }
 
   h2 {
-    font-size: 20px;
-    font-weight: 600;
+    @apply text-body font-semibold;
   }
 }

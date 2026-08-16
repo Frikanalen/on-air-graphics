@@ -37,8 +37,8 @@ export function PosterView(props: PosterViewProps) {
             : "relative z-2 rounded-lg p-8",
         )}
       >
-        <SVGIcon name={safeType} className="mr-4 h-[42px] w-[42px]" />
-        <span className="text-[32px] font-medium">{message}</span>
+        <SVGIcon name={safeType} className="mr-4 h-10.5 w-10.5" />
+        <span className="text-lead font-medium">{message}</span>
       </div>
     </div>
   )
