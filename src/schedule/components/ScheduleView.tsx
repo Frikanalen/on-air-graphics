@@ -1,22 +1,24 @@
+import { useContext } from "react"
 import classNames from "classnames"
 import { TransitionStatus } from "react-transition-group"
 import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
-import { useSchedule } from "../../core/useSchedule"
+import { ScheduleContext } from "../../core/components/ScheduleContext"
 
 export type ScheduleViewProps = {
   status: TransitionStatus
 }
 
 export function ScheduleView(props: ScheduleViewProps) {
-  const { schedule } = useSchedule()
+  const schedule = useContext(ScheduleContext)
 
   const { status } = props
   const exiting = status === "exiting"
 
-  const [next, ...scheduleItems] =
-    schedule?.filter((x) => new Date() < new Date(x.endtime)) ?? []
+  const [next, ...scheduleItems] = schedule.filter(
+    (x) => new Date() < new Date(x.endtime),
+  )
 
   const title = classNames(
     "text-normal",
