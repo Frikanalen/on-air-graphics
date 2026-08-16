@@ -10,7 +10,7 @@ export const useCanvasAnimation = (
   enabled = true,
 ) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | undefined>()
-  const frameRef = useRef<number>()
+  const frameRef = useRef<number>(0)
 
   const handleRef = (element: HTMLCanvasElement | null) => {
     if (element) {
