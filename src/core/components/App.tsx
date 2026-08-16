@@ -27,6 +27,11 @@ export function App() {
 
   const [state, setState] = useState<AppState>("idle")
   const [playhead] = useState(createPlayhead)
+  const params = useParams({
+    duration: DEFAULT_BUDGET_MS,
+    keyed: false,
+  })
+  const hasDuration = new URLSearchParams(window.location.search).has("duration")
 
   window.play = () => {
     setState("active")
@@ -34,6 +39,12 @@ export function App() {
   window.stop = () => {
     setState("exit")
   }
+
+  useEffect(() => {
+    if (!hasDuration && typeof window.play === "function") {
+      window.play()
+    }
+  }, [hasDuration])
 
   /*
    * The budget is measured from the cue, not from page load: the playout system
@@ -44,11 +55,6 @@ export function App() {
     if (state === "active") playhead.restart()
     else playhead.pause()
   }, [state, playhead])
-
-  const params = useParams({
-    duration: DEFAULT_BUDGET_MS,
-    keyed: false,
-  })
 
   const context: AppContextT = {
     state,
