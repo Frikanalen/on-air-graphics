@@ -25,16 +25,18 @@ export function PosterView(props: PosterViewProps) {
     <div className="flex h-full items-end justify-center p-16">
       <div
         className={classNames(
-          "card flex items-center justify-center",
+          "flex items-center justify-center",
           transition === "exiting" ? "animate-poster-out" : "animate-poster-in",
           safeType !== "info"
             ? "text-warning"
             : app.keyed
               ? "text-overlay"
               : "text-normal",
+          // Keyed output is composited onto live video, so the card panel
+          // would obscure it — the drop shadow alone carries legibility.
           app.keyed
-            ? "p-6 drop-shadow-[1px_1px_0px_rgba(0,0,0,0.8)]"
-            : "relative z-2 rounded-lg p-8",
+            ? "drop-shadow-[1px_1px_0px_rgba(0,0,0,0.8)]"
+            : "card relative z-2 p-8",
         )}
       >
         <SVGIcon name={safeType} className="mr-4 h-10.5 w-10.5" />
