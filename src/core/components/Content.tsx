@@ -34,7 +34,7 @@ export function Content() {
     >
       <div
         className={classNames(
-          "[transition:opacity_500ms_ease-in-out]",
+          "transition-opacity duration-(--fk-fade-transition) ease-in-out",
           state === "active" ? "opacity-100" : "opacity-0",
         )}
       >
