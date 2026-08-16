@@ -102,9 +102,5 @@ export function Clock({ size }: ClockProps) {
     drawHandHand(preciseSeconds, 4, 0.7, colors.accent)
   })
 
-  return (
-    <div>
-      <canvas width={size} height={size} ref={handleRef} />
-    </div>
-  )
+  return <canvas width={size} height={size} ref={handleRef} />
 }

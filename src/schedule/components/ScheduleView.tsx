@@ -19,7 +19,7 @@ export function ScheduleView(props: ScheduleViewProps) {
     schedule?.filter((x) => new Date() < new Date(x.endtime)) ?? []
 
   const title = classNames(
-    "text-normal [transition:all_500ms_ease]",
+    "text-normal",
     exiting ? "animate-title-out" : "animate-title-in",
   )
   const card = classNames(
@@ -72,7 +72,7 @@ export function ScheduleView(props: ScheduleViewProps) {
       </div>
       <div
         className={classNames(
-          "relative z-1 text-center text-[16px] font-semibold text-muted",
+          "relative z-1 text-center text-footnote font-semibold text-muted",
           exiting ? "animate-footer-out" : "animate-footer-in",
         )}
       >
