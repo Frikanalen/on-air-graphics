@@ -20,4 +20,3 @@ export const CHANNEL_DISCLAIMER =
 
 export const SEQUENCE_NAMES = ["default", "poster"] as const
 
-export type SequenceName = (typeof SEQUENCE_NAMES)[number]

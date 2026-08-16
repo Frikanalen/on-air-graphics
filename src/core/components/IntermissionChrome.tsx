@@ -1,5 +1,5 @@
-import { CHANNEL_DISCLAIMER } from "../constants"
 import { Clock } from "./Clock"
+import { DisclaimerSpace } from "./DisclaimerSpace"
 import { Logo } from "./Logo"
 
 /**
@@ -28,14 +28,7 @@ export function IntermissionChrome() {
         </div>
       </div>
 
-      {/*
-       * Reserves the disclaimer's height rather than drawing it: only the
-       * schedule view says it, but the clock has to sit at the same height
-       * whether the current view does or not.
-       */}
-      <div aria-hidden className="invisible text-footnote font-semibold">
-        {CHANNEL_DISCLAIMER}
-      </div>
+      <DisclaimerSpace />
     </div>
   )
 }
