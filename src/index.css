@@ -1,29 +1,285 @@
 @import "tailwindcss";
 
-* {
-    box-sizing: border-box;
+/*
+ * Design tokens.
+ *
+ * These live in plain `:root` blocks rather than in `@theme` so they can be
+ * redefined per colour scheme and per `backdrop-filter` support. The `@theme
+ * inline` block below maps them onto Tailwind's namespaces, so utilities emit
+ * `var(--fk-*)` directly and pick up whichever definition is in effect.
+ */
+:root {
+  --fk-color-card: rgba(255, 255, 255, 0.8);
+  /* Used behind the schedule view when backdrop-filter is unavailable;
+     the card colour darkened by 2%. */
+  --fk-color-backdrop-fallback: rgba(250, 250, 250, 0.8);
+  --fk-color-accent: #e88840;
+  --fk-color-warning: #ff5400;
+
+  --fk-font-color-normal: rgba(0, 0, 0, 0.85);
+  --fk-font-color-muted: rgba(0, 0, 0, 0.7);
+  --fk-font-color-overlay: white;
+
+  --fk-gradient-overlay: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.4) 35%
+  );
+  --fk-shadow-card: 3px 3px 11px 1px rgb(0 0 0 / 10%);
 }
 
-body {
+@supports (backdrop-filter: blur(30px)) {
+  :root {
+    --fk-color-card: rgba(255, 255, 255, 0.45);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fk-color-card: rgba(26, 42, 64, 0.85);
+    --fk-color-backdrop-fallback: rgba(23, 37, 57, 0.85);
+    --fk-color-accent: #fcba20;
+
+    --fk-font-color-normal: rgba(255, 255, 255, 0.85);
+    --fk-font-color-muted: rgba(255, 255, 255, 0.7);
+
+    --fk-gradient-overlay: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.4) 35%
+    );
+    --fk-shadow-card: 3px 3px 15px 1px rgb(0 0 0 / 15%);
+  }
+
+  @supports (backdrop-filter: blur(30px)) {
+    :root {
+      --fk-color-card: rgba(26, 42, 64, 0.7);
+    }
+  }
+}
+
+@theme inline {
+  --color-card: var(--fk-color-card);
+  --color-accent: var(--fk-color-accent);
+  --color-warning: var(--fk-color-warning);
+  --color-normal: var(--fk-font-color-normal);
+  --color-muted: var(--fk-font-color-muted);
+  --color-overlay: var(--fk-font-color-overlay);
+  --shadow-card: var(--fk-shadow-card);
+}
+
+@theme {
+  /* Intro view */
+  --animate-card-fall: card-fall 700ms ease forwards;
+  --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms forwards;
+  --animate-logo-fall: logo-fall 700ms ease-in-out forwards;
+
+  /* Schedule view */
+  --animate-title-in: title-in 500ms ease forwards;
+  --animate-title-out: title-out 500ms ease forwards;
+  --animate-schedule-in: schedule-in 1000ms ease forwards;
+  --animate-schedule-out: schedule-out 1000ms ease forwards;
+  --animate-slide-fade-in: slide-fade-in 500ms ease forwards;
+  --animate-slide-fade-out: slide-fade-out 500ms ease forwards;
+  --animate-container-in: container-in 500ms ease both;
+  --animate-container-out: container-out 500ms ease both;
+  --animate-footer-in: footer-in 500ms ease both;
+  --animate-footer-out: footer-out 500ms ease both;
+
+  /* Poster view */
+  --animate-poster-in: poster-in 500ms ease both;
+  --animate-poster-out: poster-out 500ms ease both;
+
+  @keyframes card-fall {
+    to {
+      transform: rotate(10deg) translateY(60%);
+    }
+  }
+
+  @keyframes logo-unblur {
+    from {
+      filter: blur(120px);
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes logo-fall {
+    50% {
+      opacity: 0;
+    }
+    to {
+      transform: translateY(800px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes title-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes title-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes schedule-in {
+    from {
+      transform: translateX(-700px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes schedule-out {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateX(-700px);
+    }
+  }
+
+  @keyframes slide-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes slide-fade-out {
+    from {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+  }
+
+  @keyframes container-in {
+    from {
+      opacity: 0;
+      transform: rotate(10deg) translateY(-90px) translateX(200px);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(0) translateY(0) translateX(0);
+    }
+  }
+
+  @keyframes container-out {
+    from {
+      opacity: 1;
+      transform: rotate(0) translateY(0) translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: rotate(10deg) translateY(-90px) translateX(200px);
+    }
+  }
+
+  @keyframes footer-in {
+    from {
+      opacity: 0;
+      transform: translateY(200px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes footer-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(200px);
+    }
+  }
+
+  @keyframes poster-in {
+    from {
+      transform: translateY(calc(100% + 32px));
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes poster-out {
+    from {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(calc(100% + 32px));
+      opacity: 0;
+    }
+  }
+}
+
+/*
+ * The frosted panel shared by the schedule cards, the intro backdrop and the
+ * text poster. Padding is left to the call site: `p-*` and a custom utility
+ * both land in the utilities layer, so relying on their relative order to
+ * override a padding baked in here would be fragile.
+ */
+@utility card {
+  border-radius: 8px;
+  background-color: var(--fk-color-card);
+  box-shadow: var(--fk-shadow-card);
+  backdrop-filter: blur(30px);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
     margin: 0;
     font-family: "Roboto", sans-serif;
     background: transparent;
-}
+  }
 
-h1,
-h2,
-h3,
-h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     line-height: 75%;
     margin: 0;
-}
+  }
 
-h1 {
+  h1 {
     font-size: 48px;
     font-weight: 900;
-}
+  }
 
-h2 {
+  h2 {
     font-size: 20px;
     font-weight: 600;
+  }
 }
