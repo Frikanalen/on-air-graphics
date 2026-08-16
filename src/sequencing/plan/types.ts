@@ -6,8 +6,8 @@ import { type ScheduleItem } from "../../schedule/types"
  * tracked as state, so any point on the timeline resolves to the same status
  * every time it is visited -- which is what lets the dev panel scrub.
  *
- * The values are a subset of react-transition-group's TransitionStatus, so a
- * status can still be handed to views that have not been converted yet.
+ * The names are the ones react-transition-group used, kept so that the views'
+ * existing keyframe classes read the same as before.
  */
 export type SegmentStatus = "entering" | "entered" | "exiting"
 
@@ -34,6 +34,21 @@ export interface SegmentSpec {
   max: number
   /** 0 is rigid. Otherwise a weight in the division of leftover time. */
   grow: number
+  /**
+   * How long the view's own entrance animation runs, including any delay it
+   * applies to its slowest element. The status stays "entering" for exactly
+   * this long: the views hang their keyframes off it, and dropping the class
+   * early would abandon the animation and snap the element to its rest state.
+   */
+  enter: number
+  /**
+   * How long the view's exit animation runs. Unlike the entrance, this plays
+   * *after* the segment's own time is up, over the start of the next one --
+   * the intro's card falls away to reveal the schedule already sliding in.
+   * So a segment's allocated duration is the time it is the current view, not
+   * the time it is on screen.
+   */
+  exit: number
   /** Whether the gradient overlay shows behind this view. Defaults to true. */
   overlay?: boolean
   render: (time: SegmentTime) => ReactNode

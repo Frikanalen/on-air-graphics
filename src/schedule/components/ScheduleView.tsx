@@ -1,13 +1,13 @@
 import { useContext } from "react"
 import classNames from "classnames"
-import { TransitionStatus } from "react-transition-group"
+import { type SegmentStatus } from "../../sequencing/plan/types"
 import { Clock } from "../../core/components/Clock"
 import { Logo } from "../../core/components/Logo"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
 import { ScheduleContext } from "../../core/components/ScheduleContext"
 
 export type ScheduleViewProps = {
-  status: TransitionStatus
+  status: SegmentStatus
 }
 
 export function ScheduleView(props: ScheduleViewProps) {

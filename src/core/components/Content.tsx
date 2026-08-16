@@ -1,26 +1,38 @@
-import { TransitionGroup } from "react-transition-group"
+import { useContext, useMemo } from "react"
 import { RESOLUTION, SEQUENCE_NAMES } from "../constants"
 import { useParams } from "../hooks/useParams"
-import { PosterView } from "../../poster/components/PosterView"
+import { Player } from "../../sequencing/components/Player"
+import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import {
-  type SequenceEntry,
-  ViewSequence,
-} from "../../sequencing/components/ViewSequence"
-import { getIntermissionSequence } from "../../schedule/helpers/getIntermissionSequence"
+  INTERMISSION_TIERS,
+  POSTER_TIERS,
+  plan as planTimeline,
+} from "../../sequencing/plan/tiers"
+import { AppContext } from "./AppContext.tsx"
+import { ScheduleContext } from "./ScheduleContext.tsx"
 
 const [width, height] = RESOLUTION
 
 export function Content() {
+  const { budget } = useContext(AppContext)
+  const schedule = useContext(ScheduleContext)
+  const playhead = useContext(PlayheadContext)
+
   const { sequence } = useParams({
     sequence: "default",
   })
 
   const sequenceName = SEQUENCE_NAMES.find((s) => s === sequence) ?? "default"
-  const posterEntry: SequenceEntry = {
-    name: "poster",
-    duration: Infinity,
-    render: (status) => <PosterView transition={status} />,
-  }
+
+  const plan = useMemo(
+    () =>
+      planTimeline(
+        budget,
+        { schedule },
+        sequenceName === "poster" ? POSTER_TIERS : INTERMISSION_TIERS,
+      ),
+    [budget, schedule, sequenceName],
+  )
 
   return (
     <div
@@ -33,13 +45,7 @@ export function Content() {
        * it is meant to blur and flattens them for the length of the fade. Each
        * view carries its own entrance and exit instead.
        */}
-      <TransitionGroup className="absolute top-0 left-0 h-full w-full">
-        {sequenceName === "poster" ? (
-          <ViewSequence sequence={[posterEntry]} />
-        ) : (
-          <ViewSequence sequence={getIntermissionSequence()} />
-        )}
-      </TransitionGroup>
+      <Player plan={plan} playhead={playhead} />
     </div>
   )
 }

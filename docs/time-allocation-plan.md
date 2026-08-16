@@ -1,6 +1,7 @@
 # Budget-driven timeline: implementation plan
 
-**Status:** Phase 1 landed (pure core + tests, 36 passing). Phase 2 is next.
+**Status:** Phases 1 and 2 landed. The planner drives what airs; the playhead
+replaced the timer chains. Phase 3 (dev panel) is next.
 **Base:** `feature/timeline`, cut from main after the styling work merged.
 **Goal:** make the graphics fill _any_ allotted time intelligently — 5 s is a logo
 sting, 30 s adds the upcoming programme, a minute or more makes room for channel
@@ -91,17 +92,17 @@ function that drives air renders any timestamp on demand.
 
 ## 3. Locked decisions
 
-| Question           | Decision                                                                                                                                                                                                                                                                                                        |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Units              | `?duration=` is **milliseconds**, end to end. No conversion anywhere.                                                                                                                                                                                                                                           |
-| Clock origin       | Budget runs from `window.play()`. The plan is computed before play (pure and cheap, recomputed when inputs change); the clock starts at play.                                                                                                                                                                   |
-| Exit fade          | `plan()` reserves `FADE_TRANSITION_MS` off the top of the budget, once, internally.                                                                                                                                                                                                                             |
-| Sub-minimum budget | Degrade by tier, never floor. Below the poorest tier's threshold, squeeze that tier's mins and **overrun** as a last resort. `MINIMUM_SCREEN_TIME` is deleted.                                                                                                                                                  |
-| Leftover time      | Every tier must contain at least one segment with `grow > 0 && max === Infinity` (asserted at build time), so slack is always absorbable. Past `plan.total` the last segment holds in `entered` until `window.stop()` — same as today's `Infinity` behaviour.                                                   |
-| Transitions        | `SegmentStatus` is derived from segment-local time: `entering` for the first `FADE_TRANSITION_MS`, `exiting` for the last `FADE_TRANSITION_MS`, `entered` between. The last segment never time-exits. **`react-transition-group` leaves the sequencing path.** The 200 ms `DELAY` gap between views is dropped. |
-| Scrub fidelity     | Seeking remounts the segment at the new position; CSS entrance animations replay from their start. Segment and timing are exact, animation phase is approximate. Accepted dev-mode limitation — do **not** build negative-animation-delay machinery.                                                            |
-| CasparCG contract  | Unchanged: `window.play/stop/update/next`, `?duration` (ms), `?keyed`, `?sequence`, `?message`, `?type`.                                                                                                                                                                                                        |
-| Test runner        | Add `vitest` (devDependency + `"test": "vitest run"`) with a standalone `vitest.config.ts`. Phase 1 is pure TypeScript, so no Vite plugins are required.                                                                                                                                                        |
+| Question           | Decision                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Units              | `?duration=` is **milliseconds**, end to end. No conversion anywhere.                                                                                                                                                                                                                                                                                                                                                    |
+| Clock origin       | Budget runs from `window.play()`. The plan is computed before play (pure and cheap, recomputed when inputs change); the clock starts at play.                                                                                                                                                                                                                                                                            |
+| Exit fade          | `plan()` reserves `FADE_TRANSITION_MS` off the top of the budget, once, internally.                                                                                                                                                                                                                                                                                                                                      |
+| Sub-minimum budget | Degrade by tier, never floor. Below the poorest tier's threshold, squeeze that tier's mins and **overrun** as a last resort. `MINIMUM_SCREEN_TIME` is deleted.                                                                                                                                                                                                                                                           |
+| Leftover time      | Every tier must contain at least one segment with `grow > 0 && max === Infinity` (asserted at build time), so slack is always absorbable. Past `plan.total` the last segment holds in `entered` until `window.stop()` — same as today's `Infinity` behaviour.                                                                                                                                                            |
+| Transitions        | `SegmentStatus` is derived from segment-local time, against durations **each segment declares** (`enter` / `exit`) rather than a flat window — see the correction below. A view's exit plays _over the start of the next segment_, so two views are on screen during a handover. The last segment never exits. **`react-transition-group` leaves the sequencing path.** The 200 ms `DELAY` gap between views is dropped. |
+| Scrub fidelity     | Seeking remounts the segment at the new position; CSS entrance animations replay from their start. Segment and timing are exact, animation phase is approximate. Accepted dev-mode limitation — do **not** build negative-animation-delay machinery.                                                                                                                                                                     |
+| CasparCG contract  | Unchanged: `window.play/stop/update/next`, `?duration` (ms), `?keyed`, `?sequence`, `?message`, `?type`.                                                                                                                                                                                                                                                                                                                 |
+| Test runner        | Add `vitest` (devDependency + `"test": "vitest run"`) with a standalone `vitest.config.ts`. Phase 1 is pure TypeScript, so no Vite plugins are required.                                                                                                                                                                                                                                                                 |
 
 ---
 
@@ -488,9 +489,37 @@ export function Player({ plan, playhead }: { plan: Plan; playhead: Playhead }) {
   cuts the cards' `backdrop-filter` off from what it is meant to blur and
   flattens them for the duration of the fade. Each view fades itself.
 
-**Done when:** with `?duration=290000` the on-air behaviour matches today
-(intro → schedule, holding until `stop()`), `?sequence=poster` is unchanged, and
-no chained delays remain anywhere in sequencing.
+**Done — verified in a browser**, not just in tests: the intro plays, both
+views are on screen together through the handover, the schedule settles and
+holds, and `?sequence=poster` is unchanged. No chained delays remain.
+
+### 5.5 Correction: a flat fade window was wrong
+
+The locked decision said `entering` and `exiting` each last
+`FADE_TRANSITION_MS`. Reality in `index.css` says otherwise:
+
+| Animation                 | Length                 |
+| ------------------------- | ---------------------- |
+| `logo-unblur`             | 1200 ms + 200 ms delay |
+| `schedule-in` / `-out`    | 1000 ms + 100 ms delay |
+| `card-fall` / `logo-fall` | 700 ms                 |
+| `poster-in` / `-out`      | 500 ms                 |
+
+The views hang their keyframes off the status, so holding `entering` for only
+500 ms would drop the class a third of the way into the logo's 1400 ms
+entrance, abandoning the animation and snapping the element to its rest state.
+
+Worse, a flat window implied the exit had to fit _inside_ the segment's own
+allocation, which would have serialised the handover: the intro finishing its
+fall on an otherwise empty screen before the schedule began to arrive. Today's
+`TransitionGroup` deliberately overlaps them — the card falls away _to reveal_
+the schedule already sliding in.
+
+So `SegmentSpec` gained two fields, `enter` and `exit`, and each segment
+declares what its own animations actually need. `resolve()` returns a **list**:
+normally one segment, and two through a handover, the outgoing one carrying
+`status: "exiting"` while the incoming one enters beneath it. The numbers in
+`segments.tsx` are read off `index.css` and have to stay in step with it.
 
 ---
 
