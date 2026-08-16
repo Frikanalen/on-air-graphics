@@ -12,21 +12,16 @@
     "format": "prettier . --write"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.9",
-    "@stylexjs/stylex": "^0.17.2",
     "axios": "^1.13.2",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
-    "polished": "^4.3.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-transition-group": "^4.4.5",
     "suncalc": "^1.9.0"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "^0.17.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.1",
     "@types/react": "^19.2.7",
@@ -55,7 +50,6 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.49.0",
-    "unplugin": "^2.3.11",
     "vite": "^7.2.7"
   },
   "lint-staged": {

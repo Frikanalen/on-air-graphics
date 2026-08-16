@@ -1,51 +1,5 @@
-import styled from "@emotion/styled"
 import { type ScheduleItem } from "../types"
 import { HumanizedDate } from "./HumanizedDate"
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: -5px;
-
-  & + & {
-    margin-top: 32px;
-  }
-`
-
-const PrimaryInfo = styled.div`
-  flex: 1;
-  width: 0;
-
-  margin-right: 16px;
-`
-
-const Name = styled.h2`
-  margin-bottom: 7px;
-
-  line-height: normal;
-  margin-top: -7px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${(props) => props.theme.fontColor.normal};
-`
-
-const Organization = styled.span`
-  font-size: 20px;
-  line-height: 75%;
-
-  color: ${(props) => props.theme.fontColor.muted};
-`
-
-const Time = styled.span`
-  font-size: 20px;
-  font-weight: 600;
-
-  color: ${(props) => props.theme.fontColor.muted};
-`
 
 export interface ScheduleItemSummaryProps {
   item: ScheduleItem
@@ -55,14 +9,18 @@ export function ScheduleItemSummary(props: ScheduleItemSummaryProps) {
   const { video, starttime } = props.item
 
   return (
-    <Container>
-      <PrimaryInfo>
-        <Name>{video.name}</Name>
-        <Organization>{video.organization.name}</Organization>
-      </PrimaryInfo>
-      <Time>
+    <div className="mb-[-5px] flex items-center justify-between">
+      <div className="mr-4 w-0 flex-1">
+        <h2 className="-mt-[7px] mb-[7px] overflow-hidden text-ellipsis whitespace-nowrap text-normal leading-normal">
+          {video.name}
+        </h2>
+        <span className="text-[20px] text-muted leading-[75%]">
+          {video.organization.name}
+        </span>
+      </div>
+      <span className="text-[20px] font-semibold text-muted">
         <HumanizedDate date={new Date(starttime)} />
-      </Time>
-    </Container>
+      </span>
+    </div>
   )
 }
