@@ -1,4 +1,5 @@
-import { FADE_TRANSITION_MS, type SequenceName } from "../../core/constants"
+import { FADE_TRANSITION_MS } from "../../core/constants"
+import { type SequenceName } from "../../core/types"
 import { allocate, minDuration } from "./allocate"
 import {
   intro,

@@ -1,4 +1,5 @@
-import { SEQUENCE_NAMES, type SequenceName } from "../constants"
+import { SEQUENCE_NAMES } from "../constants"
+import { type SequenceName } from "../types"
 import { useParams } from "./useParams"
 
 /** Which programme the playout system asked for, ignoring anything unknown. */

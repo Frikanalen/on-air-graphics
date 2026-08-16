@@ -1,9 +1,10 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useMemo, useRef, useState, type ReactNode } from "react"
 import { RESOLUTION } from "../constants"
+import { useFitScale } from "../hooks/useFitScale"
 import { useSequenceName } from "../hooks/useSequenceName"
+import { useNews } from "../../news/useNews"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import { usePlayheadPlaying } from "../../sequencing/clock/usePlayhead"
-import { useNews } from "../../news/useNews"
 import { scenarios } from "../../sequencing/plan/scenarios"
 import { tiersFor } from "../../sequencing/plan/tiers"
 import { useTimelinePlan } from "../../sequencing/plan/useTimelinePlan"
@@ -12,11 +13,12 @@ import { ScheduleContext } from "./ScheduleContext.tsx"
 import { Content } from "./Content"
 import { Timeline } from "./dev/Timeline"
 
-const button =
-  "cursor-pointer border-none bg-[#333] px-4 py-2 font-mono font-bold text-[#ddd] hover:bg-[#444] active:bg-[#555]"
+const [FRAME_WIDTH, FRAME_HEIGHT] = RESOLUTION
 
-const chip =
-  "cursor-pointer rounded-sm border-none bg-[#333] px-3 py-1.5 font-mono text-[12px] text-[#ddd] hover:bg-[#444] active:bg-[#555]"
+const control =
+  "cursor-pointer rounded-sm border-none bg-[#333] px-3 py-1.5 text-left font-mono text-[12px] text-[#ddd] hover:bg-[#454545] active:bg-[#555]"
+
+const panel = "rounded-sm bg-black p-3"
 
 /**
  * Overrides the budget for everything below it, so the scenario buttons can
@@ -35,6 +37,20 @@ export const DevPanel = () => {
   )
 }
 
+interface SectionProps {
+  title: string
+  children: ReactNode
+}
+
+const Section = ({ title, children }: SectionProps) => (
+  <section className="flex flex-col gap-1.5">
+    <h2 className="text-[10px] font-normal tracking-[0.12em] text-[#666] uppercase">
+      {title}
+    </h2>
+    {children}
+  </section>
+)
+
 interface DevPanelBodyProps {
   budget: number
   onBudget: (budget: number) => void
@@ -50,11 +66,9 @@ const DevPanelBody = (props: DevPanelBodyProps) => {
   const plan = useTimelinePlan()
   const playing = usePlayheadPlaying(playhead)
 
-  /*
-   * The budgets worth testing are the ones either side of a tier boundary, and
-   * those move whenever a segment is retuned -- so they are derived from the
-   * tiers rather than written down here.
-   */
+  const frameRef = useRef<HTMLDivElement>(null)
+  const scale = useFitScale(frameRef, FRAME_WIDTH, FRAME_HEIGHT)
+
   const options = useMemo(
     () => scenarios(tiersFor(sequence), { schedule, news }),
     [sequence, schedule, news],
@@ -66,36 +80,65 @@ const DevPanelBody = (props: DevPanelBodyProps) => {
     playhead.restart()
   }
 
+  /*
+   * The panel's own typography stays on the panel's own elements. Setting it
+   * on the wrapper would inherit straight into the frame, and the graphics
+   * would render in the dev panel's monospace instead of their own face --
+   * a preview that no longer previews anything.
+   */
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#333] py-8">
-      <div className="flex flex-col gap-6" style={{ maxWidth: RESOLUTION[0] }}>
-        <h1 className="w-full text-[#999]">Frikanalen sendegrafikk</h1>
-
-        <Content />
-
+    <div className="flex h-screen flex-col gap-2 bg-[#222] p-2">
+      <div className="flex min-h-0 flex-1 gap-2">
+        {/*
+         * The frame keeps its authored resolution and is scaled to whatever is
+         * left over, so what is on screen stays a faithful preview however
+         * small the window gets.
+         */}
         <div
-          className="flex flex-col gap-4 bg-black p-4"
-          style={{ width: RESOLUTION[0] }}
+          ref={frameRef}
+          className="flex min-w-0 flex-1 items-center justify-center overflow-hidden rounded-sm bg-black"
         >
-          <Timeline plan={plan} playhead={playhead} />
+          <div
+            style={{
+              width: FRAME_WIDTH * scale,
+              height: FRAME_HEIGHT * scale,
+            }}
+          >
+            <div
+              style={{
+                width: FRAME_WIDTH,
+                height: FRAME_HEIGHT,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
+              }}
+            >
+              <Content />
+            </div>
+          </div>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[12px] text-[#777]">scenarios</span>
+        <aside
+          className={`flex w-60 shrink-0 flex-col gap-4 overflow-y-auto font-mono text-[12px] text-[#ddd] ${panel}`}
+        >
+          <h1 className="text-[12px] font-normal text-[#888]">
+            Frikanalen sendegrafikk
+          </h1>
+
+          <Section title="scenarios">
             {options.map((scenario) => (
               <button
                 key={scenario.budget}
-                className={chip}
+                className={control}
                 onClick={() => play(scenario.budget)}
                 title={`?duration=${scenario.budget}`}
               >
                 {scenario.label}
               </button>
             ))}
-          </div>
+          </Section>
 
-          <div className="flex flex-wrap items-center gap-3 font-mono text-[12px] text-[#777]">
-            <label className="flex items-center gap-2">
-              budget
+          <Section title="budget">
+            <label className="flex items-center gap-2 text-[#888]">
               <input
                 type="number"
                 step={0.5}
@@ -104,44 +147,49 @@ const DevPanelBody = (props: DevPanelBodyProps) => {
                 onChange={(event) =>
                   onBudget(Math.max(Number(event.target.value), 0) * 1000)
                 }
-                className="w-24 bg-[#222] px-2 py-1 text-[#ddd]"
+                className="w-20 rounded-sm bg-[#333] px-2 py-1.5 text-[#ddd]"
               />
-              s
+              sekunder
             </label>
+          </Section>
 
-            <button
-              className={chip}
-              onClick={() => playhead.seek(playhead.now() - 500)}
-            >
-              −500ms
-            </button>
-            <button
-              className={chip}
-              onClick={() => (playing ? playhead.pause() : playhead.resume())}
-            >
-              {playing ? "PAUSE" : "RESUME"}
-            </button>
-            <button
-              className={chip}
-              onClick={() => playhead.seek(playhead.now() + 500)}
-            >
-              +500ms
-            </button>
-          </div>
+          <Section title="playhead">
+            <div className="flex gap-1.5">
+              <button
+                className={`${control} flex-1 text-center`}
+                onClick={() => playhead.seek(playhead.now() - 500)}
+              >
+                −½s
+              </button>
+              <button
+                className={`${control} flex-1 text-center`}
+                onClick={() => (playing ? playhead.pause() : playhead.resume())}
+              >
+                {playing ? "pause" : "spill"}
+              </button>
+              <button
+                className={`${control} flex-1 text-center`}
+                onClick={() => playhead.seek(playhead.now() + 500)}
+              >
+                +½s
+              </button>
+            </div>
+          </Section>
 
-          <div className="flex items-baseline gap-8 text-[#ddd]">
-            <button className={button} onClick={() => play()}>
-              RESET
-            </button>
-            <h2>Events</h2>
-            <button className={button} onClick={() => play()}>
+          {/* What the playout system sends; the graphics only ever react. */}
+          <Section title="casparcg">
+            <button className={control} onClick={() => play()}>
               PLAY
             </button>
-            <button className={button} onClick={window.stop}>
+            <button className={control} onClick={window.stop}>
               STOP
             </button>
-          </div>
-        </div>
+          </Section>
+        </aside>
+      </div>
+
+      <div className={`shrink-0 ${panel}`}>
+        <Timeline plan={plan} playhead={playhead} />
       </div>
     </div>
   )
