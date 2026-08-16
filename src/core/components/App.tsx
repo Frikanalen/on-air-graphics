@@ -1,11 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "../hooks/useParams"
-import { FADE_TRANSITION_MS, MINIMUM_SCREEN_TIME } from "../constants"
+import { DEFAULT_BUDGET_MS } from "../constants"
 import { Content } from "./Content"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
 import { ScheduleContext } from "./ScheduleContext.tsx"
+import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
+import { createPlayhead } from "../../sequencing/clock/playhead.ts"
 
 window.update = (data: unknown) => {
   console.error(`Update was called with ${JSON.stringify(data)}`)
@@ -24,6 +26,7 @@ export function App() {
   const { schedule, loading } = useSchedule()
 
   const [state, setState] = useState<AppState>("idle")
+  const [playhead] = useState(createPlayhead)
 
   window.play = () => {
     setState("active")
@@ -32,19 +35,25 @@ export function App() {
     setState("exit")
   }
 
+  /*
+   * The budget is measured from the cue, not from page load: the playout system
+   * loads the template some time before it plays it, and the time it is asking
+   * for starts when it says so.
+   */
+  useEffect(() => {
+    if (state === "active") playhead.restart()
+    else playhead.pause()
+  }, [state, playhead])
+
   const params = useParams({
-    duration: MINIMUM_SCREEN_TIME,
+    duration: DEFAULT_BUDGET_MS,
     keyed: false,
   })
 
   const context: AppContextT = {
     state,
     keyed: params.keyed,
-    // Ensures the duration is never less than the minimum
-    duration: Math.max(
-      params.duration - FADE_TRANSITION_MS,
-      MINIMUM_SCREEN_TIME,
-    ),
+    budget: params.duration,
   }
 
   if (loading)
@@ -59,7 +68,9 @@ export function App() {
   return (
     <AppContext.Provider value={context}>
       <ScheduleContext.Provider value={schedule}>
-        {import.meta.env.DEV ? <DevPanel /> : <Content />}
+        <PlayheadContext.Provider value={playhead}>
+          {import.meta.env.DEV ? <DevPanel /> : <Content />}
+        </PlayheadContext.Provider>
       </ScheduleContext.Provider>
     </AppContext.Provider>
   )

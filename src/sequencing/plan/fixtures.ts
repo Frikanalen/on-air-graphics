@@ -15,6 +15,10 @@ export const segment = (
   basis: 0,
   max: Infinity,
   grow: 0,
+  // No animation unless a test is about one, so timings stay out of the way of
+  // the arithmetic.
+  enter: 0,
+  exit: 0,
   render: () => null,
   ...overrides,
 })

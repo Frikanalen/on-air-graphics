@@ -1,17 +1,26 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { RESOLUTION } from "../constants"
+import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import { Content } from "./Content"
 
 const button =
   "cursor-pointer border-none bg-[#333] px-4 py-2 font-mono font-bold text-[#ddd] hover:bg-[#444] active:bg-[#555]"
 
 export const DevPanel = () => {
+  const playhead = useContext(PlayheadContext)
+
   const [show, setShow] = useState(true)
+
+  /*
+   * The clock outlives Content now, so remounting the views is not enough to
+   * start the timeline over -- the playhead has to be sent back to zero too.
+   */
   const reset = () => {
     setShow(false)
     setTimeout(() => {
       setShow(true)
       window.play()
+      playhead.restart()
     }, 100)
   }
 

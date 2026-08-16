@@ -1,19 +1,9 @@
 import classNames from "classnames"
-import { TransitionStatus } from "react-transition-group"
 import { Logo } from "./Logo"
-import { SequenceEntry } from "../../sequencing/components/ViewSequence"
-
-const ENTER_MS = 1200
-
-export const INTRO_VIEW_SEQUENCE_ENTRY: SequenceEntry = {
-  name: "intro",
-  duration: ENTER_MS + 2000,
-  render: (status) => <IntroView status={status} />,
-  overlay: false,
-}
+import { type SegmentStatus } from "../../sequencing/plan/types"
 
 export type IntroView = {
-  status: TransitionStatus
+  status: SegmentStatus
 }
 
 export const IntroView = ({ status }: IntroView) => {

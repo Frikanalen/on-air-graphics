@@ -1,26 +1,33 @@
-import { FADE_TRANSITION_MS } from "../../core/constants"
-import { type Plan, type SegmentSpec, type SegmentStatus } from "./types"
+import {
+  type Plan,
+  type SegmentSpec,
+  type SegmentStatus,
+  type SegmentTime,
+} from "./types"
 
-export interface ActiveSegment {
+export interface RenderedSegment {
   index: number
   spec: SegmentSpec
-  time: {
-    t: number
-    duration: number
-    status: SegmentStatus
-  }
+  time: SegmentTime
 }
 
 /**
- * What is on screen at time t. Pure, so the same instant always resolves the
- * same way: on air the playhead only moves forward, but the dev panel scrubs
- * freely and has to land on exactly the frame that would have aired.
+ * Everything that should be on screen at time t, oldest first.
  *
- * Past the end of the plan the last segment holds. That is the normal ending,
- * not an error -- the playout system decides when the graphics come off, and
- * until it says so there has to be something on screen.
+ * Usually one segment. Just after a handover there are two: the outgoing view
+ * is still playing its exit over the top of the incoming one, which is how the
+ * intro's card falls away to reveal the schedule already sliding in. The
+ * outgoing view's `t` is measured from the moment its exit began, and its
+ * `duration` is the length of that exit rather than its allocation -- by then
+ * its allocation is spent and what it is doing is finishing an animation.
+ *
+ * Pure, so the same instant always resolves the same way: on air the playhead
+ * only moves forward, but the dev panel scrubs freely and has to land on
+ * exactly the frame that would have aired.
  */
-export const resolve = (plan: Plan, t: number): ActiveSegment => {
+export const resolve = (plan: Plan, t: number): RenderedSegment[] => {
+  if (plan.segments.length === 0) return []
+
   const clamped = Math.min(Math.max(t, 0), Math.max(plan.total - 1, 0))
 
   const found = plan.segments.findIndex(
@@ -30,23 +37,44 @@ export const resolve = (plan: Plan, t: number): ActiveSegment => {
 
   const segment = plan.segments[index]
   const local = clamped - segment.start
-  const isLast = index === plan.segments.length - 1
 
   /*
-   * The last segment never reports "exiting": it is still holding when the
-   * plan runs out, and fading it down would leave the screen empty for however
-   * long the playout system takes to call stop().
+   * The current view never reports "exiting". It hands over at the end of its
+   * allocation and keeps animating from the outgoing slot below, so the status
+   * it sees is only ever about arriving or being here.
    */
-  const status: SegmentStatus =
-    local < FADE_TRANSITION_MS
-      ? "entering"
-      : !isLast && segment.duration - local <= FADE_TRANSITION_MS
-        ? "exiting"
-        : "entered"
-
-  return {
+  const active: RenderedSegment = {
     index,
     spec: segment.spec,
-    time: { t: local, duration: segment.duration, status },
+    time: {
+      t: local,
+      duration: segment.duration,
+      status: local < segment.spec.enter ? "entering" : "entered",
+    },
   }
+
+  const previous = plan.segments[index - 1]
+
+  // The one it just took over from, if that one is still animating out.
+  if (previous && local < previous.spec.exit)
+    return [
+      {
+        index: index - 1,
+        spec: previous.spec,
+        time: {
+          t: local,
+          duration: previous.spec.exit,
+          status: "exiting" satisfies SegmentStatus,
+        },
+      },
+      active,
+    ]
+
+  return [active]
+}
+
+/** The segment that owns the timeline at time t, ignoring anything exiting. */
+export const activeSegment = (plan: Plan, t: number): RenderedSegment => {
+  const rendered = resolve(plan, t)
+  return rendered[rendered.length - 1]
 }
