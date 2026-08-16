@@ -1,51 +1,10 @@
-import styled from "@emotion/styled"
+import { useState } from "react"
 import { RESOLUTION } from "../constants"
 import { Content } from "./Content"
-import { useState } from "react"
-const DevContainerDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
 
-  background: #333;
-  > div {
-    display: flex;
-    flex-direction: column;
-    max-width: ${RESOLUTION[0]}px;
-    gap: 2em;
-    h1 {
-      color: #999;
-      width: 100%;
-    }
-  }
-}`
-const DevPanelButtons = styled.div`
-  background: black;
-  width: ${RESOLUTION[0]}px;
-  padding: 1em;
-  display: flex;
-  align-items: baseline;
-  gap: 2em;
-  color: #ddd;
+const button =
+  "cursor-pointer border-none bg-[#333] px-4 py-2 font-mono font-bold text-[#ddd] hover:bg-[#444] active:bg-[#555]"
 
-  button {
-    background: #333;
-    color: #ddd;
-    font-weight: bold;
-    border: none;
-    padding: 0.5em 1em;
-    font-family: monospace;
-    cursor: pointer;
-    &:hover {
-      background: #444;
-    }
-    &:active {
-      background: #555;
-    }
-  }
-`
 export const DevPanel = () => {
   const [show, setShow] = useState(true)
   const reset = () => {
@@ -57,17 +16,26 @@ export const DevPanel = () => {
   }
 
   return (
-    <DevContainerDiv>
-      <div>
-        <h1>Frikanalen sendegrafikk</h1>
+    <div className="flex h-screen flex-col items-center justify-center bg-[#333]">
+      <div className="flex flex-col gap-8" style={{ maxWidth: RESOLUTION[0] }}>
+        <h1 className="w-full text-[#999]">Frikanalen sendegrafikk</h1>
         {show && <Content />}
-        <DevPanelButtons>
-          <button onClick={reset}>RESET</button>
+        <div
+          className="flex items-baseline gap-8 bg-black p-4 text-[#ddd]"
+          style={{ width: RESOLUTION[0] }}
+        >
+          <button className={button} onClick={reset}>
+            RESET
+          </button>
           <h2>Events</h2>
-          <button onClick={window.play}>PLAY</button>
-          <button onClick={window.stop}>STOP</button>
-        </DevPanelButtons>
+          <button className={button} onClick={window.play}>
+            PLAY
+          </button>
+          <button className={button} onClick={window.stop}>
+            STOP
+          </button>
+        </div>
       </div>
-    </DevContainerDiv>
+    </div>
   )
 }

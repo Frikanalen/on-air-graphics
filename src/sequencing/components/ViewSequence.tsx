@@ -1,36 +1,12 @@
 import { ReactNode, useContext, useEffect, useRef, useState } from "react"
-import styled from "@emotion/styled"
+import classNames from "classnames"
 import {
   Transition,
   TransitionGroup,
   type TransitionStatus,
 } from "react-transition-group"
-import { cover } from "polished"
-import { FADE_TRANSITION_MS } from "../../core/constants"
 import { delay } from "../../core/helpers/delay"
 import { AppContext } from "../../core/components/AppContext.tsx"
-
-const Container = styled.div<{ keyed: boolean; overlay: boolean }>`
-  &:before {
-    content: "";
-    background: ${(props) =>
-      props.keyed ? "transparent" : props.theme.gradient.overlay};
-
-    position: absolute;
-    ${cover()}
-
-    transition: opacity ${FADE_TRANSITION_MS}ms ease;
-    opacity: ${(props) => (props.overlay ? 1 : 0)};
-  }
-`
-
-const View = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-`
 
 const DELAY = 200
 
@@ -79,7 +55,11 @@ export function ViewSequence(props: ViewSequenceProps) {
 
     return (
       <Transition nodeRef={nodeRef} key={entry.name} timeout={2000}>
-        {(status) => <View>{entry.render(status)}</View>}
+        {(status) => (
+          <div className="absolute top-0 left-0 h-full w-full">
+            {entry.render(status)}
+          </div>
+        )}
       </Transition>
     )
   }
@@ -88,8 +68,17 @@ export function ViewSequence(props: ViewSequenceProps) {
   const overlay = entry?.overlay !== false && app.state === "active"
 
   return (
-    <Container overlay={overlay} keyed={app.keyed}>
+    <div
+      className={classNames(
+        "before:absolute before:inset-0 before:content-['']",
+        "before:[transition:opacity_500ms_ease]",
+        app.keyed
+          ? "before:bg-transparent"
+          : "before:bg-[image:var(--fk-gradient-overlay)]",
+        overlay ? "before:opacity-100" : "before:opacity-0",
+      )}
+    >
       <TransitionGroup>{renderView()}</TransitionGroup>
-    </Container>
+    </div>
   )
 }

@@ -1,6 +1,12 @@
-import { useTheme } from "@emotion/react"
-import styled from "@emotion/styled"
+import { useMemo } from "react"
 import { useCanvasAnimation } from "../hooks/useCanvasAnimation"
+
+/**
+ * A canvas context can't consume CSS custom properties, so the theme tokens
+ * have to be resolved to concrete colour strings first.
+ */
+const readColor = (name: string) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 
 const drawRoundRect = (
   context: CanvasRenderingContext2D,
@@ -22,21 +28,25 @@ const drawRoundRect = (
   context.fill()
 }
 
-const Container = styled.div``
-
 export type ClockProps = {
   size: number
 }
 
 export function Clock({ size }: ClockProps) {
-  const theme = useTheme()
+  const colors = useMemo(
+    () => ({
+      normal: readColor("--fk-font-color-normal"),
+      accent: readColor("--fk-color-accent"),
+    }),
+    [],
+  )
 
   const [handleRef, canvas] = useCanvasAnimation((context) => {
     const radius = size / 2
     const now = new Date()
 
     const drawMarkers = () => {
-      context.fillStyle = theme.fontColor.normal
+      context.fillStyle = colors.normal
       context.save()
 
       const width = 6
@@ -55,7 +65,7 @@ export function Clock({ size }: ClockProps) {
       time: number,
       thickness: number,
       length: number,
-      color = theme.fontColor.normal,
+      color = colors.normal,
     ) => {
       context.save()
       const width = thickness
@@ -71,7 +81,7 @@ export function Clock({ size }: ClockProps) {
     const drawCentralSpot = () => {
       context.beginPath()
       context.arc(0, 0, 7, 0, Math.PI * 2)
-      context.fillStyle = theme.color.accent
+      context.fillStyle = colors.accent
       context.fill()
     }
 
@@ -89,12 +99,12 @@ export function Clock({ size }: ClockProps) {
     drawHandHand(preciseMinutes, 6, 0.75)
     drawHandHand(preciseHours * 5, 6, 0.5)
     drawCentralSpot()
-    drawHandHand(preciseSeconds, 4, 0.7, theme.color.accent)
+    drawHandHand(preciseSeconds, 4, 0.7, colors.accent)
   })
 
   return (
-    <Container>
+    <div>
       <canvas width={size} height={size} ref={handleRef} />
-    </Container>
+    </div>
   )
 }
