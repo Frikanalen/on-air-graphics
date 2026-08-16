@@ -52,6 +52,16 @@ export interface SegmentSpec {
   exit: number
   /** Whether the gradient overlay shows behind this view. Defaults to true. */
   overlay?: boolean
+  /**
+   * Whether the persistent mark and clock show alongside this view. Defaults
+   * to false, so a new view has to ask for them rather than inherit them.
+   *
+   * They are drawn once, outside the segments, and stay mounted across every
+   * consecutive segment that wants them -- which is what keeps the clock from
+   * restarting at each handover. A view that asks for them must leave the
+   * right of the frame clear.
+   */
+  chrome?: boolean
   render: (time: SegmentTime) => ReactNode
 }
 

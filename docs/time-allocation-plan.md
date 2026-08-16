@@ -524,6 +524,33 @@ normally one segment, and two through a handover, the outgoing one carrying
 
 ---
 
+### 5.6 The chrome outlives the segments
+
+The mark and the clock are not part of any view. `IntermissionChrome` is
+rendered by the Player in a slot of its own, after the segments, and stays
+mounted for as long as consecutive segments ask for it via `SegmentSpec.chrome`.
+
+That is the whole point: a clock inside a view unmounts at every handover, so
+it would fade out and play its entrance again — a clock that restarts twice a
+minute reads as a slideshow rather than as the time. Because it is the same
+element throughout, its hands sweep straight through a cut. Verified by marking
+the canvas node during the schedule and finding the same node still there after
+the handover into the news.
+
+Consequences for anyone adding a view:
+
+- A segment with `chrome: true` **must leave the right of the frame clear**;
+  the content column is `max-w-[590px]`, mirrored by a spacer in the chrome.
+- It must not draw its own logo or clock.
+- `chrome` defaults to false, so a new view opts in rather than inherits.
+- The chrome renders **after** the segments so it paints over the schedule
+  view's frosted panel rather than behind it.
+- The intro and the logo sting deliberately opt out: both are the mark at full
+  size, and a second one in the corner would be absurd. The text poster opts
+  out too, since it is often keyed over live video.
+
+---
+
 ## 6. Phase 3 — dev panel: scenarios, timeline, scrubber
 
 All within `DevPanel.tsx` plus a new `src/core/components/dev/Timeline.tsx`.
@@ -546,11 +573,16 @@ the production path.
 This one panel serves both concerns: the strip evaluates _scheduling choices_
 before you press play, and scrubbing evaluates _rendering_.
 
-**Done — verified in a browser.** The scenarios derive to
-`full · 15.7 s (min)`, `full · 90 s`, `full · 300 s`; picking 90 s re-plans to
-`intro 3.2s | schedule 86.3s`; scrubbing to 1% and 2% lands on the intro and 5%
-on the schedule; and `?duration=6000` shows `budget 5.5s → planned 15.2s,
-overruns by 9.7s` with both segments at their minimums.
+**Done — verified in a browser.** Picking a scenario re-plans and restarts;
+scrubbing lands on the frame that would have aired; and `?duration=6000` shows
+`budget 5.5s → planned 15.2s, overruns by 9.7s` with every segment at its
+minimum.
+
+The scenario buttons are five representative slots — 10 s, 20 s, 30 s, 90 s,
+300 s — each labelled with the tier it actually selects, asked of the planner
+rather than written down, so retuning a segment moves the labels. They were
+briefly derived from every tier boundary instead, which was correct and
+unusable: fourteen buttons to say what five say.
 
 Two things worth knowing when using it:
 
