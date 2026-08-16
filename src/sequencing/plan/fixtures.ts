@@ -1,4 +1,4 @@
-import { type SegmentSpec, type TimelineTier } from "./types"
+import { type PlanInputs, type SegmentSpec, type TimelineTier } from "./types"
 
 /*
  * Synthetic segments and tiers for the tests. The real ones carry tuning that
@@ -27,4 +27,20 @@ export const segment = (
 export const tier = (name: string, min: number): TimelineTier => ({
   name,
   build: () => [segment(name, { min, basis: min, grow: 1 })],
+})
+
+/**
+ * A full complement of news, since the richest tier's threshold depends on how
+ * many bulletins there are to show.
+ */
+export const planInputs = (
+  overrides: Partial<PlanInputs> = {},
+): PlanInputs => ({
+  schedule: [],
+  news: ["en", "to", "tre"].map((id) => ({
+    id,
+    title: `Sak ${id}`,
+    body: "Plassholdertekst.",
+  })),
+  ...overrides,
 })

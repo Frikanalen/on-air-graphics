@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { tier } from "./fixtures"
+import { planInputs, tier } from "./fixtures"
 import { scenarios } from "./scenarios"
 import { INTERMISSION_TIERS, plan, tierThreshold } from "./tiers"
-import { type PlanInputs } from "./types"
 
-const data: PlanInputs = { schedule: [] }
+const data = planInputs()
 const ladder = [
   tier("poor", 5000),
   tier("middling", 20000),

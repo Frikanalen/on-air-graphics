@@ -3,6 +3,7 @@ import { RESOLUTION } from "../constants"
 import { useSequenceName } from "../hooks/useSequenceName"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import { usePlayheadPlaying } from "../../sequencing/clock/usePlayhead"
+import { useNews } from "../../news/useNews"
 import { scenarios } from "../../sequencing/plan/scenarios"
 import { tiersFor } from "../../sequencing/plan/tiers"
 import { useTimelinePlan } from "../../sequencing/plan/useTimelinePlan"
@@ -44,6 +45,7 @@ const DevPanelBody = (props: DevPanelBodyProps) => {
 
   const playhead = useContext(PlayheadContext)
   const schedule = useContext(ScheduleContext)
+  const news = useNews()
   const sequence = useSequenceName()
   const plan = useTimelinePlan()
   const playing = usePlayheadPlaying(playhead)
@@ -54,8 +56,8 @@ const DevPanelBody = (props: DevPanelBodyProps) => {
    * tiers rather than written down here.
    */
   const options = useMemo(
-    () => scenarios(tiersFor(sequence), { schedule }),
-    [sequence, schedule],
+    () => scenarios(tiersFor(sequence), { schedule, news }),
+    [sequence, schedule, news],
   )
 
   const play = (next = budget) => {

@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest"
 import { allocate } from "./allocate"
-import { segment } from "./fixtures"
+import { planInputs, segment } from "./fixtures"
 import { activeSegment, resolve } from "./resolve"
 import { INTERMISSION_TIERS, POSTER_TIERS } from "./tiers"
-import { type PlanInputs } from "./types"
 
 const fixed = (name: string, ms: number, animation: number) =>
   segment(name, {
@@ -112,7 +111,7 @@ describe("resolve", () => {
 })
 
 describe("the shipped segments", () => {
-  const data: PlanInputs = { schedule: [] }
+  const data = planInputs()
 
   it("gives every view time to finish arriving before it hands over", () => {
     for (const tiers of [INTERMISSION_TIERS, POSTER_TIERS])

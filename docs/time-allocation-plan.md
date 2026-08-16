@@ -1,8 +1,8 @@
 # Budget-driven timeline: implementation plan
 
-**Status:** Phases 1–3 landed. The planner drives what airs, the playhead
-replaced the timer chains, and the dev panel makes both inspectable. What is
-left is Phase 4: content, which is where the budget finally becomes visible.
+**Status:** all four phases landed. The graphics now fill the time they are
+given: a five second slot is the channel's mark, half a minute is the full
+schedule, and a minute makes room for channel news and a closing slate.
 **Base:** `feature/timeline`, cut from main after the styling work merged.
 **Goal:** make the graphics fill _any_ allotted time intelligently — 5 s is a logo
 sting, 30 s adds the upcoming programme, a minute or more makes room for channel
@@ -566,20 +566,43 @@ Two things worth knowing when using it:
 
 ---
 
-## 7. Phase 4 — content (independent, any order)
+## 7. Phase 4 — content
 
-Each item is: write a view component, write one segment constructor, add one
-line to a tier's `build`. The architecture guarantees nothing else changes.
+**Done — verified in a browser.** Each item was what the architecture promised:
+a view, a segment constructor, a line in a tier's `build`.
 
-- **`LogoStingView`** — logo fade in / hold / out, reusing IntroView's
-  card-less logo treatment. Completes the `logo-only` tier.
-- **`NextProgramView`** — logo plus a single `ScheduleItemSummary` for the next
-  item. Completes `logo-and-next`.
-- **News posters** — `newsPosters(data)` returning 0–N poster segments,
-  inserted into `full` after `intro()`. **Blocked:** the content source needs an
-  API or configuration decision first.
-- **Org slate** — `aboutOrg()`, appended last in `full` with `grow: 0` so it
-  airs immediately before the video.
+The ladder, poorest to richest, with the raw `?duration=` that selects it:
+
+| Tier                 | From   | Composition                                     |
+| -------------------- | ------ | ----------------------------------------------- |
+| `logo-only`          | 3.7 s  | logo sting                                      |
+| `logo-and-next`      | 11.7 s | logo + what is on next                          |
+| `schedule`           | 15.7 s | intro + full schedule                           |
+| `schedule-and-slate` | 21.7 s | + who the channel is, last                      |
+| `full`               | 36.7 s | + three channel news bulletins before the slate |
+
+Every threshold is derived from the segments' minimums, so retuning one moves
+the boundary and the dev panel's scenario buttons with it.
+
+**The schedule carries `grow` in every tier that has it**, so a surplus
+lengthens the schedule rather than holding a closing beat longer: at 180 s the
+schedule takes 146.3 s while the news posters stay at 8 s each and the slate at
+6 s.
+
+### Two things left deliberately
+
+- **The copy is placeholder** in `news/bulletins.ts` and `OrgSlateView`, both
+  marked as such in the source. It needs editorial sign-off before it airs.
+- **`useNews` is the seam.** The bulletins are a hard-coded array today; the
+  real feed will come from the same backend as the schedule, and when it does
+  only that hook changes — into a fetch and a context, the way `useSchedule`
+  already works. `PlanInputs` already carries `news`, so nothing downstream
+  moves.
+
+`MAX_NEWS_POSTERS` caps how many bulletins are ever planned. Without it a long
+feed would push the `full` tier's threshold past any real budget, and the
+effect would be that no news ever aired — a failure that would look like the
+tier simply never being chosen.
 
 ---
 

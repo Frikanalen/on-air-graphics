@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest"
 import { FADE_TRANSITION_MS } from "../../core/constants"
-import { segment, tier } from "./fixtures"
+import { planInputs, segment, tier } from "./fixtures"
 import { INTERMISSION_TIERS, POSTER_TIERS, plan, tierThreshold } from "./tiers"
-import { type PlanInputs, type TimelineTier } from "./types"
+import { type TimelineTier } from "./types"
 
-const data: PlanInputs = { schedule: [] }
+const data = planInputs()
 
 const poor = tier("poor", 5000)
 const middling = tier("middling", 20000)
@@ -91,15 +91,58 @@ describe("the shipped tiers", () => {
     expect(result.segments.map((s) => s.spec.name)).toEqual([
       "intro",
       "schedule",
+      "news:en",
+      "news:to",
+      "news:tre",
+      "slate",
     ])
     expect(result.total).toBe(290000 - FADE_TRANSITION_MS)
   })
 
-  it("still airs something when the slot is far too short", () => {
-    const result = plan(4000, data, INTERMISSION_TIERS)
+  it("closes on the slate, immediately before the video", () => {
+    const { segments } = plan(290000, data, INTERMISSION_TIERS)
 
-    expect(result.tierName).toBe("full")
+    expect(segments[segments.length - 1].spec.name).toBe("slate")
+  })
+
+  it("spends a surplus on the schedule rather than on the closing beats", () => {
+    const short = plan(60000, data, INTERMISSION_TIERS)
+    const long = plan(300000, data, INTERMISSION_TIERS)
+
+    const durationOf = (result: typeof short, name: string) =>
+      result.segments.find((s) => s.spec.name === name)?.duration
+
+    expect(durationOf(long, "slate")).toBe(durationOf(short, "slate"))
+    expect(durationOf(long, "news:en")).toBe(durationOf(short, "news:en"))
+    expect(durationOf(long, "schedule")).toBeGreaterThan(
+      durationOf(short, "schedule") ?? 0,
+    )
+  })
+
+  it("climbs the ladder as the slot grows", () => {
+    const tierAt = (budget: number) =>
+      plan(budget, data, INTERMISSION_TIERS).tierName
+
+    expect(tierAt(5000)).toBe("logo-only")
+    expect(tierAt(13000)).toBe("logo-and-next")
+    expect(tierAt(18000)).toBe("schedule")
+    expect(tierAt(25000)).toBe("schedule-and-slate")
+    expect(tierAt(60000)).toBe("full")
+  })
+
+  it("falls back to the logo when the slot is far too short", () => {
+    const result = plan(2000, data, INTERMISSION_TIERS)
+
+    expect(result.tierName).toBe("logo-only")
     expect(result.segments.every((s) => s.duration >= s.spec.min)).toBe(true)
+  })
+
+  it("plans no news when the feed is empty", () => {
+    const result = plan(290000, planInputs({ news: [] }), INTERMISSION_TIERS)
+
+    expect(result.segments.some((s) => s.spec.name.startsWith("news"))).toBe(
+      false,
+    )
   })
 
   it("gives the whole slot to the poster", () => {

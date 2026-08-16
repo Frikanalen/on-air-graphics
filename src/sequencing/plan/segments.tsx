@@ -1,5 +1,10 @@
 import { IntroView } from "../../core/components/IntroView"
+import { LogoStingView } from "../../core/components/LogoStingView"
+import { OrgSlateView } from "../../core/components/OrgSlateView"
+import { NewsPosterView } from "../../news/components/NewsPosterView"
+import { type NewsBulletin } from "../../news/types"
 import { PosterView } from "../../poster/components/PosterView"
+import { NextProgramView } from "../../schedule/components/NextProgramView"
 import { ScheduleView } from "../../schedule/components/ScheduleView"
 import { type SegmentSpec } from "./types"
 
@@ -41,6 +46,30 @@ const POSTER_BASIS_MS = 10000
 const POSTER_ENTER_MS = 500
 const POSTER_EXIT_MS = 500
 
+/** Long enough to take in the mark and no longer; it is a sting. */
+const STING_MIN_MS = 3200
+const STING_BASIS_MS = 5000
+const STING_MAX_MS = 10000
+
+/** Long enough to read one programme title and who is behind it. */
+const NEXT_MIN_MS = 8000
+const NEXT_BASIS_MS = 15000
+
+/** A headline and a sentence. */
+const NEWS_MIN_MS = 5000
+const NEWS_BASIS_MS = 8000
+
+/** Two sentences, read once, unhurried. */
+const SLATE_MS = 6000
+
+/*
+ * However many bulletins the feed offers, only this many are ever planned.
+ * A tier's threshold is the sum of its segments' minimums, so an unbounded
+ * count would push the news tier out of reach of any real budget and quietly
+ * mean no news ever aired.
+ */
+const MAX_NEWS_POSTERS = 3
+
 export const intro = (bounds: Bounds = {}): SegmentSpec => ({
   name: "intro",
   min: INTRO_MS,
@@ -76,5 +105,62 @@ export const poster = (bounds: Bounds = {}): SegmentSpec => ({
   enter: POSTER_ENTER_MS,
   exit: POSTER_EXIT_MS,
   render: ({ status }) => <PosterView transition={status} />,
+  ...bounds,
+})
+
+export const logoSting = (bounds: Bounds = {}): SegmentSpec => ({
+  name: "logo",
+  min: STING_MIN_MS,
+  basis: STING_BASIS_MS,
+  max: STING_MAX_MS,
+  grow: 0,
+  enter: INTRO_ENTER_MS,
+  exit: POSTER_EXIT_MS,
+  // Nothing behind the mark but the channel's own background.
+  overlay: false,
+  render: ({ status }) => <LogoStingView status={status} />,
+  ...bounds,
+})
+
+export const nextProgram = (bounds: Bounds = {}): SegmentSpec => ({
+  name: "next",
+  min: NEXT_MIN_MS,
+  basis: NEXT_BASIS_MS,
+  max: Infinity,
+  grow: 1,
+  enter: SCHEDULE_EXIT_MS,
+  exit: SCHEDULE_EXIT_MS,
+  render: ({ status }) => <NextProgramView status={status} />,
+  ...bounds,
+})
+
+/** One segment per bulletin, capped -- see MAX_NEWS_POSTERS. */
+export const newsPosters = (
+  news: NewsBulletin[],
+  bounds: Bounds = {},
+): SegmentSpec[] =>
+  news.slice(0, MAX_NEWS_POSTERS).map((bulletin) => ({
+    name: `news:${bulletin.id}`,
+    min: NEWS_MIN_MS,
+    basis: NEWS_BASIS_MS,
+    max: Infinity,
+    grow: 0,
+    enter: POSTER_ENTER_MS,
+    exit: POSTER_EXIT_MS,
+    render: ({ status }) => (
+      <NewsPosterView status={status} bulletin={bulletin} />
+    ),
+    ...bounds,
+  }))
+
+export const orgSlate = (bounds: Bounds = {}): SegmentSpec => ({
+  name: "slate",
+  min: SLATE_MS,
+  basis: SLATE_MS,
+  max: SLATE_MS,
+  grow: 0,
+  enter: POSTER_ENTER_MS,
+  exit: POSTER_EXIT_MS,
+  render: ({ status }) => <OrgSlateView status={status} />,
   ...bounds,
 })
