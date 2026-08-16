@@ -859,11 +859,6 @@
   dependencies:
     csstype "^3.2.2"
 
-"@types/suncalc@^1.9.2":
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/@types/suncalc/-/suncalc-1.9.2.tgz#207810e705572c29c3f5519c29004d88a0c3b2b3"
-  integrity sha512-ATAGBHHfA1TlE2tjfidLyTcysjoT2JHHEAmWRULh73SU9UTn++j5fqHEW16X6Y/2Li87jEQXzgu4R/OOdlDqzw==
-
 "@typescript-eslint/eslint-plugin@8.67.0", "@typescript-eslint/eslint-plugin@^8.49.0":
   version "8.67.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.67.0.tgz#52f9f0e47d5a7571c4336e69bfeea581509ef2cf"
@@ -3783,11 +3778,6 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
-
-suncalc@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/suncalc/-/suncalc-1.9.0.tgz#26212353fae61edb287c2d558fc4932ecf0e1532"
-  integrity sha512-vMJ8Byp1uIPoj+wb9c1AdK4jpkSKVAywgHX0lqY7zt6+EWRRC3Z+0Ucfjy/0yxTVO1hwwchZe4uoFNqrIC24+A==
 
 supports-color@^7.1.0:
   version "7.2.0"
