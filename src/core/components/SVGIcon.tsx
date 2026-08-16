@@ -1,6 +1,6 @@
 import * as icons from "../icons"
 import { IconType } from "../types"
-import React from "react"
+import React, { ReactNode } from "react"
 
 export type SVGIconProps = {
   className?: string
@@ -20,5 +20,5 @@ export function SVGIcon(props: SVGIconProps) {
 }
 
 export type SVGIconWithProps<T extends object> = (
-  props: SVGIconProps & T
-) => JSX.Element
+  props: SVGIconProps & T,
+) => ReactNode
