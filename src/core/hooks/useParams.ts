@@ -1,7 +1,13 @@
+/**
+ * Spellings that read as "off" in a query string. Anything else present is
+ * taken as "on", so a bare `?keyed` enables the flag.
+ */
+const FALSE_VALUES = ["false", "0", "no", "off"]
+
 const parse = <T>(
   defaultValue: T,
   value: string | null,
-): number | boolean | string | T | undefined => {
+): number | boolean | string | T => {
   if (value === null) return defaultValue
 
   if (typeof defaultValue === "string") return value
@@ -9,7 +15,10 @@ const parse = <T>(
   if (typeof defaultValue === "number")
     return isNaN(Number(value)) ? defaultValue : Number(value)
 
-  if (typeof defaultValue === "boolean") return value
+  if (typeof defaultValue === "boolean")
+    return !FALSE_VALUES.includes(value.trim().toLowerCase())
+
+  return defaultValue
 }
 
 export const useParams = <O extends object>(defaultValues: O): O => {
