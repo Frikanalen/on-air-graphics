@@ -31,7 +31,7 @@ export const IntroView = ({ status }: IntroView) => {
         <div
           className={classNames(
             "relative z-1 w-[600px]",
-            status === "entering" && "animate-logo-unblur opacity-0",
+            status === "entering" && "animate-logo-unblur",
             status === "exiting" && "animate-logo-fall",
           )}
         >
