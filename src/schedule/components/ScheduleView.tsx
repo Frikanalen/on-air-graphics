@@ -59,7 +59,7 @@ export function ScheduleView(props: ScheduleViewProps) {
             ))}
           </div>
         </div>
-        {/* The mark and the clock live in the chrome, which outlives this view. */}
+        {/* The station clock is drawn separately; it outlives this view. */}
       </div>
       <div
         className={classNames(

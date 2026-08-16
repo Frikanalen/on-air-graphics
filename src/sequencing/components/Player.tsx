@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import classNames from "classnames"
 import { AppContext } from "../../core/components/AppContext.tsx"
-import { IntermissionChrome } from "../../core/components/IntermissionChrome"
+import { StationClock } from "../../core/components/StationClock"
 import { useRenderedSegments } from "../clock/useRenderedSegments"
 import { type Playhead } from "../clock/playhead"
 import { type Plan } from "../plan/types"
@@ -25,7 +25,7 @@ export function Player(props: PlayerProps) {
   // The last entry owns the instant; anything before it is still animating out.
   const active = rendered[rendered.length - 1]
   const overlay = active?.spec.overlay !== false && app.state === "active"
-  const chrome = active?.spec.chrome === true && app.state === "active"
+  const clock = active?.spec.clock === true && app.state === "active"
 
   return (
     <div
@@ -61,7 +61,7 @@ export function Player(props: PlayerProps) {
        * keeps the same element mounted from one segment to the next instead
        * of tearing the clock down and building it again.
        */}
-      {chrome && <IntermissionChrome />}
+      {clock && <StationClock />}
     </div>
   )
 }

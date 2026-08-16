@@ -525,11 +525,12 @@ normally one segment, and two through a handover, the outgoing one carrying
 
 ---
 
-### 5.6 The chrome outlives the segments
+### 5.6 The station clock outlives the segments
 
-The mark and the clock are not part of any view. `IntermissionChrome` is
-rendered by the Player in a slot of its own, after the segments, and stays
-mounted for as long as consecutive segments ask for it via `SegmentSpec.chrome`.
+The dial and the channel's mark read as one piece of design, and belong to no
+view. `StationClock` is rendered by the Player in a slot of its own, after the
+segments, and stays mounted for as long as consecutive segments ask for it via
+`SegmentSpec.clock`.
 
 That is the whole point: a clock inside a view unmounts at every handover, so
 it would fade out and play its entrance again — a clock that restarts twice a
@@ -540,12 +541,12 @@ the handover into the news.
 
 Consequences for anyone adding a view:
 
-- A segment with `chrome: true` **must leave the right of the frame clear**;
-  the content column is `max-w-[590px]`, mirrored by a spacer in the chrome.
+- A segment with `clock: true` **must leave the right of the frame clear**;
+  the content column is `max-w-[590px]`, mirrored by a spacer in the clock.
 - It must not draw its own logo or clock.
-- `chrome` defaults to false, so a new view opts in rather than inherits.
-- The chrome renders **after** the segments so it paints over the schedule
-  view's frosted panel rather than behind it.
+- `clock` defaults to false, so a new view opts in rather than inherits.
+- It renders **after** the segments so it paints over the schedule view's
+  frosted panel rather than behind it.
 - The intro and the logo sting deliberately opt out: both are the mark at full
   size, and a second one in the corner would be absurd. The text poster opts
   out too, since it is often keyed over live video.

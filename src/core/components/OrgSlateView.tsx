@@ -18,8 +18,8 @@ const BODY =
  * purpose -- it is a closing beat, and stretching it would only leave the
  * viewer reading the same two sentences for longer.
  *
- * Sits in the content column and draws no mark of its own: the chrome is
- * holding one, along with the clock, for as long as this view is up.
+ * Sits in the content column and draws no mark of its own: the station clock
+ * is carrying one for as long as this view is up.
  */
 export function OrgSlateView(props: OrgSlateViewProps) {
   const { status } = props

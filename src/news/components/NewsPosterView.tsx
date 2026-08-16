@@ -12,8 +12,8 @@ export interface NewsPosterViewProps {
  * One piece of channel news, filling time that would otherwise be dead.
  *
  * Shares the schedule's column and its card treatment so the two read as the
- * same programme rather than as an interruption -- the mark and the clock
- * carry on unchanged in the chrome to the right.
+ * same programme rather than as an interruption -- the station clock carries
+ * on unchanged to the right of it.
  */
 export function NewsPosterView(props: NewsPosterViewProps) {
   const { status, bulletin } = props
