@@ -112,6 +112,16 @@ export const createPlayhead = (): Playhead => {
     subscribe(listener: () => void) {
       listeners.add(listener)
 
+      /*
+       * Ticking follows "playing, and someone is listening" -- the symmetric
+       * half of the teardown below. Without this, a moment with no listeners
+       * stops the frame loop for good: the last one out cancels it and nothing
+       * starts it again, so `now()` goes on advancing while every subscriber
+       * sits on the snapshot it last saw. React remounts effects in
+       * StrictMode, which is exactly such a moment.
+       */
+      if (playing) startTicking()
+
       return () => {
         listeners.delete(listener)
         if (listeners.size === 0) stopTicking()
