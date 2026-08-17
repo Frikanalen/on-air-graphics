@@ -1,13 +1,13 @@
 import { useContext } from "react"
 import classNames from "classnames"
-import { type TransitionStatus } from "react-transition-group"
+import { type SegmentStatus } from "../../sequencing/plan/types"
 import { useParams } from "../../core/hooks/useParams"
 import { SVGIcon } from "../../core/components/SVGIcon"
 import { POSTER_TYPES } from "../constants"
 import { AppContext } from "../../core/components/AppContext.tsx"
 
 export interface PosterViewProps {
-  transition: TransitionStatus
+  transition: SegmentStatus
 }
 
 export function PosterView(props: PosterViewProps) {

@@ -1,13 +1,12 @@
 import { useContext } from "react"
 import classNames from "classnames"
-import { TransitionStatus } from "react-transition-group"
-import { Clock } from "../../core/components/Clock"
-import { Logo } from "../../core/components/Logo"
+import { type SegmentStatus } from "../../sequencing/plan/types"
+import { CHANNEL_DISCLAIMER } from "../../core/constants"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
 import { ScheduleContext } from "../../core/components/ScheduleContext"
 
 export type ScheduleViewProps = {
-  status: TransitionStatus
+  status: SegmentStatus
 }
 
 export function ScheduleView(props: ScheduleViewProps) {
@@ -28,8 +27,6 @@ export function ScheduleView(props: ScheduleViewProps) {
     "card p-6",
     exiting ? "animate-schedule-out" : "animate-schedule-in",
   )
-  const slide = exiting ? "animate-slide-fade-out" : "animate-slide-fade-in"
-
   return (
     <div
       className={classNames(
@@ -39,7 +36,9 @@ export function ScheduleView(props: ScheduleViewProps) {
         "before:absolute before:top-0 before:right-0 before:h-[140%] before:w-[65%] before:content-['']",
         "before:[transform:rotate(10deg)_translateY(-90px)_translateX(70px)]",
         "not-supports-[backdrop-filter:blur(30px)]:before:bg-[var(--fk-color-backdrop-fallback)]",
-        exiting ? "before:animate-container-out" : "before:animate-container-in",
+        exiting
+          ? "before:animate-container-out"
+          : "before:animate-container-in",
       )}
     >
       <div className="relative z-10 flex flex-1">
@@ -60,17 +59,7 @@ export function ScheduleView(props: ScheduleViewProps) {
             ))}
           </div>
         </div>
-        <div className="flex flex-1 flex-col items-center">
-          <Logo className={classNames("w-[450px] text-normal", slide)} />
-          <div
-            className={classNames(
-              "flex flex-1 items-center [animation-delay:100ms]",
-              slide,
-            )}
-          >
-            <Clock size={320} />
-          </div>
-        </div>
+        {/* The station clock is drawn separately; it outlives this view. */}
       </div>
       <div
         className={classNames(
@@ -78,8 +67,7 @@ export function ScheduleView(props: ScheduleViewProps) {
           exiting ? "animate-footer-out" : "animate-footer-in",
         )}
       >
-        Alt innhold sendes på medlemmers eget ansvar. Se frikanalen.no for
-        kontakt- og redaktørinformasjon.
+        {CHANNEL_DISCLAIMER}
       </div>
     </div>
   )

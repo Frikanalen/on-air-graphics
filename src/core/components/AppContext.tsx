@@ -1,19 +1,24 @@
 import { createContext } from "react"
-import { MINIMUM_SCREEN_TIME } from "../constants.ts"
+import { DEFAULT_BUDGET_MS } from "../constants.ts"
 
 export type AppState = "idle" | "active" | "exit"
 
 export interface AppContextT {
   /** Animation state */
   state: AppState
-  /** The total duration of the graphics being shown */
-  duration: number
+  /**
+   * How long the playout system has given the graphics, in milliseconds, as it
+   * arrived in ?duration=. What the planner is asked to fill; not necessarily
+   * what it manages to fill, since a budget too small for anything on offer is
+   * overrun rather than honoured.
+   */
+  budget: number
   /** Is the graphics superimposed on top of the stream? */
   keyed: boolean
 }
 
 export const AppContext = createContext<AppContextT>({
-  duration: MINIMUM_SCREEN_TIME,
+  budget: DEFAULT_BUDGET_MS,
   state: "idle",
   keyed: false,
 })
