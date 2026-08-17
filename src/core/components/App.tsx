@@ -73,7 +73,7 @@ export function App() {
     <AppContext.Provider value={context}>
       <ScheduleContext.Provider value={schedule}>
         <PlayheadContext.Provider value={playhead}>
-          {import.meta.env.DEV ? <DevPanel /> : <Content />}
+          {import.meta.env.DEV || !hasDuration ? <DevPanel /> : <Content />}
         </PlayheadContext.Provider>
       </ScheduleContext.Provider>
     </AppContext.Provider>
