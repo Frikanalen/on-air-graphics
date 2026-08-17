@@ -11,7 +11,13 @@ export const IntroView = ({ status }: IntroView) => {
     <div>
       <div
         className={classNames(
-          "card absolute top-0 right-0 h-[200%] w-[200%] p-6",
+          /*
+           * The card colour and shadow without `card`'s own backdrop-filter:
+           * this sheet is the whole frame, so its frost comes from the segment's
+           * `blurBackground` instead -- see SegmentSpec for why a full-frame
+           * panel must not blur a playing video by reading the backdrop back.
+           */
+          "absolute top-0 right-0 h-[200%] w-[200%] rounded-lg bg-card p-6 shadow-card",
           "[transform:rotate(10deg)_translateY(-220px)]",
           status === "entering" && "animate-card-appear",
           status === "exiting" && "animate-card-fall",

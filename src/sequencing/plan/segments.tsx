@@ -80,6 +80,8 @@ export const intro = (bounds: Bounds = {}): SegmentSpec => ({
   exit: INTRO_EXIT_MS,
   // The intro paints its own card; the gradient would only muddy it.
   overlay: false,
+  // Its card is the frame, so the frost comes from the background itself.
+  blurBackground: true,
   render: ({ status }) => <IntroView status={status} />,
   ...bounds,
 })

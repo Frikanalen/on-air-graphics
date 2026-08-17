@@ -1,6 +1,6 @@
 /**
  * Spellings that read as "off" in a query string. Anything else present is
- * taken as "on", so a bare `?keyed` enables the flag.
+ * taken as "on", so a bare `?flag` enables a boolean.
  */
 const FALSE_VALUES = ["false", "0", "no", "off"]
 

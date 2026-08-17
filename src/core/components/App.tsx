@@ -29,7 +29,6 @@ export function App() {
   const [playhead] = useState(createPlayhead)
   const params = useParams({
     duration: DEFAULT_BUDGET_MS,
-    keyed: false,
   })
   const hasDuration = new URLSearchParams(window.location.search).has("duration")
 
@@ -58,7 +57,6 @@ export function App() {
 
   const context: AppContextT = {
     state,
-    keyed: params.keyed,
     budget: params.duration,
   }
 

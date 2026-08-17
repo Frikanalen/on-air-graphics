@@ -18,7 +18,6 @@
 
   --fk-font-color-normal: rgba(0, 0, 0, 0.85);
   --fk-font-color-muted: rgba(0, 0, 0, 0.7);
-  --fk-font-color-overlay: white;
 
   --fk-gradient-overlay: linear-gradient(
     0deg,
@@ -68,7 +67,6 @@
   --color-warning: var(--fk-color-warning);
   --color-normal: var(--fk-font-color-normal);
   --color-muted: var(--fk-font-color-muted);
-  --color-overlay: var(--fk-font-color-overlay);
   --shadow-card: var(--fk-shadow-card);
 }
 

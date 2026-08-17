@@ -22,10 +22,18 @@ export function Player(props: PlayerProps) {
   const app = useContext(AppContext)
   const rendered = useRenderedSegments(playhead, plan)
 
+  /*
+   * Everything stays put through the exit: the frame is faded out as a group
+   * by Content, and a view torn down at the first frame of that fade would cut
+   * rather than leave. Only "idle" -- before the playout system has cued
+   * anything -- renders nothing at all.
+   */
+  const cued = app.state !== "idle"
+
   // The last entry owns the instant; anything before it is still animating out.
   const active = rendered[rendered.length - 1]
-  const overlay = active?.spec.overlay !== false && app.state === "active"
-  const clock = active?.spec.clock === true && app.state === "active"
+  const overlay = active?.spec.overlay !== false && cued
+  const clock = active?.spec.clock === true && cued
 
   return (
     <div
@@ -34,13 +42,11 @@ export function Player(props: PlayerProps) {
         "absolute top-0 left-0 h-full w-full",
         "before:absolute before:inset-0 before:content-['']",
         "before:transition-opacity before:duration-(--fk-fade-transition) before:ease-[ease]",
-        app.keyed
-          ? "before:bg-transparent"
-          : "before:bg-[image:var(--fk-gradient-overlay)]",
+        "before:bg-[image:var(--fk-gradient-overlay)]",
         overlay ? "before:opacity-100" : "before:opacity-0",
       )}
     >
-      {app.state === "active" &&
+      {cued &&
         rendered.map((segment) => (
           /*
            * Keyed by generation as well as position, so that scrubbing back

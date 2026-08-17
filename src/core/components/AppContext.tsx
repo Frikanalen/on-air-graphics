@@ -13,12 +13,9 @@ export interface AppContextT {
    * overrun rather than honoured.
    */
   budget: number
-  /** Is the graphics superimposed on top of the stream? */
-  keyed: boolean
 }
 
 export const AppContext = createContext<AppContextT>({
   budget: DEFAULT_BUDGET_MS,
   state: "idle",
-  keyed: false,
 })
