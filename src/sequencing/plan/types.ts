@@ -62,6 +62,19 @@ export interface SegmentSpec {
    * clear and draw no mark of its own.
    */
   clock?: boolean
+  /**
+   * Whether the background loop is blurred behind this view. Defaults to false.
+   *
+   * For a view that covers the whole frame with a frosted sheet. Such a sheet
+   * cannot get its blur from `backdrop-filter`: that reads the backdrop back
+   * every frame, and over a playing video across the whole frame the readback
+   * lags and resettles on any unrelated repaint -- a rim that flickers by
+   * itself and moves when something elsewhere on the page redraws. Blurring
+   * the video directly is an ordinary filter on one layer, with nothing to
+   * read back. A view that asks for this should draw a plain translucent panel
+   * and no blur of its own.
+   */
+  blurBackground?: boolean
   render: (time: SegmentTime) => ReactNode
 }
 

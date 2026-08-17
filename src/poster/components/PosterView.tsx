@@ -1,10 +1,8 @@
-import { useContext } from "react"
 import classNames from "classnames"
 import { type SegmentStatus } from "../../sequencing/plan/types"
 import { useParams } from "../../core/hooks/useParams"
 import { SVGIcon } from "../../core/components/SVGIcon"
 import { POSTER_TYPES } from "../constants"
-import { AppContext } from "../../core/components/AppContext.tsx"
 
 export interface PosterViewProps {
   transition: SegmentStatus
@@ -12,7 +10,6 @@ export interface PosterViewProps {
 
 export function PosterView(props: PosterViewProps) {
   const { transition } = props
-  const app = useContext(AppContext)
 
   const { message, type } = useParams({
     message: "Tekstplakat melding",
@@ -27,16 +24,8 @@ export function PosterView(props: PosterViewProps) {
         className={classNames(
           "flex items-center justify-center",
           transition === "exiting" ? "animate-poster-out" : "animate-poster-in",
-          safeType !== "info"
-            ? "text-warning"
-            : app.keyed
-              ? "text-overlay"
-              : "text-normal",
-          // Keyed output is composited onto live video, so the card panel
-          // would obscure it — the drop shadow alone carries legibility.
-          app.keyed
-            ? "drop-shadow-[1px_1px_0px_rgba(0,0,0,0.8)]"
-            : "card relative z-2 p-8",
+          safeType !== "info" ? "text-warning" : "text-normal",
+          "card relative z-2 p-8",
         )}
       >
         <SVGIcon name={safeType} className="mr-4 h-10.5 w-10.5" />
