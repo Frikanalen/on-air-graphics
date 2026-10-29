@@ -15,6 +15,13 @@ import { ScheduleItem } from "../types"
  */
 const PAGE_SIZE = 500
 
+/*
+ * The API lets browsers keep the schedule for minutes, which suits the public
+ * site. The graphics fetch it because playout events say it just changed, so
+ * a cached copy is exactly the wrong answer: make the browser ask the server.
+ */
+const FRESH = { "Cache-Control": "no-cache" }
+
 export const fetchSceduleItems = async () => {
   const { data } = await api.get<ApiCollection<ScheduleItem>>(
     "/scheduleitems",
@@ -23,6 +30,7 @@ export const fetchSceduleItems = async () => {
         ordering: "starttime",
         limit: PAGE_SIZE,
       },
+      headers: FRESH,
     },
   )
 
