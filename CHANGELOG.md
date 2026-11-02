@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.2.0...v1.3.0) (2026-11-02)
+
+
+### Features
+
+* **protest:** full-screen statement page for CasparCG ([#24](https://github.com/Frikanalen/on-air-graphics/issues/24)) ([c88dbdf](https://github.com/Frikanalen/on-air-graphics/commit/c88dbdfa7ef20ffab1eb1535e1dae25155e6e6ab))
+
 ## [1.2.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.1.1...v1.2.0) (2026-10-29)
 
 
