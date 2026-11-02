@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Frikanalen protestuttalelse</title>
+    <!--
+      Full-screen statement for CasparCG (1280x720), shown in place of the
+      ordinary schedule. Deliberately plain: no React, no bundle, one page of
+      DOM at a time, so the CEF renderer (SwiftShader on our playout boxes)
+      has as little as possible to draw and nothing to accumulate.
+
+      The text is read from the server-rendered <article> on /protest, so
+      editing the statement on the website updates the broadcast at the next
+      cycle. If that fetch fails, the last good copy stays on screen; if there
+      has never been one, a short notice pointing at the web page is shown.
+
+      Served by the graphics image at /graphics/protest/. To put it on air
+      (layer 90 sits above playout's video and filler layers and below the
+      screen bug on 100):
+
+        PLAY 1-90 [HTML] "https://frikanalen.no/graphics/protest/"
+        CLEAR 1-90
+
+      CasparCG's CEF does not enforce CORS, so a copy loaded from anywhere
+      else works too with source=https://frikanalen.no/protest.
+
+      Query parameters (all optional):
+        source  URL to read the statement from (default /protest)
+        wpm     reading speed used to time each page (default 140)
+    -->
+    <style>
+      :root {
+        /* Off-white on near-black rather than pure white on pure black: easier
+           to read on a TV and kinder to plasma/OLED panels over many hours. */
+        --bg: #0d0d0d;
+        --text: #d6d6d6;
+        --heading: #ececec;
+        --muted: #6a6a6a;
+        --accent: #b8473c;
+        --fade: 900ms;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Roboto", "Noto Sans", "DejaVu Sans", "Liberation Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      /*
+       * Title-safe area: 10% in from each edge (128x72 px at 720p), which also
+       * keeps clear of the screen bug at the 5% graphics-safe corner.
+       * The page is nudged a few pixels on every turn (see shift()) so that
+       * nothing, not even the footer, sits on exactly the same pixels for hours.
+       */
+      #safe {
+        position: absolute;
+        left: 128px;
+        top: 72px;
+        width: 1024px;
+        height: 576px;
+        transition: transform var(--fade) ease-in-out;
+      }
+      #page {
+        position: absolute;
+        inset: 0 0 56px 0;
+        opacity: 0;
+        transition: opacity var(--fade) ease-in-out;
+      }
+      #page.on {
+        opacity: 1;
+      }
+      #footer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 22px;
+        color: var(--muted);
+      }
+      #measure {
+        position: absolute;
+        left: -10000px;
+        top: 0;
+        width: 1024px;
+        visibility: hidden;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0 0 18px 0;
+      }
+      h1 {
+        font-size: 50px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--heading);
+        border-left: 8px solid var(--accent);
+        padding-left: 28px;
+      }
+      h2 {
+        font-size: 40px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--heading);
+      }
+      h3 {
+        font-size: 34px;
+        line-height: 1.25;
+        font-weight: 700;
+        color: var(--heading);
+      }
+      p {
+        font-size: 31px;
+        line-height: 1.42;
+      }
+      strong {
+        color: var(--heading);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="safe">
+      <div id="page"></div>
+      <div id="footer">
+        <span>frikanalen.no/protest</span>
+        <span id="counter"></span>
+      </div>
+    </div>
+    <div id="measure"></div>
+    <script>
+      ;(function () {
+        var params = new URLSearchParams(window.location.search)
+        var SOURCE = params.get("source") || "/protest"
+        var WPM = Number(params.get("wpm")) || 140
+        var FADE_MS = 900
+        var MIN_HOLD_MS = 7000
+        var PAGE_HEIGHT = 576 - 56
+
+        var FALLBACK = [
+          "<h1>Frikanalen går i svart i protest mot udemokratisk overtakelse av kanalen</h1>",
+          "<p>Les hele kunngjøringen på frikanalen.no/protest</p>",
+        ]
+
+        var pageEl = document.getElementById("page")
+        var counterEl = document.getElementById("counter")
+        var safeEl = document.getElementById("safe")
+        var measureEl = document.getElementById("measure")
+
+        var blocks = null // last good list of block HTML strings
+        var pages = []
+        var index = 0
+        var turns = 0
+        var timer = null
+        var running = false
+
+        // Keep only plain text structure from the page: headings, paragraphs,
+        // <strong>/<em>/<br>. Everything else (classes, links, images) goes.
+        function clean(node) {
+          var out = ""
+          node.childNodes.forEach(function (child) {
+            if (child.nodeType === 3) {
+              out += child.textContent
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/\s+/g, " ")
+            } else if (child.nodeType === 1) {
+              var tag = child.tagName.toLowerCase()
+              if (tag === "br") out += "<br>"
+              else if (tag === "strong" || tag === "b") out += "<strong>" + clean(child) + "</strong>"
+              else if (tag === "em" || tag === "i") out += "<em>" + clean(child) + "</em>"
+              else out += clean(child)
+            }
+          })
+          return out
+        }
+
+        function extract(html) {
+          var doc = new DOMParser().parseFromString(html, "text/html")
+          var article = doc.querySelector("article")
+          if (!article) return null
+          var result = []
+          article.querySelectorAll("h1, h2, h3, p").forEach(function (el) {
+            var tag = el.tagName.toLowerCase()
+            var inner = clean(el)
+              .replace(/^(\s|<br>)+|(\s|<br>)+$/g, "")
+              .trim()
+            if (inner) result.push("<" + tag + ">" + inner + "</" + tag + ">")
+          })
+          return result.length ? result : null
+        }
+
+        function height(html) {
+          measureEl.innerHTML = html
+          var h = measureEl.scrollHeight
+          measureEl.innerHTML = ""
+          return h
+        }
+
+        // A paragraph too tall for one page is cut at sentence boundaries.
+        function split(block) {
+          if (height(block) <= PAGE_HEIGHT) return [block]
+          var m = block.match(/^<(\w+)>([\s\S]*)<\/\1>$/)
+          if (!m) return [block]
+          var sentences = m[2].match(/[^.!?]+[.!?»"]*\s*/g) || [m[2]]
+          var parts = []
+          var current = ""
+          sentences.forEach(function (s) {
+            var next = current + s
+            if (current && height("<" + m[1] + ">" + next + "</" + m[1] + ">") > PAGE_HEIGHT) {
+              parts.push("<" + m[1] + ">" + current.trim() + "</" + m[1] + ">")
+              current = s
+            } else current = next
+          })
+          if (current.trim()) parts.push("<" + m[1] + ">" + current.trim() + "</" + m[1] + ">")
+          return parts
+        }
+
+        // Greedy fill; a heading is never left alone at the foot of a page.
+        function paginate(list) {
+          var flat = []
+          list.forEach(function (b) {
+            flat = flat.concat(split(b))
+          })
+          var result = []
+          var current = []
+          flat.forEach(function (b, i) {
+            var trial = current.concat([b]).join("")
+            var isHeading = /^<h[23]>/.test(b)
+            var nextFits =
+              !isHeading || i + 1 >= flat.length || height(trial + flat[i + 1]) <= PAGE_HEIGHT
+            if (current.length && (height(trial) > PAGE_HEIGHT || !nextFits)) {
+              result.push(current.join(""))
+              current = [b]
+            } else current.push(b)
+          })
+          if (current.length) result.push(current.join(""))
+          return result
+        }
+
+        function words(html) {
+          return html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length
+        }
+
+        function holdFor(html) {
+          return Math.max(MIN_HOLD_MS, (words(html) / WPM) * 60000 + 3000)
+        }
+
+        // Small, slow pixel shift: 4 positions, a few px apart.
+        function shift() {
+          var offsets = [
+            [0, 0],
+            [6, 4],
+            [-6, 6],
+            [4, -4],
+          ]
+          var o = offsets[turns % offsets.length]
+          safeEl.style.transform = "translate(" + o[0] + "px," + o[1] + "px)"
+        }
+
+        function load() {
+          return fetch(SOURCE, { cache: "no-store" })
+            .then(function (r) {
+              if (!r.ok) throw new Error("HTTP " + r.status)
+              return r.text()
+            })
+            .then(function (html) {
+              var fresh = extract(html)
+              if (!fresh) throw new Error("no <article> in " + SOURCE)
+              blocks = fresh
+            })
+            .catch(function (e) {
+              console.error("protest: could not load statement: " + e)
+              if (!blocks) blocks = FALLBACK
+            })
+            .then(function () {
+              pages = paginate(blocks)
+              index = 0
+            })
+        }
+
+        function show() {
+          if (!running) return
+          var html = pages[index]
+          pageEl.classList.remove("on")
+          timer = setTimeout(function () {
+            pageEl.innerHTML = html
+            counterEl.textContent = pages.length > 1 ? index + 1 + " / " + pages.length : ""
+            turns++
+            shift()
+            pageEl.classList.add("on")
+            timer = setTimeout(advance, FADE_MS + holdFor(html))
+          }, FADE_MS)
+        }
+
+        function advance() {
+          index++
+          // Re-read the statement once per full cycle, so edits on the web
+          // page reach the broadcast without reloading the template.
+          if (index >= pages.length) load().then(show)
+          else show()
+        }
+
+        function start() {
+          if (running) return
+          running = true
+          load().then(show)
+        }
+
+        function stop() {
+          running = false
+          clearTimeout(timer)
+          pageEl.classList.remove("on")
+        }
+
+        // CasparCG template interface (CG ADD/PLAY/STOP), plus autoplay when
+        // loaded directly with PLAY [HTML].
+        window.play = start
+        window.stop = stop
+        window.next = function () {
+          if (!running) return
+          clearTimeout(timer)
+          advance()
+        }
+        window.update = function () {}
+
+        start()
+      })()
+    </script>
+  </body>
+</html>
