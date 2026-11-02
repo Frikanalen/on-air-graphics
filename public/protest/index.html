@@ -27,6 +27,9 @@
       Query parameters (all optional):
         source  URL to read the statement from (default /protest)
         wpm     reading speed used to time each page (default 140)
+        overlay if present, the background is transparent and the text sits
+                in a translucent panel across the lower part of title-safe,
+                for keying over live video on a lower layer
     -->
     <style>
       :root {
@@ -125,6 +128,53 @@
       strong {
         color: var(--heading);
       }
+
+      /* Overlay mode: let the video below show through. The panel covers the
+         lower half of title-safe; type is a step smaller to fit more per page. */
+      html.overlay,
+      html.overlay body {
+        background: transparent;
+      }
+      html.overlay #safe {
+        top: 352px;
+        height: 296px;
+        padding: 22px 32px 14px 32px;
+        box-sizing: border-box;
+        background: rgba(8, 8, 8, 0.78);
+        border-left: 6px solid var(--accent);
+      }
+      html.overlay #page {
+        inset: 22px 32px 50px 32px;
+      }
+      html.overlay #footer {
+        left: 32px;
+        right: 32px;
+        bottom: 14px;
+        height: 26px;
+        font-size: 19px;
+        color: #8a8a8a;
+      }
+      html.overlay h1 {
+        font-size: 34px;
+        border-left: 0;
+        padding-left: 0;
+      }
+      html.overlay h2 {
+        font-size: 30px;
+      }
+      html.overlay h3 {
+        font-size: 28px;
+      }
+      html.overlay p {
+        font-size: 27px;
+        line-height: 1.38;
+      }
+      html.overlay h1,
+      html.overlay h2,
+      html.overlay h3,
+      html.overlay p {
+        margin-bottom: 12px;
+      }
     </style>
   </head>
   <body>
@@ -143,7 +193,7 @@
         var WPM = Number(params.get("wpm")) || 140
         var FADE_MS = 900
         var MIN_HOLD_MS = 7000
-        var PAGE_HEIGHT = 576 - 56
+        if (params.has("overlay")) document.documentElement.classList.add("overlay")
 
         var FALLBACK = [
           "<h1>Frikanalen går i svart i protest mot udemokratisk overtakelse av kanalen</h1>",
@@ -154,6 +204,9 @@
         var counterEl = document.getElementById("counter")
         var safeEl = document.getElementById("safe")
         var measureEl = document.getElementById("measure")
+        // Page size comes from the layout, so both modes paginate correctly.
+        measureEl.style.width = pageEl.clientWidth + "px"
+        var PAGE_HEIGHT = pageEl.clientHeight
 
         var blocks = null // last good list of block HTML strings
         var pages = []
