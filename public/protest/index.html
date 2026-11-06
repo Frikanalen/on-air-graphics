@@ -18,11 +18,11 @@
       (layer 90 sits above playout's video and filler layers and below the
       screen bug on 100):
 
-        PLAY 1-90 [HTML] "https://frikanalen.no/graphics/protest/"
+        PLAY 1-90 [HTML] "https://frikanalen.tv/graphics/protest/"
         CLEAR 1-90
 
       CasparCG's CEF does not enforce CORS, so a copy loaded from anywhere
-      else works too with source=https://frikanalen.no/protest.
+      else works too with source=https://frikanalen.tv/protest.
 
       Query parameters (all optional):
         source  URL to read the statement from (default /protest)
@@ -131,7 +131,7 @@
     <div id="safe">
       <div id="page"></div>
       <div id="footer">
-        <span>frikanalen.no/protest</span>
+        <span>frikanalen.tv/protest</span>
         <span id="counter"></span>
       </div>
     </div>
@@ -147,7 +147,7 @@
 
         var FALLBACK = [
           "<h1>Frikanalen går i svart i protest mot udemokratisk overtakelse av kanalen</h1>",
-          "<p>Les hele kunngjøringen på frikanalen.no/protest</p>",
+          "<p>Les hele kunngjøringen på frikanalen.tv/protest</p>",
         ]
 
         var pageEl = document.getElementById("page")

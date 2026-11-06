@@ -16,6 +16,6 @@ export const FADE_TRANSITION_MS = 500
  * drawn, so the station clock sits at the same point on the frame throughout.
  */
 export const CHANNEL_DISCLAIMER =
-  "Alt innhold sendes på medlemmers eget ansvar. Se frikanalen.no for kontakt- og redaktørinformasjon."
+  "Alt innhold sendes på medlemmers eget ansvar. Se frikanalen.tv for kontakt- og redaktørinformasjon."
 
 export const SEQUENCE_NAMES = ["default", "poster"] as const
