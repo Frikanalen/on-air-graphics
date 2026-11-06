@@ -1,7 +1,7 @@
 import classNames from "classnames"
 
 /** Served from the station's own upload host, next to the DV/AVI master. */
-const LOOP_URL = "https://upload.frikanalen.no/media/filler/FrikanalenLoop.mp4"
+const LOOP_URL = "https://upload.frikanalen.tv/media/filler/FrikanalenLoop.mp4"
 
 export interface BackgroundProps {
   /** Frost the loop itself, for a view that covers the frame. */

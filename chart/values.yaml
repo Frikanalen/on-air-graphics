@@ -12,7 +12,7 @@ service:
 ingress:
   enabled: true
   className: traefik
-  hostname: beta.frikanalen.no
+  hostname: beta.frikanalen.tv
   path: /graphics
   certResolver: letsencrypt
 
