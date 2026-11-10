@@ -7,7 +7,9 @@ metadata:
     {{- include "on-air-graphics.labels" . | nindent 4 }}
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls.certresolver: {{ .Values.ingress.certResolver | quote }}
+    {{- with .Values.ingress.certResolver }}
+    traefik.ingress.kubernetes.io/router.tls.certresolver: {{ . | quote }}
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
