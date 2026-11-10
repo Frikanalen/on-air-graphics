@@ -1,4 +1,11 @@
-replicaCount: 1
+# Two, on different nodes where possible, so draining a node for
+# maintenance never takes the last one down. The PDB below keeps a drain
+# from evicting both at once.
+replicaCount: 2
+
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 1
 
 image:
   repository: ghcr.io/frikanalen/graphics
@@ -14,6 +21,8 @@ ingress:
   className: traefik
   hostname: beta.frikanalen.tv
   path: /graphics
-  certResolver: letsencrypt
+  # Traefik ACME resolver to name on the Ingress. Leave empty when Traefik
+  # serves a cert-manager certificate from its default TLSStore.
+  certResolver: ""
 
 resources: {}
