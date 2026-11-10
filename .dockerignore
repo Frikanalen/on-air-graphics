@@ -1,2 +1,9 @@
 node_modules/
-public/
+.git/
+dist/
+.idea/
+.eslintcache
+test-results/
+playwright-report/
+public/video/
+**/__pycache__/

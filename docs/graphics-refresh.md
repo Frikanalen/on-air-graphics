@@ -6,6 +6,24 @@ same composition and 1080p blade masks. The editorial tier ladder, budget
 allocation, schedule fetching and live schedule-change subscription are retained.
 Parked news/slate views remain parked; this change does not approve placeholder copy.
 
+## Build and deploy
+
+The branch workflow publishes `ghcr.io/frikanalen/graphics:codex-on-air-graphics-refresh`
+and an immutable `sha-<7-character-commit>` tag. Set the existing Helm chart's
+`image.tag` to the desired SHA tag to deploy that exact build. The container serves
+HTTP on port 80 under `/graphics/`; keep `/api` routed to Django on the same origin.
+
+Build locally with `docker build -t frikanalen-graphics:refresh .`.
+The builder uses the lockfile and runs unit tests, lint and the production build.
+The Nginx stage includes the self-hosted fonts, scene textures and public pages;
+build assertions catch missing fonts/textures. `.dockerignore` excludes generated
+output and old video loops while retaining these required public assets.
+
+To check the actual container's output, run it with `docker run --rm -p 4180:80
+frikanalen-graphics:refresh`, then run `PLAYWRIGHT_BASE_URL=http://127.0.0.1:4180
+yarn test:visual`. This uses the full visual suite against Nginx with mocked API
+responses, without starting Vite.
+
 ## Review
 
 Run `yarn install --frozen-lockfile`, `yarn dev`, then open `/graphics/`.
