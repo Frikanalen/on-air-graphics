@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>Frikanalen 50 fps renderer probe</title>
+<style>html,body{margin:0;overflow:hidden;background:#0f1926;color:#f5efe4;font:20px monospace}#layer{position:absolute;inset:-100px;background:repeating-conic-gradient(#f15645 0 25%,#197061 0 50%) 0/300px 300px;filter:blur(50px)}pre{position:absolute;inset:30px;background:#0f1926e8;padding:30px;white-space:pre-wrap}</style>
+<div id="layer"></div><pre id="report">Starting 60 s full-frame blur probe at 50 fps…</pre>
+<script>
+const params=new URLSearchParams(location.search),duration=Number(params.get('seconds')||60)*1000;
+const gl=document.createElement('canvas').getContext('webgl');const debug=gl?.getExtension('WEBGL_debug_renderer_info');
+const renderer=gl?(debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)):'WebGL unavailable';
+const metadata={userAgent:navigator.userAgent,renderer,hardwareAccelerated:!!gl&&!/swiftshader|llvmpipe|software|softpipe/i.test(renderer),viewport:[innerWidth,innerHeight],fps:50,durationMs:duration};
+const intervals=[],work=[],start=performance.now();let previous=start;
+function frame(now){const begin=performance.now();intervals.push(now-previous);previous=now;
+const phase=(now-start)/1000;document.querySelector('#layer').style.transform=`translate(${Math.sin(phase)*30}px,${Math.cos(phase)*30}px) rotate(${Math.sin(phase)*3}deg)`;
+work.push(performance.now()-begin);
+if(now-start<duration){requestAnimationFrame(frame);return}
+const stats=values=>({averageMs:values.reduce((a,b)=>a+b,0)/values.length,worstMs:Math.max(...values)});
+window.probeResult={...metadata,frames:intervals.length,frameInterval:stats(intervals.slice(1)),mainThreadWork:stats(work),intervalsOver22ms:intervals.filter(x=>x>22).length};
+document.querySelector('#report').textContent=JSON.stringify(window.probeResult,null,2);console.log('FK_RENDERER_PROBE '+JSON.stringify(window.probeResult));
+}requestAnimationFrame(frame)
+window.play=()=>{};window.stop=()=>{};window.update=()=>{};
+</script>

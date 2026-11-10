@@ -10,10 +10,11 @@
     "preview": "vite preview",
     "prepare": "husky",
     "format": "prettier . --write",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:visual": "playwright test",
+    "assets:scene": "node scripts/generate-scene-assets.mjs"
   },
   "dependencies": {
-    "@fontsource/roboto": "^5.3.0",
     "axios": "^1.19.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.4.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",

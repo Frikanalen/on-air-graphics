@@ -7,6 +7,8 @@ import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
 import { ScheduleContext } from "./ScheduleContext.tsx"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
+import { frozen } from "../../graphics/time"
+import { useSceneAssets } from "../../graphics/useSceneAssets"
 import { createPlayhead } from "../../sequencing/clock/playhead.ts"
 
 window.update = (data: unknown) => {
@@ -20,17 +22,23 @@ window.next = () => {
 window.handleError = console.error
 window.handleWarning = console.error
 
-console.warn("Test warning")
-
 export function App() {
   const { schedule, loading } = useSchedule()
+  const assetsReady = useSceneAssets()
 
   const [state, setState] = useState<AppState>("idle")
   const [playhead] = useState(createPlayhead)
   const params = useParams({
     duration: DEFAULT_BUDGET_MS,
   })
-  const hasDuration = new URLSearchParams(window.location.search).has("duration")
+  const query = new URLSearchParams(window.location.search)
+  const preview = query.has("view")
+  const dev =
+    query.get("dev") === "true" ||
+    (import.meta.env.DEV && query.get("dev") !== "false" && !preview)
+  const hasDuration = new URLSearchParams(window.location.search).has(
+    "duration",
+  )
 
   window.play = () => {
     setState("active")
@@ -40,10 +48,10 @@ export function App() {
   }
 
   useEffect(() => {
-    if (!hasDuration && typeof window.play === "function") {
+    if ((!hasDuration || preview) && typeof window.play === "function") {
       window.play()
     }
-  }, [hasDuration])
+  }, [hasDuration, preview])
 
   /*
    * The budget is measured from the cue, not from page load: the playout system
@@ -51,18 +59,23 @@ export function App() {
    * for starts when it says so.
    */
   useEffect(() => {
-    if (state === "active") playhead.restart()
-    else playhead.pause()
-  }, [state, playhead])
+    if (state === "active") {
+      playhead.restart()
+      if (preview || frozen) {
+        playhead.pause()
+        playhead.seek(preview ? 2000 : 0)
+      }
+    } else playhead.pause()
+  }, [state, playhead, preview])
 
   const context: AppContextT = {
     state,
     budget: params.duration,
   }
 
-  if (loading)
+  if (loading || !assetsReady)
     return (
-      <div className="flex min-h-screen grow flex-col items-center justify-center bg-[#333] text-[#ddd]">
+      <div className="flex min-h-screen grow flex-col items-center justify-center bg-[#0F1926] text-[#F5EFE4]">
         <div className="flex grow items-center font-mono text-[3em]">
           Loading...
         </div>
@@ -73,7 +86,13 @@ export function App() {
     <AppContext.Provider value={context}>
       <ScheduleContext.Provider value={schedule}>
         <PlayheadContext.Provider value={playhead}>
-          {import.meta.env.DEV || !hasDuration ? <DevPanel /> : <Content />}
+          {dev ? (
+            <DevPanel />
+          ) : (
+            <div className="output-stage">
+              <Content />
+            </div>
+          )}
         </PlayheadContext.Provider>
       </ScheduleContext.Provider>
     </AppContext.Provider>

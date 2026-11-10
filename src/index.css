@@ -1,330 +1,325 @@
 @import "tailwindcss";
-
-/*
- * Design tokens.
- *
- * These live in plain `:root` blocks rather than in `@theme` so they can be
- * redefined per colour scheme and per `backdrop-filter` support. The `@theme
- * inline` block below maps them onto Tailwind's namespaces, so utilities emit
- * `var(--fk-*)` directly and pick up whichever definition is in effect.
- */
+@font-face {
+  font-family: Inter;
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Inter Display";
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
 :root {
-  --fk-color-card: rgba(255, 255, 255, 0.8);
-  /* Used behind the schedule view when backdrop-filter is unavailable;
-     the card colour darkened by 2%. */
-  --fk-color-backdrop-fallback: rgba(250, 250, 250, 0.8);
-  --fk-color-accent: #e88840;
-  --fk-color-warning: #ff5400;
-
-  --fk-font-color-normal: rgba(0, 0, 0, 0.85);
-  --fk-font-color-muted: rgba(0, 0, 0, 0.7);
-
-  --fk-gradient-overlay: linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.7) 0%,
-    rgba(255, 255, 255, 0.4) 35%
-  );
-  --fk-shadow-card: 3px 3px 11px 1px rgb(0 0 0 / 10%);
-
-  /* Keep in sync with FADE_TRANSITION_MS in core/constants.ts, which drives
-     the JS-side sequencing. */
+  --ink: #0f1926;
+  --ink-2: #18263a;
+  --paper: #f5efe4;
+  --red: #f15645;
+  --plum: #73284e;
+  --amber: #faaa3f;
+  --yellow: #ffc709;
+  --green: #64bc50;
+  --petrol: #0e5f4c;
   --fk-fade-transition: 500ms;
 }
-
-@supports (backdrop-filter: blur(30px)) {
-  :root {
-    --fk-color-card: rgba(255, 255, 255, 0.45);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fk-color-card: rgba(26, 42, 64, 0.85);
-    --fk-color-backdrop-fallback: rgba(23, 37, 57, 0.85);
-    --fk-color-accent: #fcba20;
-
-    --fk-font-color-normal: rgba(255, 255, 255, 0.85);
-    --fk-font-color-muted: rgba(255, 255, 255, 0.7);
-
-    --fk-gradient-overlay: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.4) 35%
-    );
-    --fk-shadow-card: 3px 3px 15px 1px rgb(0 0 0 / 15%);
-  }
-
-  @supports (backdrop-filter: blur(30px)) {
-    :root {
-      --fk-color-card: rgba(26, 42, 64, 0.7);
-    }
-  }
-}
-
-@theme inline {
-  --color-card: var(--fk-color-card);
-  --color-accent: var(--fk-color-accent);
-  --color-warning: var(--fk-color-warning);
-  --color-normal: var(--fk-font-color-normal);
-  --color-muted: var(--fk-font-color-muted);
-  --shadow-card: var(--fk-shadow-card);
-}
-
 @theme {
-  /*
-   * Type scale. Headings carry a deliberately tight line box so vertical
-   * rhythm is set by margins rather than leading; the sizes without a paired
-   * line-height inherit the document default.
-   */
-  --text-footnote: 16px;
-  --text-body: 20px;
-  --text-body--line-height: 0.75;
-  --text-lead: 32px;
-  --text-display: 48px;
-  --text-display--line-height: 0.75;
-
-  /* Intro view */
-  --animate-card-appear: card-appear var(--fk-fade-transition) ease both;
-  --animate-card-fall: card-fall 700ms ease forwards;
-  /* `both` for the same reason as the schedule view's: it carries a delay. */
-  --animate-logo-unblur: logo-unblur 1200ms ease-in-out 200ms both;
-  --animate-logo-fall: logo-fall 700ms ease-in-out forwards;
-
-  /*
-   * Schedule view. These are `both` rather than `forwards` because several of
-   * them are paired with an animation-delay at the call site. `forwards` only
-   * covers the time after an animation ends, so through the delay the element
-   * would paint in its ordinary state -- which for these keyframes is the
-   * state being animated *to* -- and then snap back to the start once the
-   * delay elapsed. `both` adds `backwards`, holding the first keyframe for the
-   * length of the delay. It is a no-op for the ones with no delay.
-   */
-  --animate-title-in: title-in 500ms ease both;
-  --animate-title-out: title-out 500ms ease both;
-  --animate-schedule-in: schedule-in 1000ms ease both;
-  --animate-schedule-out: schedule-out 1000ms ease both;
-  --animate-slide-fade-in: slide-fade-in 500ms ease both;
-  --animate-slide-fade-out: slide-fade-out 500ms ease both;
-  --animate-container-in: container-in 500ms ease both;
-  --animate-container-out: container-out 500ms ease both;
-  --animate-footer-in: footer-in 500ms ease both;
-  --animate-footer-out: footer-out 500ms ease both;
-
-  /* Poster view */
-  --animate-poster-in: poster-in var(--fk-fade-transition) ease both;
-  --animate-poster-out: poster-out var(--fk-fade-transition) ease both;
-
-  /*
-   * The panel's own fade-in. It has to sit on the panel rather than on an
-   * ancestor: an ancestor at opacity < 1 is a backdrop root, and would cut the
-   * panel's own backdrop-filter off from what it is meant to blur.
-   */
-  @keyframes card-appear {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes card-fall {
-    to {
-      transform: rotate(10deg) translateY(60%);
-    }
-  }
-
-  @keyframes logo-unblur {
-    from {
-      filter: blur(120px);
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes logo-fall {
-    50% {
-      opacity: 0;
-    }
-    to {
-      transform: translateY(800px);
-      opacity: 0;
-    }
-  }
-
-  @keyframes title-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes title-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes schedule-in {
-    from {
-      transform: translateX(-700px);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes schedule-out {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateX(-700px);
-    }
-  }
-
-  @keyframes slide-fade-in {
-    from {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0px);
-    }
-  }
-
-  @keyframes slide-fade-out {
-    from {
-      opacity: 1;
-      transform: translateY(0px);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-  }
-
-  @keyframes container-in {
-    from {
-      opacity: 0;
-      transform: rotate(10deg) translateY(-90px) translateX(200px);
-    }
-    to {
-      opacity: 1;
-      transform: rotate(0) translateY(0) translateX(0);
-    }
-  }
-
-  @keyframes container-out {
-    from {
-      opacity: 1;
-      transform: rotate(0) translateY(0) translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: rotate(10deg) translateY(-90px) translateX(200px);
-    }
-  }
-
-  @keyframes footer-in {
-    from {
-      opacity: 0;
-      transform: translateY(200px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes footer-out {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(200px);
-    }
-  }
-
-  @keyframes poster-in {
-    from {
-      transform: translateY(calc(100% + 32px));
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0%);
-      opacity: 1;
-    }
-  }
-
-  @keyframes poster-out {
-    from {
-      transform: translateY(0%);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(calc(100% + 32px));
-      opacity: 0;
-    }
-  }
+  --color-normal: #f5efe4;
+  --color-muted: rgb(245 239 228 / 0.65);
+  --color-accent: #faaa3f;
+  --color-warning: #ffc709;
 }
-
-/*
- * The frosted panel shared by the schedule cards, the intro backdrop and the
- * text poster. Padding is left to the call site: `p-*` and a custom utility
- * both land in the utilities layer, so relying on their relative order to
- * override a padding baked in here would be fragile.
- */
-@utility card {
-  border-radius: 8px;
-  background-color: var(--fk-color-card);
-  box-shadow: var(--fk-shadow-card);
-  backdrop-filter: blur(30px);
-}
-
-/*
- * A heading that ellipsises needs `overflow: hidden`, which would clip
- * Roboto's ascenders and descenders against the tight heading line box. Give
- * it a full line box instead, then pull it back onto the surrounding rhythm by
- * removing half the difference between the two at each end.
- */
-@utility ellipsis-heading {
-  line-height: 1.5;
-  margin-top: calc((0.75 - 1.5) * var(--text-body) / 2);
-  margin-bottom: calc((1.5 - 0.75) * var(--text-body) / 2);
-}
-
 @layer base {
   * {
     box-sizing: border-box;
   }
-
   body {
     margin: 0;
-    font-family: "Roboto", sans-serif;
-    background: transparent;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: Inter, sans-serif;
+    font-variation-settings: "opsz" 14;
+    font-feature-settings: "tnum";
   }
-
   h1,
-  h2 {
+  h2,
+  p {
     margin: 0;
   }
-
-  h1 {
-    @apply text-display font-black;
-  }
-
-  h2 {
-    @apply text-body font-semibold;
-  }
+}
+.output-stage {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ink);
+}
+.output-stage .broadcast-frame {
+  transform: scale(calc(100vw / 1280px));
+  transform-origin: top left;
+}
+.broadcast-frame {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+}
+.scene,
+.player,
+.view-layer {
+  position: absolute;
+  inset: 0;
+}
+.scene {
+  overflow: hidden;
+  background: #131f30;
+}
+.blade-pose {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45px;
+  height: 52px;
+  transform-origin: 0 0;
+}
+.blade {
+  position: absolute;
+  width: 45px;
+  height: 52px;
+  transform-origin: 26px 26px;
+}
+.blade-mask,
+.blade-lit {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 55px;
+  height: 62px;
+  max-width: none;
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+}
+.scene-grain {
+  position: absolute;
+  inset: 0;
+  background-size: 256px 144px;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.player {
+  transition: opacity 500ms linear;
+}
+.wide-wordmark {
+  position: absolute;
+  left: 429.37px;
+  top: 264px;
+  width: 600.145px;
+  height: 169px;
+  color: var(--ink);
+}
+svg[data-wordmark] > g > path:nth-child(-n + 3) {
+  display: none;
+}
+.station-clock {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.station-logo {
+  position: absolute;
+  left: 836px;
+  top: 64px;
+  width: 379.2px;
+  height: 82.16px;
+  color: var(--paper);
+}
+.on-red .station-logo path {
+  fill: var(--paper);
+}
+.clock-canvas {
+  position: absolute;
+  left: 850px;
+  top: 154px;
+  width: 352px;
+  height: 446px;
+}
+.schedule-column,
+.news-column {
+  position: absolute;
+  left: 64px;
+  top: 64px;
+  width: 600px;
+}
+.label {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.amber {
+  color: var(--amber);
+}
+.yellow {
+  color: var(--yellow);
+}
+.next-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-top: 18px;
+  height: 94px;
+}
+.next-row time {
+  font-family: "Inter Display", Inter, sans-serif;
+  font-variation-settings: "opsz" 32;
+  font-weight: 800;
+  font-size: 104px;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  flex-shrink: 0;
+}
+.programme-info {
+  min-width: 0;
+  flex: 1;
+}
+.programme-info h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 23px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.next-row h2 {
+  font-family: "Inter Display", Inter, sans-serif;
+  font-variation-settings: "opsz" 32;
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.organisation {
+  margin-top: 3px;
+  font-size: 16px;
+  line-height: 1.3;
+  opacity: 0.62;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.next-row .organisation {
+  font-size: 19px;
+}
+.next-empty {
+  height: 94px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  font-size: 26px;
+}
+.tricolour {
+  display: flex;
+  height: 6px;
+  width: 600px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+.tricolour i {
+  flex: 1;
+  background: var(--red);
+}
+.tricolour i:nth-child(2) {
+  background: var(--amber);
+}
+.tricolour i:nth-child(3) {
+  background: var(--green);
+}
+.later-label {
+  opacity: 0.6;
+  margin-top: 34px;
+}
+.later-list {
+  margin-top: 14px;
+}
+.later-row {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgb(245 239 228 / 0.14);
+}
+.later-row time {
+  flex-shrink: 0;
+  width: 100px;
+  font-size: 24px;
+  font-weight: 600;
+}
+.disclaimer {
+  position: absolute;
+  left: 64px;
+  bottom: 36px;
+  font-size: 14px;
+  line-height: 18px;
+  opacity: 0.5;
+  letter-spacing: 0.01em;
+}
+.org-slate {
+  color: var(--ink);
+}
+.slate-wordmark {
+  position: absolute;
+  left: 64px;
+  top: 64px;
+  width: 203.126px;
+  height: 57.2px;
+}
+.slate-copy {
+  position: absolute;
+  top: 232px;
+  left: 64px;
+  width: 600px;
+}
+.slate-copy h1,
+.news-copy h1 {
+  font-family: "Inter Display", Inter, sans-serif;
+  font-variation-settings: "opsz" 32;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  overflow-wrap: break-word;
+}
+.slate-copy p {
+  font-size: 26px;
+  line-height: 1.42;
+  margin-top: 30px;
+  opacity: 0.78;
+}
+.news-copy {
+  margin-top: 150px;
+  width: 560px;
+}
+.news-copy h1 {
+  font-size: 66px;
+  letter-spacing: -0.025em;
+}
+.news-copy p {
+  margin-top: 28px;
+  font-size: 25px;
+  line-height: 1.42;
+  opacity: 0.9;
+}
+.scene-canvas,
+.dom-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.scene-canvas {
+  display: none;
 }

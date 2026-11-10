@@ -101,6 +101,7 @@ export const schedule = (bounds: Bounds = {}): SegmentSpec => ({
 
 export const poster = (bounds: Bounds = {}): SegmentSpec => ({
   name: "poster",
+  clock: true,
   min: POSTER_MIN_MS,
   basis: POSTER_BASIS_MS,
   max: Infinity,
@@ -166,7 +167,7 @@ export const orgSlate = (bounds: Bounds = {}): SegmentSpec => ({
   grow: 0,
   enter: POSTER_ENTER_MS,
   exit: POSTER_EXIT_MS,
-  clock: true,
+  clock: false,
   render: ({ status }) => <OrgSlateView status={status} />,
   ...bounds,
 })

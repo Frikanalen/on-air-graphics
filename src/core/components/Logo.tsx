@@ -1,18 +1,25 @@
-export function Logo(props: { className?: string }) {
+import { useId } from "react"
+export function Logo(props: { className?: string; wordmarkOnly?: boolean }) {
+  const id = useId().replace(/:/g, "")
   return (
-    <svg className={props.className} viewBox="0 0 240 52" fill="none">
-      <g clipPath="url(#clip0)">
+    <svg
+      className={props.className}
+      viewBox={props.wordmarkOnly ? "55.19 0 184.66 52" : "0 0 240 52"}
+      data-wordmark={props.wordmarkOnly || undefined}
+      fill="none"
+    >
+      <g clipPath={`url(#${id}-clip0)`}>
         <path
           d="M43.58 0.0200273C43.7513 -0.0340191 43.9363 -0.0239476 44.1007 0.0483648C44.2651 0.120677 44.3976 0.250296 44.4734 0.413058C44.5493 0.575821 44.5634 0.760622 44.5131 0.933011C44.4628 1.1054 44.3515 1.25362 44.2 1.35003L27.69 15.43C27.0506 15.9994 26.2821 16.4044 25.451 16.61C24.6198 16.8156 23.7511 16.8156 22.92 16.61L0.780014 12.09C-0.219986 11.86 -0.299986 10.84 0.780014 10.59L43.58 0.0200273Z"
-          fill="url(#paint0_linear)"
+          fill={`url(#${id}-paint0_linear)`}
         />
         <path
           d="M43.97 20.85C44.97 20.94 45.05 21.93 44.19 22.34L29.37 29.83C27.84 30.62 26.61 30.26 24.85 29.43L2.71 18.9C1.61 18.4 2 17.33 3.1 17.43L43.97 20.85Z"
-          fill="url(#paint1_linear)"
+          fill={`url(#${id}-paint1_linear)`}
         />
         <path
           d="M7.07 27.16C6.52 26.36 6.96 25.49 8.07 25.87L24.21 31.71C24.8911 31.9768 25.4607 32.4682 25.8244 33.1029C26.1882 33.7376 26.3242 34.4775 26.21 35.2L24.13 50.71C23.89 52.05 23.23 52.1 22.48 51.09L7.07 27.16Z"
-          fill="url(#paint2_linear)"
+          fill={`url(#${id}-paint2_linear)`}
         />
         <path
           d="M69.07 28.35H60.31V36.01H55.19V16.17H70.19V21.17H60.31V23.43H69.07V28.35Z"
@@ -54,7 +61,7 @@ export function Logo(props: { className?: string }) {
       </g>
       <defs>
         <linearGradient
-          id="paint0_linear"
+          id={`${id}-paint0_linear`}
           x1="7.80001"
           y1="-2.33997"
           x2="36.75"
@@ -70,7 +77,7 @@ export function Logo(props: { className?: string }) {
           <stop offset="1" stopColor="#73284E" />
         </linearGradient>
         <linearGradient
-          id="paint1_linear"
+          id={`${id}-paint1_linear`}
           x1="11.63"
           y1="29.76"
           x2="35.23"
@@ -87,7 +94,7 @@ export function Logo(props: { className?: string }) {
           <stop offset="1" stopColor="#FFC709" />
         </linearGradient>
         <linearGradient
-          id="paint2_linear"
+          id={`${id}-paint2_linear`}
           x1="11.74"
           y1="45.13"
           x2="20.69"
@@ -101,7 +108,7 @@ export function Logo(props: { className?: string }) {
           <stop offset="0.84" stopColor="#2C7F4D" />
           <stop offset="1" stopColor="#0E5F4C" />
         </linearGradient>
-        <clipPath id="clip0">
+        <clipPath id={`${id}-clip0`}>
           <rect width="239.85" height="51.79" fill="white" />
         </clipPath>
       </defs>
