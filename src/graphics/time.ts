@@ -106,6 +106,7 @@ export const frameClock = {
     // Even a frozen frame is presented at 50 fps: CEF's offscreen producer
     // needs a repaint heartbeat. Its timestamp and resulting pixels stay fixed.
     if (frame === undefined) {
+      if (!frozen) timestamp = Math.floor(Date.now() / FRAME_MS) * FRAME_MS
       rafAnchor = undefined
       lastFrame = -1
       frame = requestAnimationFrame(tick)

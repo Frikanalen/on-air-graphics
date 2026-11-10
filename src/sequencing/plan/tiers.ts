@@ -1,8 +1,8 @@
 import { FADE_TRANSITION_MS } from "../../core/constants"
 import { type SequenceName } from "../../core/types"
 import { allocate, minDuration } from "./allocate"
-// logoSting, nextProgram, newsPosters and orgSlate are parked -- see below.
-import { intro, poster, schedule } from "./segments"
+// Logo sting, next programme and news remain available for future tiers.
+import { intro, orgSlate, poster, schedule } from "./segments"
 import { type Plan, type PlanInputs, type TimelineTier } from "./types"
 
 /**
@@ -19,44 +19,19 @@ export const tierThreshold = (tier: TimelineTier, data: PlanInputs): number =>
  * whatever a tier does not spend lands there rather than on a closing beat
  * that would only be held longer.
  *
- * Only one tier is on air. The logo sting, the channel news and the closing
- * slate are written and tested but not launched, so the ladder they belong to
- * is commented out here rather than deleted -- this list is the only thing
- * holding them back. Everything they need is in place: the views, the segment
- * constructors, the feed behind `useNews`, and tests that compose each of them
- * so they cannot rot while they wait. Switching one on means uncommenting it
- * and adding its constructor back to the import above.
- *
- *   {
- *     name: "logo-only",
- *     build: () => [logoSting({ grow: 1, max: Infinity })],
- *   },
- *   {
- *     name: "logo-and-next",
- *     build: () => [logoSting(), nextProgram({ grow: 1, max: Infinity })],
- *   },
- *   {
- *     name: "schedule-and-slate",
- *     build: () => [intro(), schedule({ grow: 1, max: Infinity }), orgSlate()],
- *   },
- *   {
- *     name: "full",
- *     build: (data) => [
- *       intro(),
- *       schedule({ grow: 1, max: Infinity }),
- *       ...newsPosters(data.news),
- *       orgSlate(),
- *     ],
- *   },
- *
- * The first two belong at the head of the list, the last two at the tail.
- * Until then a slot too short for the schedule is squeezed and overruns, which
- * is what happened before any of this existed.
+ * The cream organisation slate precedes the schedule whenever the budget
+ * covers its six seconds as well as the intro and schedule minimums. Shorter
+ * gaps retain the two-part composition. The schedule absorbs all surplus.
+ * Logo-only, next-programme and news compositions remain parked.
  */
 export const INTERMISSION_TIERS: TimelineTier[] = [
   {
     name: "schedule",
     build: () => [intro(), schedule({ grow: 1, max: Infinity })],
+  },
+  {
+    name: "slate-and-schedule",
+    build: () => [intro(), orgSlate(), schedule({ grow: 1, max: Infinity })],
   },
 ]
 

@@ -25,6 +25,7 @@ window.handleWarning = console.error
 export function App() {
   const { schedule, loading } = useSchedule()
   const assetsReady = useSceneAssets()
+  const ready = !loading && assetsReady
 
   const [state, setState] = useState<AppState>("idle")
   const [playhead] = useState(createPlayhead)
@@ -33,12 +34,12 @@ export function App() {
   })
   const query = new URLSearchParams(window.location.search)
   const preview = query.has("view")
+  const hasDuration = query.has("duration")
   const dev =
     query.get("dev") === "true" ||
-    (import.meta.env.DEV && query.get("dev") !== "false" && !preview)
-  const hasDuration = new URLSearchParams(window.location.search).has(
-    "duration",
-  )
+    (query.get("dev") !== "false" &&
+      !preview &&
+      (import.meta.env.DEV || !hasDuration))
 
   window.play = () => {
     setState("active")
@@ -54,26 +55,26 @@ export function App() {
   }, [hasDuration, preview])
 
   /*
-   * The budget is measured from the cue, not from page load: the playout system
-   * loads the template some time before it plays it, and the time it is asking
-   * for starts when it says so.
+   * Start at the cue once the scene can mount. A cue received during loading
+   * waits for the schedule and assets so the opening scene cannot be consumed
+   * by preload time. Normal playout preloads the template before its cue.
    */
   useEffect(() => {
-    if (state === "active") {
+    if (state === "active" && ready) {
       playhead.restart()
       if (preview || frozen) {
         playhead.pause()
         playhead.seek(preview ? 2000 : 0)
       }
     } else playhead.pause()
-  }, [state, playhead, preview])
+  }, [state, playhead, preview, ready])
 
   const context: AppContextT = {
     state,
     budget: params.duration,
   }
 
-  if (loading || !assetsReady)
+  if (!ready)
     return (
       <div className="flex min-h-screen grow flex-col items-center justify-center bg-[#0F1926] text-[#F5EFE4]">
         <div className="flex grow items-center font-mono text-[3em]">

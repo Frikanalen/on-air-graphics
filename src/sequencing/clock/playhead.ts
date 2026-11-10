@@ -88,17 +88,17 @@ export const createPlayhead = (): Playhead => {
     resume() {
       if (playing) return
 
+      startTicking()
       anchor(baseT)
       playing = true
-      startTicking()
       notify()
     },
 
     restart() {
+      startTicking()
       anchor(0)
       playing = true
       generation += 1
-      startTicking()
       notify()
     },
 

@@ -3,6 +3,20 @@ import { createPlayhead } from "./playhead"
 import { frameClock } from "../../graphics/time"
 afterEach(() => vi.restoreAllMocks())
 describe("shared 50 fps playhead", () => {
+  it("starts at zero when the frame clock wakes after a long preload", () => {
+    let now = 100000
+    vi.spyOn(frameClock, "now").mockImplementation(() => now)
+    vi.spyOn(frameClock, "subscribe").mockImplementation(() => {
+      now = 105000
+      return () => {}
+    })
+    const p = createPlayhead()
+    p.restart()
+    expect(p.now()).toBe(0)
+    now += 20
+    expect(p.now()).toBe(20)
+    p.pause()
+  })
   it("anchors restart/pause/seek/resume to the injected time and cleans up subscriptions", () => {
     let now = 100000,
       notify: () => void = () => {}

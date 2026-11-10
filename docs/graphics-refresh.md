@@ -4,7 +4,10 @@ All output is opaque, progressive 16:9 at **50 fps**. The 1280×720 stage is
 scaled by viewport width / 1280, including DOM typography. 1920×1080 uses the
 same composition and 1080p blade masks. The editorial tier ladder, budget
 allocation, schedule fetching and live schedule-change subscription are retained.
-Parked news/slate views remain parked; this change does not approve placeholder copy.
+The cream organisation slate precedes the schedule in gaps of at least 21.7 seconds.
+Shorter gaps retain intro → schedule; news and the other optional compositions remain parked.
+A 60-second gap allocates 3.2 s to the intro, 6 s to the slate, 50.3 s to the schedule
+and reserves 0.5 s for the external exit fade.
 
 ## Build and deploy
 
@@ -30,7 +33,11 @@ Run `yarn install --frozen-lockfile`, `yarn dev`, then open `/graphics/`.
 Production remains controlled by CasparCG PLAY/STOP with the existing `duration`,
 `sequence`, `message` and `type` parameters. `dev=true` explicitly opens the
 existing scenario/scrubbing panel; `dev=false` gives full-frame output locally.
-Without a duration the template auto-plays full frame.
+Without `duration` the dev menu opens automatically, including in the Docker image.
+It provides scenario buttons, a budget input in seconds, playback controls and timeline
+scrubbing. The URL parameter uses milliseconds: `duration=60000` requests 60 seconds.
+Loading assets does not consume the opening scene’s allotted time.
+Use `dev=false` to explicitly request a full-frame automatic preview without a duration.
 
 `t=2026-11-10T19:07:00.212` freezes the shared clock. An ISO value without an
 offset means Europe/Oslo, irrespective of the browser/machine timezone; explicit
@@ -115,8 +122,8 @@ to extract the final still. Supply `--seconds 600` for each soak test.
 
 ## Local verification evidence
 
-- `yarn test`: 89 passing tests across 11 files; `yarn lint` and `yarn build` pass.
-- `yarn test:visual`: 16 passing checks, including fixed inputs, both renderers,
+- `yarn test`: 93 passing tests across 11 files; `yarn lint` and `yarn build` pass.
+- `yarn test:visual`: 18 passing checks, including fixed inputs, both renderers,
   1080p scaling and context loss/restoration while time is frozen.
 - CasparCG 2.5.1 / CEF 142, ANGLE / NVIDIA GeForce RTX 5080, OpenGL 4.5:
   all seven views captured via the actual FFmpeg consumer at 1280×720p50;

@@ -170,3 +170,62 @@ test("a frozen frame survives GPU context loss and restoration", async ({
   )
   await expect(page.locator(".scene")).toHaveAttribute("data-renderer", "webgl")
 })
+
+test("no duration opens the dev menu and a 60-second gap includes the cream slate", async ({
+  page,
+}, info) => {
+  await prepare(page, "slate", "19:06:50")
+  await page.goto("/graphics/?renderer=dom&t=2026-11-10T19:06:50")
+  await expect(
+    page.getByRole("button", { name: "PLAY", exact: true }),
+  ).toBeVisible()
+  await expect(page.locator('aside input[type="number"]')).toBeVisible()
+  await page.locator('aside input[type="number"]').fill("60")
+  await page.getByRole("button", { name: "PLAY", exact: true }).click()
+  const advance = page.getByRole("button", { name: "+½s", exact: true })
+  for (let i = 0; i < 10; i++) await advance.click()
+  await expect(
+    page.getByRole("heading", { name: "Dette er Frikanalen", exact: true }),
+  ).toBeVisible()
+  await expect(page.locator(".station-clock")).toHaveCSS("opacity", "0")
+  await page
+    .locator(".broadcast-frame")
+    .screenshot({ path: info.outputPath("60-second-gap-slate.png") })
+  for (let i = 0; i < 14; i++) await advance.click()
+  await expect(page.locator(".schedule-column .label").first()).toHaveText(
+    "Neste program",
+  )
+  await expect(page.locator(".station-clock")).toHaveCSS("opacity", "1")
+})
+
+test("loading time does not consume the opening scene", async ({ page }) => {
+  const initial = new Date("2026-11-10T18:06:50Z")
+  await page.clock.install({ time: initial })
+  await page.clock.pauseAt(new Date(+initial + 1000))
+  let release!: () => void
+  const response = new Promise<void>((resolve) => {
+    release = resolve
+  })
+  await page.route("**/api/scheduleitems*", async (route) => {
+    await response
+    await route.fulfill({ json: { count: 5, results: items } })
+  })
+  await page.route("**/api/playout/events", (route) =>
+    route.fulfill({
+      contentType: "text/event-stream",
+      body: ": connected\n\n",
+    }),
+  )
+  await page.goto("/graphics/?renderer=dom")
+  await expect(page.getByText("Loading...", { exact: true })).toBeVisible()
+  await page.clock.fastForward(5000)
+  release()
+  await expect(page.locator(".broadcast-frame")).toBeVisible()
+  await page.clock.runFor(600)
+  await expect(page.locator('.view-layer[data-segment="0"]')).toHaveCSS(
+    "opacity",
+    "1",
+  )
+  await expect(page.locator(".wide-wordmark")).toBeVisible()
+  await expect(page.locator(".org-slate")).toHaveCount(0)
+})

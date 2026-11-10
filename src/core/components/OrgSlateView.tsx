@@ -3,7 +3,7 @@ import { type SegmentStatus } from "../../sequencing/plan/types"
 export interface OrgSlateViewProps {
   status: SegmentStatus
 }
-// Existing placeholder copy; the editorial launch gate remains in tiers.ts.
+// Channel introduction shown before the schedule in longer gaps.
 export function OrgSlateView({ status }: OrgSlateViewProps) {
   return (
     <div className="org-slate" data-status={status}>
