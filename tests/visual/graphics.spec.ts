@@ -208,7 +208,26 @@ test("no duration opens the dev menu and a long gap includes the complete member
   await page.locator('aside input[type="number"]').fill("120")
   await page.getByRole("button", { name: "PLAY", exact: true }).click()
   const advance = page.getByRole("button", { name: "+½s", exact: true })
+  await page.evaluate(() => {
+    const events: string[] = []
+    ;(window as unknown as { slateFlashes: string[] }).slateFlashes = events
+    new MutationObserver(() => {
+      const slate = document
+        .querySelector<HTMLElement>(".org-slate")
+        ?.closest<HTMLElement>(".view-layer")
+      if (slate && Number(getComputedStyle(slate).opacity) > 0)
+        events.push("slate painted during its entrance")
+    }).observe(document.querySelector(".player")!, {
+      childList: true,
+      subtree: true,
+    })
+  })
   for (let i = 0; i < 9; i++) await advance.click()
+  expect(
+    await page.evaluate(
+      () => (window as unknown as { slateFlashes: string[] }).slateFlashes,
+    ),
+  ).toEqual([])
   const slateLayer = page
     .locator(".view-layer")
     .filter({ has: page.locator(".org-slate") })
@@ -272,7 +291,11 @@ test("loading time does not consume the opening scene", async ({ page }) => {
     }),
   )
   await page.goto("/graphics/?renderer=dom")
-  await expect(page.getByText("Loading...", { exact: true })).toBeVisible()
+  await expect(page.locator("#root")).toBeEmpty()
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  )
   await page.clock.fastForward(5000)
   release()
   await expect(page.locator(".broadcast-frame")).toBeVisible()
@@ -374,4 +397,42 @@ for (const width of [1280, 1920])
       )
       await expect(page.locator(".player")).toHaveCSS("opacity", "0")
     }
+  })
+
+for (const renderer of ["dom", "webgl"])
+  test(`preloaded ${renderer} output stays completely transparent until PLAY`, async ({
+    page,
+  }) => {
+    await prepare(page, "intro", "19:06:50", renderer)
+    await page.goto(
+      `/graphics/?dev=false&duration=60000&renderer=${renderer}&t=2026-11-10T19:06:50`,
+    )
+    await expect(page.locator(".scene")).toHaveAttribute(
+      "data-renderer",
+      renderer,
+    )
+    await expect(page.locator(".broadcast-frame")).toHaveCSS("opacity", "0")
+    for (const selector of ["body", ".output-stage", ".broadcast-frame"])
+      await expect(page.locator(selector)).toHaveCSS(
+        "background-color",
+        "rgba(0, 0, 0, 0)",
+      )
+    const preload = await page.screenshot({ omitBackground: true })
+    await page.locator("#root").evaluate((el) => {
+      el.style.display = "none"
+    })
+    expect(
+      (await page.screenshot({ omitBackground: true })).equals(preload),
+    ).toBe(true)
+    await page.locator("#root").evaluate((el) => {
+      el.style.display = ""
+    })
+    await page.evaluate(() =>
+      (window as unknown as { play: () => void }).play(),
+    )
+    await expect(page.locator(".broadcast-frame")).toHaveCSS("opacity", "1")
+    await expect(page.locator(".scene")).toHaveAttribute(
+      "data-renderer",
+      renderer,
+    )
   })

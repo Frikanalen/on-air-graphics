@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useLayoutEffect, useRef } from "react"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext"
 import { type Plan } from "../../sequencing/plan/types"
 import { clamp, lerp } from "../../graphics/color"
@@ -12,13 +12,19 @@ const sigmas = [0, 12, 44, 108]
 
 /** Static masks are rasterised once at 1080p, never filtered during playout.
  * Only the three blades drift; the noise texture is fixed in frame space. */
-export function Background({ plan }: { plan: Plan }) {
+export function Background({
+  plan,
+  onReady,
+}: {
+  plan: Plan
+  onReady: (ready: boolean) => void
+}) {
   const playhead = useContext(PlayheadContext)
   const root = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
   const gpu = useRef<ReturnType<typeof createWebGLScene>>(null)
   const drawRef = useRef<(timestamp: number) => void>(() => {})
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = root.current!,
       surface = canvas.current!
     const dom = element.querySelector<HTMLElement>(".dom-scene")!
@@ -50,6 +56,7 @@ export function Background({ plan }: { plan: Plan }) {
         fallback()
       }
       drawRef.current(frameClock.now())
+      onReady(true)
     }
     const lost = (event: Event) => {
       event.preventDefault()
@@ -64,7 +71,7 @@ export function Background({ plan }: { plan: Plan }) {
       gpu.current?.dispose()
       gpu.current = null
     }
-  }, [])
+  }, [onReady])
   const draw = (timestamp: number) => {
     const element = root.current
     if (!element) return

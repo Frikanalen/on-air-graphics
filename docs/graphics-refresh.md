@@ -160,3 +160,10 @@ GPU changes; subsequent verification uses an AMCP-added consumer with no debugge
 The refreshed frame retains main’s `unavailable` query option: a named or generic
 programme-unavailable notice replaces the sequence, scales with the broadcast
 frame, and follows the playout play/stop fade without showing a station clock.
+
+Loading and uncued output are transparent. The scene becomes visible only after
+its first configured draw, and new view layers default to zero opacity until
+the frame callback applies their transition state before paint. This avoids
+showing unpositioned grain/blades or premature slate text during startup.
+The startup change is verified by 24 browser checks, including alpha-transparent
+preload comparisons for both renderers and an insertion-time slate visibility check.

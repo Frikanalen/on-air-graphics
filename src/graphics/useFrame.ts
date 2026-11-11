@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import { type Playhead } from "../sequencing/clock/playhead"
 import { frameClock } from "./time"
 
@@ -9,7 +9,7 @@ export function useFrame(
 ) {
   const callback = useRef(draw)
   callback.current = draw
-  useEffect(() => {
+  useLayoutEffect(() => {
     let last = ""
     const frame = () => {
       const timestamp = frameClock.now()
