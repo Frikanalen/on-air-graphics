@@ -98,7 +98,10 @@ for (const [name, view, time] of stills)
     }
     if (view === "schedule") {
       const title = page.locator(".later-row h2").first()
-      const size = await title.evaluate((el) => ({ height: el.clientHeight, contentHeight: el.scrollHeight }))
+      const size = await title.evaluate((el) => ({
+        height: el.clientHeight,
+        contentHeight: el.scrollHeight,
+      }))
       if ((await title.textContent())?.startsWith("Veien videre"))
         expect(size.height).toBeGreaterThan(30)
       expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
@@ -205,7 +208,9 @@ test("no duration opens the dev menu and a 60-second gap includes the cream slat
   await page.getByRole("button", { name: "PLAY", exact: true }).click()
   const advance = page.getByRole("button", { name: "+½s", exact: true })
   for (let i = 0; i < 9; i++) await advance.click()
-  const slateLayer = page.locator(".view-layer").filter({ has: page.locator(".org-slate") })
+  const slateLayer = page
+    .locator(".view-layer")
+    .filter({ has: page.locator(".org-slate") })
   await expect(slateLayer).toHaveCSS("opacity", "0")
   for (let i = 0; i < 2; i++) await advance.click()
   await expect(slateLayer).toHaveCSS("opacity", "1")
@@ -306,4 +311,42 @@ for (const width of [1280, 1920])
       (await fixture.screenshot()).equals(background),
       "white clock details must remain visible",
     ).toBe(false)
+  })
+
+for (const width of [1280, 1920])
+  test(`unavailable notice preserves main behaviour at ${width}px`, async ({
+    page,
+  }, info) => {
+    await page.setViewportSize({ width, height: (width * 9) / 16 })
+    await prepare(page, "schedule", "19:06:50")
+    for (const title of ["En samtale om byen", ""]) {
+      await page.goto(
+        `/graphics/?dev=false&unavailable=${encodeURIComponent(title)}&t=2026-11-10T19:06:50`,
+      )
+      const notice = page.locator(".unavailable-notice")
+      await expect(notice.getByRole("heading")).toHaveText(
+        "Programmet er ikke tilgjengelig",
+      )
+      await expect(notice).toContainText(
+        "Programmet som skulle gå nå, har ikke kommet fram til oss. Vi beklager.",
+      )
+      await expect(notice.locator(".unavailable-title")).toHaveCount(
+        title ? 1 : 0,
+      )
+      if (title)
+        await expect(notice.locator(".unavailable-title")).toHaveText(title)
+      await expect(
+        page.locator(".schedule-column, .station-clock"),
+      ).toHaveCount(0)
+      await expect(page.locator(".player")).toHaveCSS("opacity", "1")
+      const box = await notice.boundingBox()
+      expect(box).toEqual({ x: 0, y: 0, width, height: (width * 9) / 16 })
+      await notice.screenshot({
+        path: info.outputPath(`unavailable-${title ? "named" : "generic"}.png`),
+      })
+      await page.evaluate(() =>
+        (window as unknown as { stop: () => void }).stop(),
+      )
+      await expect(page.locator(".player")).toHaveCSS("opacity", "0")
+    }
   })

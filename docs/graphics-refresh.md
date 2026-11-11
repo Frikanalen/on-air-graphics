@@ -129,7 +129,7 @@ to extract the final still. Supply `--seconds 600` for each soak test.
 ## Local verification evidence
 
 - `yarn test`: 93 passing tests across 11 files; `yarn lint` and `yarn build` pass.
-- `yarn test:visual`: 20 passing checks, including fixed inputs, both renderers,
+- `yarn test:visual`: 22 passing checks, including fixed inputs, both renderers,
   1080p scaling and context loss/restoration while time is frozen. Pixel checks
   ensure black/empty clock captures key out completely at both resolutions.
 - CasparCG 2.5.1 / CEF 142, ANGLE / NVIDIA GeForce RTX 5080, OpenGL 4.5:
@@ -152,3 +152,7 @@ least 1 GiB for Docker-based checks; this is separate from GPU VRAM. Mask textur
 use alpha-only GPU storage. The original dev container and its GPU configuration
 are retained. The temporary CEF debugger setting was restored before the user's
 GPU changes; subsequent verification uses an AMCP-added consumer with no debugger.
+
+The refreshed frame retains main’s `unavailable` query option: a named or generic
+programme-unavailable notice replaces the sequence, scales with the broadcast
+frame, and follows the playout play/stop fade without showing a station clock.

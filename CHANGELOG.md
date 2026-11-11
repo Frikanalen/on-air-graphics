@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/Frikanalen/on-air-graphics/compare/v1.3.0...v1.3.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **docker:** ship public/ in the image, so /graphics/protest/ is served ([#29](https://github.com/Frikanalen/on-air-graphics/issues/29)) ([499384a](https://github.com/Frikanalen/on-air-graphics/commit/499384ac1c03c10949b34757d59325b4c77c9937))
+* ship public/ in the image so /graphics/protest/ is served ([#28](https://github.com/Frikanalen/on-air-graphics/issues/28)) ([88f659e](https://github.com/Frikanalen/on-air-graphics/commit/88f659ee257b08173763048811f8b209e8cf2e2f))
+
 ## [1.3.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.2.0...v1.3.0) (2026-11-08)
 
 

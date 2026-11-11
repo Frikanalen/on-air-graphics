@@ -338,3 +338,35 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .scene-canvas {
   display: none;
 }
+
+.unavailable-notice {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 64px;
+  display: flex;
+  align-items: center;
+}
+.unavailable-body {
+  max-width: 1000px;
+}
+.unavailable-logo {
+  width: 380px;
+  height: 83px;
+  margin-bottom: 36px;
+}
+.unavailable-notice h1 {
+  font-size: 54px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+.unavailable-notice p {
+  font-size: 28px;
+  line-height: 1.4;
+  margin-top: 24px;
+  overflow-wrap: anywhere;
+}
+.unavailable-title {
+  font-weight: 700;
+}
