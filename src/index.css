@@ -169,17 +169,17 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .next-row {
   display: flex;
-  align-items: flex-end;
-  gap: 24px;
+  align-items: flex-start;
+  gap: 20px;
   margin-top: 18px;
-  height: 94px;
+  height: 132px;
 }
 .next-row time {
   font-family: "Inter Display", Inter, sans-serif;
   font-variation-settings: "opsz" 32;
   font-weight: 800;
-  font-size: 104px;
-  line-height: 0.86;
+  font-size: 40px;
+  line-height: 1.15;
   letter-spacing: -0.04em;
   flex-shrink: 0;
 }
@@ -198,9 +198,15 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .next-row h2 {
   font-family: "Inter Display", Inter, sans-serif;
   font-variation-settings: "opsz" 32;
-  font-size: 31px;
+  font-size: 28px;
+  line-height: 1.15;
   font-weight: 800;
   letter-spacing: -0.025em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 .organisation {
   margin-top: 3px;

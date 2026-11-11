@@ -88,8 +88,12 @@ describe("deterministic camera choreography", () => {
       scale: 13.4,
       sheet: 0,
       clock: 0,
-      incoming: 1,
+      incoming: 0,
     })
+    for (const elapsed of [3200, 4100, 4999.99])
+      expect(sceneAt(gap, elapsed, timestamp).incoming).toBe(0)
+    expect(sceneAt(gap, 5250, timestamp).incoming).toBe(0.5)
+    expect(sceneAt(gap, 5500, timestamp).incoming).toBe(1)
     expect(sceneAt(gap, 9199.99, timestamp).scale).toBe(13.4)
     expect(sceneAt(gap, 9200, timestamp)).toMatchObject({
       scale: 13.4,

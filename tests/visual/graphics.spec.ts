@@ -6,7 +6,7 @@ const items = Array.from({ length: 5 }, (_, i) => ({
   video: {
     id: i,
     name: [
-      "Mennesker og meninger",
+      "Mennesker og meninger – en samtale om lokaldemokrati, kultur og frivillighet",
       "Veien videre",
       "En samtale om byen",
       "Kultur fra hele landet",
@@ -85,6 +85,17 @@ for (const [name, view, time] of stills)
     expect(await frame.screenshot()).toEqual(image) // frozen input really is frozen
     if (["schedule", "next"].includes(view))
       await expect(page.locator(".next-row")).toBeVisible()
+    if (view === "next") {
+      const title = page.locator(".next-row h2")
+      const size = await title.evaluate((el) => ({
+        height: el.clientHeight,
+        contentHeight: el.scrollHeight,
+        width: el.clientWidth,
+      }))
+      expect(size.width).toBeGreaterThan(440)
+      expect(size.height).toBeGreaterThan(50)
+      expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
+    }
     await expect(page.locator(".station-clock")).toHaveCSS(
       "opacity",
       ["intro", "slate"].includes(view) ? "0" : "1",
@@ -183,7 +194,11 @@ test("no duration opens the dev menu and a 60-second gap includes the cream slat
   await page.locator('aside input[type="number"]').fill("60")
   await page.getByRole("button", { name: "PLAY", exact: true }).click()
   const advance = page.getByRole("button", { name: "+½s", exact: true })
-  for (let i = 0; i < 10; i++) await advance.click()
+  for (let i = 0; i < 9; i++) await advance.click()
+  const slateLayer = page.locator(".view-layer").filter({ has: page.locator(".org-slate") })
+  await expect(slateLayer).toHaveCSS("opacity", "0")
+  for (let i = 0; i < 2; i++) await advance.click()
+  await expect(slateLayer).toHaveCSS("opacity", "1")
   await expect(
     page.getByRole("heading", { name: "Dette er Frikanalen", exact: true }),
   ).toBeVisible()
@@ -191,7 +206,7 @@ test("no duration opens the dev menu and a 60-second gap includes the cream slat
   await page
     .locator(".broadcast-frame")
     .screenshot({ path: info.outputPath("60-second-gap-slate.png") })
-  for (let i = 0; i < 14; i++) await advance.click()
+  for (let i = 0; i < 13; i++) await advance.click()
   await expect(page.locator(".schedule-column .label").first()).toHaveText(
     "Neste program",
   )

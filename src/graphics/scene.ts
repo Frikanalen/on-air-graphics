@@ -105,7 +105,12 @@ export function sceneAt(plan: Plan, elapsed: number, timestamp: number) {
     wide: clamp((sheet - 0.5) / 0.5),
     grain: clamp((sheet - 0.5) / 0.5) * 0.07,
     softShadow: 0.11 * (1 - clamp(sheet / 0.3)),
-    incoming: crossCamera ? clamp((local - 1300) / 500) : clamp(local / 500),
+    incoming:
+      name === "slate" && camera !== oldCamera
+        ? clamp((local - duration) / 500)
+        : crossCamera
+          ? clamp((local - 1300) / 500)
+          : clamp(local / 500),
     outgoing: 1 - clamp(local / 300),
     clock: crossCamera
       ? toSheet

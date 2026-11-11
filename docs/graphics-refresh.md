@@ -8,6 +8,10 @@ The cream organisation slate precedes the schedule in gaps of at least 21.7 seco
 Shorter gaps retain intro → schedule; news and the other optional compositions remain parked.
 A 60-second gap allocates 3.2 s to the intro, 6 s to the slate, 50.3 s to the schedule
 and reserves 0.5 s for the external exit fade.
+The slate text stays hidden during the 1.8 s blade movement, then fades in over
+0.5 s once the blades have settled.
+The next-programme start time uses 40 px type; the title has a wider column and
+can wrap to three lines at 28 px before truncating.
 
 ## Build and deploy
 
