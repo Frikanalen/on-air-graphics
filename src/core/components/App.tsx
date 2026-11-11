@@ -74,14 +74,7 @@ export function App() {
     budget: params.duration,
   }
 
-  if (!ready)
-    return (
-      <div className="flex min-h-screen grow flex-col items-center justify-center bg-[#0F1926] text-[#F5EFE4]">
-        <div className="flex grow items-center font-mono text-[3em]">
-          Loading...
-        </div>
-      </div>
-    )
+  if (!ready) return null
 
   return (
     <AppContext.Provider value={context}>
