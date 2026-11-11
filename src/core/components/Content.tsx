@@ -7,6 +7,7 @@ import { useTimelinePlan } from "../../sequencing/plan/useTimelinePlan"
 import { useRenderedSegments } from "../../sequencing/clock/useRenderedSegments"
 import { AppContext } from "./AppContext.tsx"
 import { Background } from "./Background"
+import { UnavailableView } from "./UnavailableView"
 
 const [width, height] = RESOLUTION
 
@@ -23,6 +24,15 @@ export function Content() {
    */
   const rendered = useRenderedSegments(playhead, plan)
   const current = rendered[rendered.length - 1]
+
+  /*
+   * Playout asks for the notice with ?unavailable=<title> in a scheduled
+   * programme's slot when its file never arrived; an empty title stands for
+   * several missing programmes in a row.
+   */
+  const unavailable = new URLSearchParams(window.location.search).get(
+    "unavailable",
+  )
 
   return (
     <div
@@ -47,9 +57,17 @@ export function Content() {
           app.state === "active" ? "opacity-100" : "opacity-0",
         )}
       >
-        <Background blurred={current?.spec.blurBackground === true} />
+        <Background
+          blurred={
+            unavailable !== null || current?.spec.blurBackground === true
+          }
+        />
 
-        <Player plan={plan} playhead={playhead} />
+        {unavailable !== null ? (
+          <UnavailableView title={unavailable} />
+        ) : (
+          <Player plan={plan} playhead={playhead} />
+        )}
       </div>
     </div>
   )
