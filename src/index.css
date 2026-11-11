@@ -393,3 +393,19 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .unavailable-title {
   font-weight: 700;
 }
+
+/* The line above .disclaimer, in its type. */
+.music-credit {
+  position: absolute;
+  left: 64px;
+  bottom: 56px;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  color: var(--paper);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.music-credit.on-light {
+  color: var(--ink);
+}

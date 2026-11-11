@@ -2,7 +2,8 @@ import { memberPageAt } from "../../core/memberMessage"
 import { useContext, useRef } from "react"
 import { AppContext } from "../../core/components/AppContext"
 import { StationClock } from "../../core/components/StationClock"
-import { sceneAt } from "../../graphics/scene"
+import { MusicCredit } from "../../core/components/MusicCredit"
+import { cameraFor, sceneAt } from "../../graphics/scene"
 import { useFrame } from "../../graphics/useFrame"
 import { useRenderedSegments } from "../clock/useRenderedSegments"
 import { type Playhead } from "../clock/playhead"
@@ -49,6 +50,10 @@ export function Player({ plan, playhead }: PlayerProps) {
         scene.name === "poster" || scene.name.startsWith("news:"),
       )
     }
+    el.querySelector(".music-credit")?.classList.toggle(
+      "on-light",
+      cameraFor(scene.name) !== "sheet",
+    )
   }, playhead)
   return (
     <div
@@ -67,6 +72,7 @@ export function Player({ plan, playhead }: PlayerProps) {
           </div>
         ))}
       <StationClock />
+      <MusicCredit />
     </div>
   )
 }
