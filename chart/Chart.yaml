@@ -2,4 +2,4 @@ apiVersion: v2
 name: on-air-graphics
 description: Frikanalen on-air graphics overlay deployment
 type: application
-version: 1.4.0
+version: 1.5.0
