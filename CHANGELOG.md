@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.4.0...v1.5.0) (2026-11-11)
+
+
+### Features
+
+* credit the filler music under the graphics ([#39](https://github.com/Frikanalen/on-air-graphics/issues/39)) ([e586ac0](https://github.com/Frikanalen/on-air-graphics/commit/e586ac0125ec3055179724211ac34263120cedb1))
+
 ## [1.4.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.3.1...v1.4.0) (2026-11-11)
 
 
