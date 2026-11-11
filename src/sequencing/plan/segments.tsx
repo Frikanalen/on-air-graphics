@@ -1,3 +1,4 @@
+import { MEMBER_MESSAGE_MS } from "../../core/memberMessage"
 import { IntroView } from "../../core/components/IntroView"
 import { LogoStingView } from "../../core/components/LogoStingView"
 import { OrgSlateView } from "../../core/components/OrgSlateView"
@@ -60,7 +61,7 @@ const NEWS_MIN_MS = 5000
 const NEWS_BASIS_MS = 8000
 
 /** Two sentences, read once, unhurried. */
-const SLATE_MS = 6000
+const SLATE_MS = MEMBER_MESSAGE_MS
 
 /*
  * However many bulletins the feed offers, only this many are ever planned.

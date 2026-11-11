@@ -4,10 +4,14 @@ All output is opaque, progressive 16:9 at **50 fps**. The 1280×720 stage is
 scaled by viewport width / 1280, including DOM typography. 1920×1080 uses the
 same composition and 1080p blade masks. The editorial tier ladder, budget
 allocation, schedule fetching and live schedule-change subscription are retained.
-The cream organisation slate precedes the schedule in gaps of at least 21.7 seconds.
+The cream organisation slate precedes the schedule in gaps of at least 81.68 seconds.
 Shorter gaps retain intro → schedule; news and the other optional compositions remain parked.
-A 60-second gap allocates 3.2 s to the intro, 6 s to the slate, 50.3 s to the schedule
-and reserves 0.5 s for the external exit fade.
+The member message uses the supplied heading and four paragraphs verbatim, one
+paragraph per screen. It reserves 65.98 s, including a 2.3 s blade entrance and
+text fade, with reading time at 180 words/minute (minimum 12 s per page).
+A 120-second gap allocates 3.2 s to the intro, 65.98 s to the message, 50.32 s to
+the schedule, and 0.5 s for the external exit fade. A 60-second gap retains
+intro → schedule rather than showing a partial message.
 The slate text stays hidden during the 1.8 s blade movement, then fades in over
 0.5 s once the blades have settled.
 The next-programme start time uses 40 px type; the title has a wider column and
@@ -128,7 +132,7 @@ to extract the final still. Supply `--seconds 600` for each soak test.
 
 ## Local verification evidence
 
-- `yarn test`: 93 passing tests across 11 files; `yarn lint` and `yarn build` pass.
+- `yarn test`: 95 passing tests across 12 files; `yarn lint` and `yarn build` pass.
 - `yarn test:visual`: 22 passing checks, including fixed inputs, both renderers,
   1080p scaling and context loss/restoration while time is frozen. Pixel checks
   ensure black/empty clock captures key out completely at both resolutions.

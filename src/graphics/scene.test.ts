@@ -75,8 +75,8 @@ describe("deterministic camera choreography", () => {
       ty: 22,
     })
   })
-  it("shows the cream slate between the wide intro and the sheet in the shipped 60-second plan", () => {
-    const gap = planGap(60000, { schedule: [], news: [] }, INTERMISSION_TIERS)
+  it("shows the cream slate between the wide intro and the sheet in the shipped long-gap plan", () => {
+    const gap = planGap(120000, { schedule: [], news: [] }, INTERMISSION_TIERS)
     expect(sceneAt(gap, 3199.99, timestamp).scale).toBe(3.25)
     expect(sceneAt(gap, 3200, timestamp)).toMatchObject({
       camera: "close",
@@ -94,12 +94,13 @@ describe("deterministic camera choreography", () => {
       expect(sceneAt(gap, elapsed, timestamp).incoming).toBe(0)
     expect(sceneAt(gap, 5250, timestamp).incoming).toBe(0.5)
     expect(sceneAt(gap, 5500, timestamp).incoming).toBe(1)
-    expect(sceneAt(gap, 9199.99, timestamp).scale).toBe(13.4)
-    expect(sceneAt(gap, 9200, timestamp)).toMatchObject({
+    const scheduleStart = 3200 + orgSlate().min
+    expect(sceneAt(gap, scheduleStart - 0.01, timestamp).scale).toBe(13.4)
+    expect(sceneAt(gap, scheduleStart, timestamp)).toMatchObject({
       scale: 13.4,
       sheet: 0,
     })
-    expect(sceneAt(gap, 11000, timestamp)).toMatchObject({
+    expect(sceneAt(gap, scheduleStart + 1800, timestamp)).toMatchObject({
       camera: "sheet",
       sheet: 1,
       clock: 1,
