@@ -38,7 +38,17 @@ export function useClockKey() {
             preserveAspectRatio="none"
             result="lighting"
           />
-          <feBlend in="camera" in2="lighting" mode="multiply" result="lit" />
+          {/* Restore opaque black at blur edges before applying lighting.
+              Otherwise the blend adds light to partially transparent pixels,
+              leaving a rectangular luminance footprint in the key. */}
+          <feFlood floodColor="black" result="black" />
+          <feComposite
+            in="camera"
+            in2="black"
+            operator="over"
+            result="opaqueCamera"
+          />
+          <feBlend in="opaqueCamera" in2="lighting" mode="multiply" result="lit" />
           <feColorMatrix in="lit" type="luminanceToAlpha" result="key" />
           <feFlood floodColor="#F5EFE4" />
           <feComposite in2="key" operator="in" />

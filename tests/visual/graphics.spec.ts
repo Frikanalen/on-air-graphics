@@ -229,3 +229,56 @@ test("loading time does not consume the opening scene", async ({ page }) => {
   await expect(page.locator(".wide-wordmark")).toBeVisible()
   await expect(page.locator(".org-slate")).toHaveCount(0)
 })
+
+for (const width of [1280, 1920])
+  test(`clock key has no rectangular footprint at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: (width * 9) / 16 })
+    await prepare(page, "news", "19:06:50")
+    await page.evaluate(() => {
+      const clock = document.querySelector<HTMLCanvasElement>(".clock-canvas")!
+      const fixture = document.createElement("div")
+      fixture.id = "clock-key-fixture"
+      fixture.style.cssText =
+        "position:fixed;left:0;top:0;width:352px;height:446px;background:rgb(72,103,149);z-index:99999"
+      fixture.style.transform = `scale(${window.innerWidth / 1280})`
+      fixture.style.transformOrigin = "top left"
+      const capture = document.createElement("canvas")
+      capture.width = clock.width
+      capture.height = clock.height
+      capture.style.cssText = `position:absolute;inset:0;width:352px;height:446px;filter:${clock.style.filter}`
+      const context = capture.getContext("2d")!
+      context.fillStyle = "black"
+      context.fillRect(0, 0, capture.width, capture.height)
+      fixture.append(capture)
+      document.body.append(fixture)
+    })
+    const fixture = page.locator("#clock-key-fixture")
+    const keyed = await fixture.screenshot()
+    await fixture.locator("canvas").evaluate((canvas) => {
+      canvas.style.visibility = "hidden"
+    })
+    const background = await fixture.screenshot()
+    expect(
+      keyed.equals(background),
+      "black must key out at every pixel, without a rectangular footprint",
+    ).toBe(true)
+    await fixture.locator("canvas").evaluate((canvas) => {
+      canvas.style.visibility = "visible"
+      canvas.getContext("2d")!.clearRect(0, 0, canvas.width, canvas.height)
+    })
+    expect(
+      (await fixture.screenshot()).equals(background),
+      "an empty capture must also be transparent",
+    ).toBe(true)
+    await fixture.locator("canvas").evaluate((canvas) => {
+      const context = canvas.getContext("2d")!
+      context.fillStyle = "white"
+      context.fillRect(160, 200, 32, 32)
+    })
+    expect(
+      (await fixture.screenshot()).equals(background),
+      "white clock details must remain visible",
+    ).toBe(false)
+  })

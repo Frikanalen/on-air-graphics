@@ -123,12 +123,15 @@ to extract the final still. Supply `--seconds 600` for each soak test.
 ## Local verification evidence
 
 - `yarn test`: 93 passing tests across 11 files; `yarn lint` and `yarn build` pass.
-- `yarn test:visual`: 18 passing checks, including fixed inputs, both renderers,
-  1080p scaling and context loss/restoration while time is frozen.
+- `yarn test:visual`: 20 passing checks, including fixed inputs, both renderers,
+  1080p scaling and context loss/restoration while time is frozen. Pixel checks
+  ensure black/empty clock captures key out completely at both resolutions.
 - CasparCG 2.5.1 / CEF 142, ANGLE / NVIDIA GeForce RTX 5080, OpenGL 4.5:
   all seven views captured via the actual FFmpeg consumer at 1280×720p50;
   schedule also captured at 1920×1080p50. The live dolly recording contains
   455 video frames at 50/1 fps over 9.1 seconds.
+  A black clock-key fixture also captures as a uniform background with no edge
+  pixels; the analog and digital clock details remain visible beside it.
 - The accelerated 60-second full-frame blur probe recorded 3,002 RAF callbacks,
   interval average **20.040 ms**, worst **121.5 ms**, two intervals above 22 ms.
   JS work averaged 0.039 ms, worst 0.8 ms. These measurements include startup
