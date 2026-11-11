@@ -436,3 +436,56 @@ for (const renderer of ["dom", "webgl"])
       renderer,
     )
   })
+
+for (const renderer of ["dom", "webgl"])
+  for (const budget of [60000, 81660])
+    test(`short gap ${budget} goes from logo to schedule without slate in ${renderer}`, async ({
+      page,
+    }, info) => {
+      const initial = new Date("2026-11-10T18:06:50Z")
+      await page.clock.install({ time: initial })
+      await page.clock.pauseAt(new Date(+initial + 1000))
+      await prepare(page, "intro", "19:06:50", renderer)
+      await page.goto(
+        `/graphics/?dev=false&duration=${budget}&renderer=${renderer}`,
+      )
+      await expect(page.locator(".scene")).toHaveAttribute(
+        "data-renderer",
+        renderer,
+      )
+      await page.evaluate(() => {
+        const seen: string[] = []
+        ;(window as unknown as { slateInsertions: string[] }).slateInsertions =
+          seen
+        new MutationObserver((records) => {
+          for (const record of records)
+            for (const node of record.addedNodes)
+              if (
+                node instanceof Element &&
+                (node.matches(".org-slate, .slate-copy") ||
+                  node.querySelector(".org-slate, .slate-copy"))
+              )
+                seen.push("slate mounted")
+        }).observe(document.querySelector(".player")!, {
+          childList: true,
+          subtree: true,
+        })
+        ;(window as unknown as { play: () => void }).play()
+      })
+      await page.clock.runFor(5400)
+      expect(
+        await page.evaluate(
+          () =>
+            (window as unknown as { slateInsertions: string[] })
+              .slateInsertions,
+        ),
+      ).toEqual([])
+      await expect(
+        page.locator(".org-slate, .slate-copy, .wide-wordmark"),
+      ).toHaveCount(0)
+      await expect(page.locator(".schedule-column")).toBeVisible()
+      await expect(page.locator(".station-clock")).toHaveCSS("opacity", "1")
+      await page
+        .locator(".broadcast-frame")
+        .screenshot({ path: info.outputPath("direct-to-schedule.png") })
+    })

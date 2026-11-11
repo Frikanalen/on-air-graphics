@@ -44,39 +44,8 @@ export function sceneAt(plan: Plan, elapsed: number, timestamp: number) {
     p = crossCamera || camera !== oldCamera ? ease(raw) : raw
   const target = lightFor(name, timestamp),
     source = lightFor(oldName, timestamp)
-  const a =
-      crossCamera && oldCamera === "wide" ? PAPER : poseFor(oldCamera, source),
+  const a = poseFor(oldCamera, source),
     b = poseFor(camera, target)
-  // Finish the wide shot with a push to the close pose before crossing the sheet.
-  const next = plan.segments[index + 1]
-  if (camera === "wide" && next && cameraFor(next.spec.name) === "sheet") {
-    const push = ease(clamp((local - current.duration + 1800) / 1800))
-    const wide = poseFor("wide", PAPER)
-    return {
-      name,
-      oldName,
-      camera,
-      index,
-      local,
-      crossCamera: false,
-      p: push,
-      sheet: 0,
-      light: PAPER,
-      bladeLight: PAPER,
-      tx: lerp(wide.tx, PAPER.tx, push),
-      ty: lerp(wide.ty, PAPER.ty, push),
-      scale: lerp(wide.scale, PAPER.scale, push),
-      skew: 0,
-      fill: 0,
-      blur: 0,
-      wide: 0,
-      grain: 0,
-      softShadow: 0.11,
-      incoming: clamp(local / 500),
-      outgoing: 1 - clamp(local / 300),
-      clock: 0,
-    }
-  }
   const toSheet = camera === "sheet"
   const sheet = crossCamera ? (toSheet ? p : 1 - p) : toSheet ? 1 : 0
   const wallProgress = clamp(sheet / 0.8)

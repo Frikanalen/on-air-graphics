@@ -42,7 +42,7 @@ describe("deterministic camera choreography", () => {
     })
     const half = sceneAt(plan, 10900, timestamp)
     expect(half.sheet).toBe(0.5)
-    expect(half.scale).toBe((13.4 + 26) / 2)
+    expect(half.scale).toBe((3.25 + 26) / 2)
     expect(sceneAt(plan, 11800, timestamp)).toMatchObject({
       sheet: 1,
       scale: 26,
@@ -50,10 +50,31 @@ describe("deterministic camera choreography", () => {
       incoming: 1,
     })
   })
-  it("pushes to the close pose before the sheet, without a handover jump", () => {
+  it("moves directly from wide logo to schedule without an intermediate slate pose", () => {
     expect(sceneAt(plan, 8200, timestamp).scale).toBe(3.25)
-    expect(sceneAt(plan, 9999.99, timestamp).scale).toBeCloseTo(13.4, 6)
-    expect(sceneAt(plan, 10000, timestamp).scale).toBe(13.4)
+    expect(sceneAt(plan, 9999.99, timestamp).scale).toBe(3.25)
+    expect(sceneAt(plan, 10000, timestamp).scale).toBe(3.25)
+    for (const budget of [16000, 30000, 60000, 81660]) {
+      const gap = planGap(
+        budget,
+        { schedule: [], news: [] },
+        INTERMISSION_TIERS,
+      )
+      expect(gap.segments.map((s) => s.spec.name)).toEqual([
+        "intro",
+        "schedule",
+      ])
+      for (let elapsed = 0; elapsed <= 5200; elapsed += 20) {
+        const scene = sceneAt(gap, elapsed, timestamp)
+        expect(scene.camera).not.toBe("close")
+        if (elapsed < 3200) expect(scene.scale).toBe(3.25)
+      }
+      expect(sceneAt(gap, 5000, timestamp)).toMatchObject({
+        sheet: 1,
+        incoming: 1,
+        clock: 1,
+      })
+    }
   })
   it("crossfades programme to red linearly over 800ms without blinking the clock", () => {
     expect(sceneAt(plan, 20000, timestamp).light).toEqual(LIGHTS[0])
