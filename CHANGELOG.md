@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.3.1...v1.4.0) (2026-11-11)
+
+
+### Features
+
+* air the member message with reserved reading time ([#36](https://github.com/Frikanalen/on-air-graphics/issues/36)) ([f3e7189](https://github.com/Frikanalen/on-air-graphics/commit/f3e7189aa9001bee9ed203c1cbad134b287d73c5))
+* **chart:** run two replicas spread across nodes, behind a PDB ([#31](https://github.com/Frikanalen/on-air-graphics/issues/31)) ([11fc806](https://github.com/Frikanalen/on-air-graphics/commit/11fc8065ae2a099a4bf78e575fad7f305731b0b4))
+* show a "programme not available" notice when playout asks for it ([#33](https://github.com/Frikanalen/on-air-graphics/issues/33)) ([41f7276](https://github.com/Frikanalen/on-air-graphics/commit/41f7276f9f5d458ac4bb946f08d29c351da61cb4))
+
+
+### Bug Fixes
+
+* transition directly from logo to schedule in short gaps ([#38](https://github.com/Frikanalen/on-air-graphics/issues/38)) ([f0527db](https://github.com/Frikanalen/on-air-graphics/commit/f0527db8bc20ed3026f52552e5a9f3c2c4e316a7))
+
 ## [1.3.1](https://github.com/Frikanalen/on-air-graphics/compare/v1.3.0...v1.3.1) (2026-11-08)
 
 
