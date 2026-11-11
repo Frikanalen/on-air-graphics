@@ -294,7 +294,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .slate-copy {
   position: absolute;
-  top: 232px;
+  top: 164px;
   left: 64px;
   width: 600px;
 }
@@ -337,4 +337,23 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .scene-canvas {
   display: none;
+}
+
+.slate-copy h1 {
+  font-size: 44px;
+  line-height: 1.08;
+}
+.slate-copy p {
+  font-size: 26px;
+  line-height: 1.38;
+  margin-top: 22px;
+  opacity: 1;
+}
+.slate-page {
+  transition: opacity 500ms linear;
+}
+.slate-page-number {
+  margin-top: 24px;
+  font-size: 16px;
+  opacity: 0.6;
 }

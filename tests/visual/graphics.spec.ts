@@ -1,3 +1,4 @@
+import { MEMBER_PAGES, MEMBER_ENTRANCE_MS } from "../../src/core/memberMessage"
 import { test, expect, type Page } from "@playwright/test"
 const items = Array.from({ length: 5 }, (_, i) => ({
   id: i,
@@ -98,7 +99,10 @@ for (const [name, view, time] of stills)
     }
     if (view === "schedule") {
       const title = page.locator(".later-row h2").first()
-      const size = await title.evaluate((el) => ({ height: el.clientHeight, contentHeight: el.scrollHeight }))
+      const size = await title.evaluate((el) => ({
+        height: el.clientHeight,
+        contentHeight: el.scrollHeight,
+      }))
       if ((await title.textContent())?.startsWith("Veien videre"))
         expect(size.height).toBeGreaterThan(30)
       expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
@@ -192,7 +196,7 @@ test("a frozen frame survives GPU context loss and restoration", async ({
   await expect(page.locator(".scene")).toHaveAttribute("data-renderer", "webgl")
 })
 
-test("no duration opens the dev menu and a 60-second gap includes the cream slate", async ({
+test("no duration opens the dev menu and a long gap includes the complete member message", async ({
   page,
 }, info) => {
   await prepare(page, "slate", "19:06:50")
@@ -201,22 +205,48 @@ test("no duration opens the dev menu and a 60-second gap includes the cream slat
     page.getByRole("button", { name: "PLAY", exact: true }),
   ).toBeVisible()
   await expect(page.locator('aside input[type="number"]')).toBeVisible()
-  await page.locator('aside input[type="number"]').fill("60")
+  await page.locator('aside input[type="number"]').fill("120")
   await page.getByRole("button", { name: "PLAY", exact: true }).click()
   const advance = page.getByRole("button", { name: "+½s", exact: true })
   for (let i = 0; i < 9; i++) await advance.click()
-  const slateLayer = page.locator(".view-layer").filter({ has: page.locator(".org-slate") })
+  const slateLayer = page
+    .locator(".view-layer")
+    .filter({ has: page.locator(".org-slate") })
   await expect(slateLayer).toHaveCSS("opacity", "0")
   for (let i = 0; i < 2; i++) await advance.click()
   await expect(slateLayer).toHaveCSS("opacity", "1")
   await expect(
-    page.getByRole("heading", { name: "Dette er Frikanalen", exact: true }),
+    page
+      .locator(".slate-page")
+      .first()
+      .getByRole("heading", { name: "Til Frikanalens medlemmer", exact: true }),
   ).toBeVisible()
   await expect(page.locator(".station-clock")).toHaveCSS("opacity", "0")
   await page
     .locator(".broadcast-frame")
     .screenshot({ path: info.outputPath("60-second-gap-slate.png") })
-  for (let i = 0; i < 13; i++) await advance.click()
+  let elapsed = 5500
+  let pageStart = 3200 + MEMBER_ENTRANCE_MS
+  for (const [index, memberPage] of MEMBER_PAGES.entries()) {
+    const target = pageStart + 1000
+    while (elapsed < target) {
+      await advance.click()
+      elapsed += 500
+    }
+    const copy = page.locator(`.slate-page[data-page="${index}"]`)
+    await expect(copy).toHaveCSS("opacity", "1")
+    await expect(copy.locator("p")).toHaveText(memberPage.text)
+    const box = await copy.boundingBox()
+    expect(box!.y + box!.height).toBeLessThan(680)
+    await page
+      .locator(".broadcast-frame")
+      .screenshot({ path: info.outputPath(`member-page-${index + 1}.png`) })
+    pageStart += memberPage.duration
+  }
+  while (elapsed < pageStart + 2000) {
+    await advance.click()
+    elapsed += 500
+  }
   await expect(page.locator(".schedule-column .label").first()).toHaveText(
     "Neste program",
   )
