@@ -167,3 +167,10 @@ the frame callback applies their transition state before paint. This avoids
 showing unpositioned grain/blades or premature slate text during startup.
 The startup change is verified by 24 browser checks, including alpha-transparent
 preload comparisons for both renderers and an insertion-time slate visibility check.
+
+When the budget omits the slate, the camera holds the wide logo pose until the
+schedule boundary, then moves directly to the schedule sheet over 1.8 s. It no
+longer visits the close slate pose first. The slate is never mounted on this
+path, and the outgoing logo wordmark defaults to hidden until positioned.
+The combined suite has 28 browser checks, including live short-gap transitions
+in DOM and WebGL and 50 fps choreography samples below the slate threshold.
