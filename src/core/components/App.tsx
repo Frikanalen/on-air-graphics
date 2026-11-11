@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { useParams } from "../hooks/useParams"
 import { DEFAULT_BUDGET_MS } from "../constants"
 import { Content } from "./Content"
@@ -59,7 +59,7 @@ export function App() {
    * waits for the schedule and assets so the opening scene cannot be consumed
    * by preload time. Normal playout preloads the template before its cue.
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (state === "active" && ready) {
       playhead.restart()
       if (preview || frozen) {
