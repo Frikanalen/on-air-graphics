@@ -18,18 +18,14 @@ export function UnavailableView(props: UnavailableViewProps) {
   const { title } = props
 
   return (
-    <div className="flex h-full flex-col p-16">
-      <div className="relative z-10 flex flex-1 items-center">
-        <div className="max-w-[640px] flex-1">
-          <Logo className="mb-8 h-12" />
-          <h1 className="animate-title-in text-normal">{HEADING}</h1>
-          <div className="card animate-schedule-in mt-6 p-6">
-            {title && (
-              <p className="text-body mb-2 font-bold leading-snug text-normal">
-                {title}
-              </p>
-            )}
-            <p className="text-body leading-snug text-normal">{BODY}</p>
+    <div className="unavailable-notice">
+      <div className="unavailable-copy">
+        <div className="unavailable-body">
+          <Logo className="unavailable-logo" />
+          <h1>{HEADING}</h1>
+          <div>
+            {title && <p className="unavailable-title">{title}</p>}
+            <p>{BODY}</p>
           </div>
         </div>
       </div>

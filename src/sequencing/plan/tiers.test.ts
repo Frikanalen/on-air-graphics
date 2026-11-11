@@ -92,12 +92,13 @@ describe("plan", () => {
 })
 
 describe("the shipped tiers", () => {
-  it("fills a long slot with the intro and the schedule", () => {
+  it("fills a long slot with the intro, cream slate and schedule", () => {
     const result = plan(290000, data, INTERMISSION_TIERS)
 
-    expect(result.tierName).toBe("schedule")
+    expect(result.tierName).toBe("slate-and-schedule")
     expect(result.segments.map((s) => s.spec.name)).toEqual([
       "intro",
+      "slate",
       "schedule",
     ])
     expect(result.total).toBe(290000 - FADE_TRANSITION_MS)
@@ -111,6 +112,7 @@ describe("the shipped tiers", () => {
       result.segments.find((s) => s.spec.name === name)?.duration
 
     expect(durationOf(long, "intro")).toBe(durationOf(short, "intro"))
+    expect(durationOf(long, "slate")).toBe(durationOf(short, "slate"))
     expect(durationOf(long, "schedule")).toBeGreaterThan(
       durationOf(short, "schedule") ?? 0,
     )
@@ -134,8 +136,33 @@ describe("the shipped tiers", () => {
       expect(names.some((name) => name.startsWith("news"))).toBe(false)
       expect(names).not.toContain("logo")
       expect(names).not.toContain("next")
-      expect(names).not.toContain("slate")
     }
+  })
+
+  it("includes the cream slate in a 60-second gap without extending the budget", () => {
+    const result = plan(60000, data, INTERMISSION_TIERS)
+    expect(
+      result.segments.map((s) => [s.spec.name, s.start, s.duration]),
+    ).toEqual([
+      ["intro", 0, 3200],
+      ["slate", 3200, 6000],
+      ["schedule", 9200, 50300],
+    ])
+    expect(result.total + FADE_TRANSITION_MS).toBe(60000)
+  })
+
+  it("only adds the slate once its minimum reading time fits", () => {
+    const threshold = justEnoughFor(INTERMISSION_TIERS[1])
+    expect(
+      plan(threshold - 1, data, INTERMISSION_TIERS).segments.map(
+        (s) => s.spec.name,
+      ),
+    ).toEqual(["intro", "schedule"])
+    expect(
+      plan(threshold, data, INTERMISSION_TIERS).segments.map(
+        (s) => s.spec.name,
+      ),
+    ).toEqual(["intro", "slate", "schedule"])
   })
 
   it("gives the whole slot to the poster", () => {

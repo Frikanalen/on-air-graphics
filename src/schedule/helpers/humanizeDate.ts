@@ -1,13 +1,9 @@
-import {
-  differenceInMinutes,
-  differenceInSeconds,
-  format,
-  isToday,
-} from "date-fns"
+import { frameClock, formatTime, osloParts } from "../../graphics/time"
+import { differenceInMinutes, differenceInSeconds, format } from "date-fns"
 import { nb } from "date-fns/locale"
 
 export const humanizeDate = (date: Date): string => {
-  const now = new Date()
+  const now = new Date(frameClock.now())
   const secondDifference = differenceInSeconds(date, now)
 
   if (secondDifference <= 0) {
@@ -22,8 +18,8 @@ export const humanizeDate = (date: Date): string => {
     return `${Math.round(secondDifference / 60)} min`
   }
 
-  if (isToday(date)) {
-    return format(date, "HH:mm", { locale: nb })
+  if (osloParts(+date).day === osloParts(+now).day) {
+    return formatTime(+date)
   }
 
   return format(date, "HH:mm - d. MMM", { locale: nb })

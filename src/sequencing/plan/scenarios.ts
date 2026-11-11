@@ -10,9 +10,8 @@ export interface Scenario {
 
 /**
  * Representative slots rather than an exhaustive sweep of the boundaries.
- * Enough to see each kind of programme without a wall of buttons: too short
- * for anything, a plain schedule, one with a closing slate, and two that have
- * room for news.
+ * Enough to compare a short schedule, a gap with the opening slate, and
+ * longer schedule holds without a wall of buttons.
  */
 const REPRESENTATIVE_BUDGETS = [10000, 20000, 30000, 90000, 300000]
 

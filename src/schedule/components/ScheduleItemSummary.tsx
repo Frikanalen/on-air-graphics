@@ -1,26 +1,22 @@
 import { type ScheduleItem } from "../types"
-import { HumanizedDate } from "./HumanizedDate"
-
+import { formatTime } from "../../graphics/time"
 export interface ScheduleItemSummaryProps {
   item: ScheduleItem
+  next?: boolean
 }
-
-export function ScheduleItemSummary(props: ScheduleItemSummaryProps) {
-  const { video, starttime } = props.item
-
+export function ScheduleItemSummary({
+  item,
+  next = false,
+}: ScheduleItemSummaryProps) {
   return (
-    <div className="mb-[-5px] flex items-center justify-between">
-      <div className="mr-4 w-0 flex-1">
-        <h2 className="ellipsis-heading overflow-hidden text-ellipsis whitespace-nowrap text-normal">
-          {video.name}
-        </h2>
-        <span className="text-body text-muted">
-          {video.organization.name}
-        </span>
+    <div className={next ? "next-row" : "later-row"}>
+      <time dateTime={item.starttime}>
+        {formatTime(Date.parse(item.starttime))}
+      </time>
+      <div className="programme-info">
+        <h2>{item.video.name}</h2>
+        <div className="organisation">{item.video.organization.name}</div>
       </div>
-      <span className="text-body font-semibold text-muted">
-        <HumanizedDate date={new Date(starttime)} />
-      </span>
     </div>
   )
 }

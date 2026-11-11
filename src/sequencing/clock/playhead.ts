@@ -1,8 +1,9 @@
+import { frameClock } from "../../graphics/time"
 /**
  * The clock the timeline is read against.
  *
  * Deliberately not React state. The playhead moves every frame, and pushing
- * that through setState would re-render the tree sixty times a second to
+ * that through setState would re-render the tree fifty times a second to
  * produce identical output -- the views animate in CSS and only care which
  * segment they are in. So it is a plain store: components subscribe and decide
  * for themselves what is worth re-rendering for.
@@ -36,34 +37,26 @@ export const createPlayhead = (): Playhead => {
 
   let playing = false
   let generation = 0
-  let frame: number | undefined
+  let stopFrame: (() => void) | undefined
 
   const listeners = new Set<() => void>()
   const notify = () => {
     for (const listener of listeners) listener()
   }
 
-  const now = () => (playing ? baseT + (performance.now() - baseWall) : baseT)
+  const now = () => (playing ? baseT + (frameClock.now() - baseWall) : baseT)
 
   const anchor = (t: number) => {
     baseT = Math.max(t, 0)
-    baseWall = performance.now()
-  }
-
-  const tick = () => {
-    frame = requestAnimationFrame(tick)
-    notify()
+    baseWall = frameClock.now()
   }
 
   const startTicking = () => {
-    if (frame === undefined) frame = requestAnimationFrame(tick)
+    if (stopFrame === undefined) stopFrame = frameClock.subscribe(notify)
   }
-
   const stopTicking = () => {
-    if (frame === undefined) return
-
-    cancelAnimationFrame(frame)
-    frame = undefined
+    stopFrame?.()
+    stopFrame = undefined
   }
 
   return {
@@ -95,17 +88,17 @@ export const createPlayhead = (): Playhead => {
     resume() {
       if (playing) return
 
+      startTicking()
       anchor(baseT)
       playing = true
-      startTicking()
       notify()
     },
 
     restart() {
+      startTicking()
       anchor(0)
       playing = true
       generation += 1
-      startTicking()
       notify()
     },
 
