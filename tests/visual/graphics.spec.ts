@@ -7,7 +7,7 @@ const items = Array.from({ length: 5 }, (_, i) => ({
     id: i,
     name: [
       "Mennesker og meninger – en samtale om lokaldemokrati, kultur og frivillighet",
-      "Veien videre",
+      "Veien videre – historier om menneskene som skaper levende lokalsamfunn",
       "En samtale om byen",
       "Kultur fra hele landet",
       "Nye perspektiver",
@@ -95,6 +95,16 @@ for (const [name, view, time] of stills)
       expect(size.width).toBeGreaterThan(440)
       expect(size.height).toBeGreaterThan(50)
       expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
+    }
+    if (view === "schedule") {
+      const title = page.locator(".later-row h2").first()
+      const size = await title.evaluate((el) => ({ height: el.clientHeight, contentHeight: el.scrollHeight }))
+      if ((await title.textContent())?.startsWith("Veien videre"))
+        expect(size.height).toBeGreaterThan(30)
+      expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
+      const list = await page.locator(".later-list").boundingBox()
+      const footer = await page.locator(".disclaimer").boundingBox()
+      expect(list!.y + list!.height).toBeLessThan(footer!.y)
     }
     await expect(page.locator(".station-clock")).toHaveCSS(
       "opacity",

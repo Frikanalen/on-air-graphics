@@ -247,16 +247,25 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .later-label {
   opacity: 0.6;
-  margin-top: 34px;
+  margin-top: 24px;
 }
 .later-list {
-  margin-top: 14px;
+  margin-top: 10px;
 }
 .later-row {
-  height: 68px;
+  height: 80px;
   display: flex;
   align-items: center;
   border-top: 1px solid rgb(245 239 228 / 0.14);
+}
+.later-row h2 {
+  font-size: 21px;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .later-row time {
   flex-shrink: 0;
