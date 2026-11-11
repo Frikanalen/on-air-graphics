@@ -105,7 +105,7 @@ describe("the shipped tiers", () => {
   })
 
   it("gives the whole surplus to the schedule", () => {
-    const short = plan(60000, data, INTERMISSION_TIERS)
+    const short = plan(120000, data, INTERMISSION_TIERS)
     const long = plan(300000, data, INTERMISSION_TIERS)
 
     const durationOf = (result: typeof short, name: string) =>
@@ -139,16 +139,16 @@ describe("the shipped tiers", () => {
     }
   })
 
-  it("includes the cream slate in a 60-second gap without extending the budget", () => {
-    const result = plan(60000, data, INTERMISSION_TIERS)
+  it("includes the cream slate with its full reading time without extending the budget", () => {
+    const result = plan(120000, data, INTERMISSION_TIERS)
     expect(
       result.segments.map((s) => [s.spec.name, s.start, s.duration]),
     ).toEqual([
       ["intro", 0, 3200],
-      ["slate", 3200, 6000],
-      ["schedule", 9200, 50300],
+      ["slate", 3200, orgSlate().min],
+      ["schedule", 3200 + orgSlate().min, 120000 - 500 - 3200 - orgSlate().min],
     ])
-    expect(result.total + FADE_TRANSITION_MS).toBe(60000)
+    expect(result.total + FADE_TRANSITION_MS).toBe(120000)
   })
 
   it("only adds the slate once its minimum reading time fits", () => {
@@ -243,7 +243,7 @@ describe("the parked tiers", () => {
       },
     ]
 
-    const result = plan(90000, data, parked)
+    const result = plan(180000, data, parked)
 
     expect(result.segments.map((s) => s.spec.name)).toEqual([
       "intro",
@@ -253,6 +253,6 @@ describe("the parked tiers", () => {
       "news:tre",
       "slate",
     ])
-    expect(result.total).toBe(90000 - FADE_TRANSITION_MS)
+    expect(result.total).toBe(180000 - FADE_TRANSITION_MS)
   })
 })

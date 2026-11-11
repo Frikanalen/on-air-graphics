@@ -20,7 +20,7 @@ export const tierThreshold = (tier: TimelineTier, data: PlanInputs): number =>
  * that would only be held longer.
  *
  * The cream organisation slate precedes the schedule whenever the budget
- * covers its six seconds as well as the intro and schedule minimums. Shorter
+ * covers the complete member message as well as the intro and schedule minimums. Shorter
  * gaps retain the two-part composition. The schedule absorbs all surplus.
  * Logo-only, next-programme and news compositions remain parked.
  */

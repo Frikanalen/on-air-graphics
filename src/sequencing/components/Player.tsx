@@ -1,3 +1,4 @@
+import { memberPageAt } from "../../core/memberMessage"
 import { useContext, useRef } from "react"
 import { AppContext } from "../../core/components/AppContext"
 import { StationClock } from "../../core/components/StationClock"
@@ -25,6 +26,20 @@ export function Player({ plan, playhead }: PlayerProps) {
           ? scene.incoming
           : scene.outgoing,
       )
+    }
+    for (const page of el.querySelectorAll<HTMLElement>(".slate-page")) {
+      page.style.opacity =
+        Number(page.dataset.page) ===
+        memberPageAt(
+          playhead.now() -
+            (plan.segments[
+              Number(
+                page.closest<HTMLElement>("[data-segment]")?.dataset.segment,
+              )
+            ]?.start ?? 0),
+        )
+          ? "1"
+          : "0"
     }
     const clock = el.querySelector<HTMLElement>(".station-clock")
     if (clock) {
