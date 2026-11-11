@@ -393,3 +393,23 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .unavailable-title {
   font-weight: 700;
 }
+
+.music-credit {
+  position: absolute;
+  right: 64px;
+  bottom: 36px;
+  text-align: right;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--paper);
+  opacity: 0.5;
+  pointer-events: none;
+}
+/* The light scenes keep their bottom right for the logo's blades. */
+.music-credit.on-light {
+  right: auto;
+  left: 64px;
+  text-align: left;
+  color: var(--ink);
+}

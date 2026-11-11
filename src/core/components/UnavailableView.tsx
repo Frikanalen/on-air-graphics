@@ -1,4 +1,5 @@
 import { Logo } from "./Logo"
+import { MusicCredit } from "./MusicCredit"
 
 export interface UnavailableViewProps {
   /** The programme's title, or empty when several in a row are missing. */
@@ -29,6 +30,7 @@ export function UnavailableView(props: UnavailableViewProps) {
           </div>
         </div>
       </div>
+      <MusicCredit light />
     </div>
   )
 }
