@@ -23,6 +23,8 @@ export function Content() {
     ) : poster !== null ? (
       <MemberPosterView
         template={poster}
+        look={query.get("look")}
+        slide={query.get("slide")}
         heading={query.get("heading") ?? ""}
         text={query.get("text") ?? ""}
         from={query.get("from") ?? ""}

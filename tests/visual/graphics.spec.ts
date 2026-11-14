@@ -399,8 +399,15 @@ for (const width of [1280, 1920])
     }
   })
 
-for (const template of ["paper", "stage", "notice", "unknown"])
-  test(`member poster in the ${template} template holds its text`, async ({
+const posterLooks = [
+  ["standard", "12:00:00", "day"],
+  ["standard", "19:06:50", "night"],
+  ["notice", "12:00:00", "day"],
+  ["notice", "19:06:50", "night"],
+  ["unknown", "12:00:00", "day"],
+] as const
+for (const [template, time, look] of posterLooks)
+  test(`member poster in the ${template} template at ${time} is ${look}`, async ({
     page,
   }, info) => {
     await prepare(page, "schedule", "19:06:50")
@@ -411,7 +418,7 @@ for (const template of ["paper", "stage", "notice", "unknown"])
       heading: "Neste: Debatt om byutvikling",
       text: "Klokka 20.00 møtes partiene.\nStill spørsmål på telefon.",
       from: "Bydelsradioen",
-      t: "2026-11-10T19:06:50",
+      t: `2026-11-10T${time}`,
     })
     await page.goto(`/graphics/?${query}`)
     await page.evaluate(() =>
@@ -420,8 +427,9 @@ for (const template of ["paper", "stage", "notice", "unknown"])
     const poster = page.locator(".member-poster")
     await expect(poster).toHaveAttribute(
       "data-template",
-      template === "unknown" ? "paper" : template,
+      template === "unknown" ? "standard" : template,
     )
+    await expect(poster).toHaveAttribute("data-look", look)
     await expect(poster.getByRole("heading")).toHaveText(
       "Neste: Debatt om byutvikling",
     )
@@ -429,12 +437,46 @@ for (const template of ["paper", "stage", "notice", "unknown"])
       template === "notice" ? 3 : 2,
     )
     await expect(poster).toContainText("Fra Bydelsradioen")
+    await expect(page.locator(".member-poster-page")).toHaveCount(0)
     await expect(page.locator(".schedule-column, .station-clock")).toHaveCount(
       0,
     )
     await expect(page.locator(".player")).toHaveCSS("opacity", "1")
-    await poster.screenshot({ path: info.outputPath(`poster-${template}.png`) })
+    await poster.screenshot({
+      path: info.outputPath(`poster-${template}-${look}.png`),
+    })
   })
+
+test("member poster splits at a blank line and can hold a slide", async ({
+  page,
+}, info) => {
+  await prepare(page, "schedule", "19:06:50")
+  const query = (extra: Record<string, string>) =>
+    new URLSearchParams({
+      dev: "false",
+      duration: "30000",
+      poster: "standard",
+      heading: "Dugnad lørdag",
+      text: "Vi møtes klokka ti.\n\nTa med hansker og godt humør.",
+      from: "Velforeningen",
+      t: "2026-11-10T12:00:00",
+      ...extra,
+    })
+  await page.goto(`/graphics/?${query({})}`)
+  await page.evaluate(() => (window as unknown as { play: () => void }).play())
+  const poster = page.locator(".member-poster")
+  await expect(poster).toContainText("Vi møtes klokka ti.")
+  await expect(poster).not.toContainText("hansker")
+  await expect(page.locator(".member-poster-page")).toHaveText("1 / 2")
+
+  await page.goto(`/graphics/?${query({ slide: "1", look: "night" })}`)
+  await page.evaluate(() => (window as unknown as { play: () => void }).play())
+  await expect(poster).toHaveAttribute("data-look", "night")
+  await expect(poster).toContainText("Ta med hansker")
+  await expect(poster.getByRole("heading")).toHaveText("Dugnad lørdag")
+  await expect(page.locator(".member-poster-page")).toHaveText("2 / 2")
+  await poster.screenshot({ path: info.outputPath("poster-slide-2.png") })
+})
 
 for (const renderer of ["dom", "webgl"])
   test(`preloaded ${renderer} output stays completely transparent until PLAY`, async ({

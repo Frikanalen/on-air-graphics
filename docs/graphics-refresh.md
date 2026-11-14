@@ -157,11 +157,16 @@ use alpha-only GPU storage. The original dev container and its GPU configuration
 are retained. The temporary CEF debugger setting was restored before the user's
 GPU changes; subsequent verification uses an AMCP-added consumer with no debugger.
 
-`poster=<paper|stage|notice>` with `heading`, `text` (newlines start a new
-paragraph) and `from` (the organization) shows a member's text poster, which
-playout airs in their airtime for its listed length. Like the unavailable
-notice it holds still for its slot; an unknown template is shown as `paper`.
-The frontend's poster editor previews the same URL with `dev=false`.
+`poster=<standard|notice>` with `heading`, `text` and `from` (the
+organization) shows a member's text poster, which playout airs in their
+airtime for its listed length; an unknown template is shown as `standard`.
+It is light while the sun is up in Oslo and dark after, decided when it goes
+on air (`look=day|night` forces one). A blank line in `text` starts a new
+slide and a single newline a new paragraph. The slides go round in whole
+cycles within `duration`, each holding its share; `slide=<n>` holds one.
+`src/core/posterSlides.ts` has the reading-time rule that Django and the
+frontend repeat. The frontend's poster editor previews each slide, by day and
+by night, with `dev=false`.
 
 The refreshed frame retains main’s `unavailable` query option: a named or generic
 programme-unavailable notice replaces the sequence, scales with the broadcast

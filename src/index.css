@@ -394,7 +394,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   font-weight: 700;
 }
 
-/* A member's text poster (MemberPosterView), one of three looks. */
+/* A member's text poster (MemberPosterView): light by day, dark by night. */
 .member-poster {
   position: absolute;
   inset: 0;
@@ -406,8 +406,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   color: var(--ink);
   overflow: hidden;
 }
-.member-poster[data-template="stage"],
-.member-poster[data-template="notice"] {
+.member-poster[data-look="night"] {
   background: var(--ink);
   color: var(--paper);
 }
@@ -470,7 +469,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   font-size: 25px;
   margin-top: 14px;
 }
-.member-poster-from {
+.member-poster-corner {
   position: absolute;
   top: 64px;
   right: 64px;
@@ -479,6 +478,10 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   font-size: 22px;
   font-weight: 600;
   opacity: 0.8;
+}
+.member-poster-page {
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* The line above .disclaimer, in its type. */
