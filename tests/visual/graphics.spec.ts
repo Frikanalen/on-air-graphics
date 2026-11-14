@@ -399,6 +399,43 @@ for (const width of [1280, 1920])
     }
   })
 
+for (const template of ["paper", "stage", "notice", "unknown"])
+  test(`member poster in the ${template} template holds its text`, async ({
+    page,
+  }, info) => {
+    await prepare(page, "schedule", "19:06:50")
+    const query = new URLSearchParams({
+      dev: "false",
+      duration: "30000",
+      poster: template,
+      heading: "Neste: Debatt om byutvikling",
+      text: "Klokka 20.00 møtes partiene.\nStill spørsmål på telefon.",
+      from: "Bydelsradioen",
+      t: "2026-11-10T19:06:50",
+    })
+    await page.goto(`/graphics/?${query}`)
+    await page.evaluate(() =>
+      (window as unknown as { play: () => void }).play(),
+    )
+    const poster = page.locator(".member-poster")
+    await expect(poster).toHaveAttribute(
+      "data-template",
+      template === "unknown" ? "paper" : template,
+    )
+    await expect(poster.getByRole("heading")).toHaveText(
+      "Neste: Debatt om byutvikling",
+    )
+    await expect(poster.locator(".member-poster-copy p")).toHaveCount(
+      template === "notice" ? 3 : 2,
+    )
+    await expect(poster).toContainText("Fra Bydelsradioen")
+    await expect(page.locator(".schedule-column, .station-clock")).toHaveCount(
+      0,
+    )
+    await expect(page.locator(".player")).toHaveCSS("opacity", "1")
+    await poster.screenshot({ path: info.outputPath(`poster-${template}.png`) })
+  })
+
 for (const renderer of ["dom", "webgl"])
   test(`preloaded ${renderer} output stays completely transparent until PLAY`, async ({
     page,

@@ -157,6 +157,12 @@ use alpha-only GPU storage. The original dev container and its GPU configuration
 are retained. The temporary CEF debugger setting was restored before the user's
 GPU changes; subsequent verification uses an AMCP-added consumer with no debugger.
 
+`poster=<paper|stage|notice>` with `heading`, `text` (newlines start a new
+paragraph) and `from` (the organization) shows a member's text poster, which
+playout airs in their airtime for its listed length. Like the unavailable
+notice it holds still for its slot; an unknown template is shown as `paper`.
+The frontend's poster editor previews the same URL with `dev=false`.
+
 The refreshed frame retains main’s `unavailable` query option: a named or generic
 programme-unavailable notice replaces the sequence, scales with the broadcast
 frame, and follows the playout play/stop fade without showing a station clock.
