@@ -14,10 +14,13 @@ the schedule, and 0.5 s for the external exit fade. A 60-second gap retains
 intro → schedule rather than showing a partial message.
 The slate text stays hidden during the 1.8 s blade movement, then fades in over
 0.5 s once the blades have settled.
-The next-programme start time uses 40 px type; the title has a wider column and
-can wrap to three lines at 28 px before truncating.
-Upcoming programme titles wrap to two lines at 21 px, with 80 px rows keeping
-all four entries above the footer.
+The schedule is one 704 px column with a shared 148 px time column, so the next
+programme's title and the later titles start on the same edge. The next
+programme uses 48 px for its start time and 34 px for its title, which wraps to
+three lines before truncating. Later rows are 72 px: a 23 px title over its
+organisation, or a long title on two lines without it. As many whole rows as
+fit under the next programme are shown, four or five. On its own (`view=next`)
+the next programme is set larger (68/46 px) and centred on the clock.
 
 ## Build and deploy
 

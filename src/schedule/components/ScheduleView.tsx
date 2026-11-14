@@ -4,6 +4,8 @@ import { CHANNEL_DISCLAIMER } from "../../core/constants"
 import { ScheduleContext } from "../../core/components/ScheduleContext"
 import { useTimestamp } from "../../graphics/time"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
+/** The most later programmes there is ever room for; CSS cuts the rest. */
+const LATER_ROWS = 5
 export type ScheduleViewProps = { status: SegmentStatus; nextOnly?: boolean }
 export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
   const schedule = useContext(ScheduleContext),
@@ -13,7 +15,9 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
   )
   return (
     <div>
-      <div className="schedule-column">
+      <div
+        className={nextOnly ? "schedule-column next-only" : "schedule-column"}
+      >
         <div className="label amber">Neste program</div>
         {next ? (
           <ScheduleItemSummary item={next} next />
@@ -29,7 +33,7 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
           <>
             <div className="label later-label">Senere</div>
             <div className="later-list">
-              {later.slice(0, 4).map((item) => (
+              {later.slice(0, LATER_ROWS).map((item) => (
                 <ScheduleItemSummary key={item.id} item={item} />
               ))}
             </div>
