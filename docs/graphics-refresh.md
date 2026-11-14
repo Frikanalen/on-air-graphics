@@ -22,6 +22,14 @@ organisation, or a long title on two lines without it. As many whole rows as
 fit under the next programme are shown, four or five. On its own (`view=next`)
 the next programme is set larger (68/46 px) and centred on the clock.
 
+The schedule view turns pages when it has the time (`src/schedule/cycle.ts`):
+the overview (12 s), the rest of the schedule seven programmes a page (9 s
+each, up to three pages, 18 hours ahead), then the next programme on its own
+with its length and description (10 s). Under 22 s it holds the overview. The
+cycle is stretched to fill the time and repeats in whole cycles, so it always
+ends on the next programme. A page fades out over 300 ms before the next fades
+in. `page=overview|focus|<index>` holds one page for review.
+
 ## Build and deploy
 
 The branch workflow publishes `ghcr.io/frikanalen/graphics:codex-on-air-graphics-refresh`

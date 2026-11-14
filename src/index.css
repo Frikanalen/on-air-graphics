@@ -312,6 +312,35 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .later-row .organisation {
   margin-top: 4px;
 }
+/* A page of the rest of the day's schedule: the list has the whole column. */
+.list-label {
+  margin-top: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.list-count {
+  letter-spacing: 0.04em;
+}
+.live-tag {
+  margin-left: 16px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--red);
+  color: var(--paper);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+.next-description {
+  margin-top: 14px;
+  font-size: 24px;
+  line-height: 34px;
+  opacity: 0.88;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
 /* On its own the next programme has the column to itself, so it is set larger. */
 .schedule-column.next-only {
   --time-column: 200px;
@@ -331,6 +360,9 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   -webkit-line-clamp: 4;
 }
 .next-only .next-row .organisation {
+  white-space: normal;
+  opacity: 1;
+  color: rgb(245 239 228 / 0.7);
   margin-top: 10px;
   font-size: 26px;
   line-height: 34px;
