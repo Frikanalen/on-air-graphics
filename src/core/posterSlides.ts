@@ -13,6 +13,7 @@ export const POSTER_SHORTEST_SECONDS = 5
 
 export const posterSlides = (text: string): string[] => {
   const slides = text
+    .replace(/\r\n/g, "\n")
     .split(/\n[ \t]*\n/)
     .map((slide) => slide.trim())
     .filter(Boolean)
@@ -30,11 +31,14 @@ export const slideSeconds = (heading: string, text: string): number[] =>
   )
 
 /** The shortest a poster may be listed for, in whole seconds. */
-export const posterMinimumSeconds = (heading: string, text: string): number =>
-  Math.max(
-    POSTER_SHORTEST_SECONDS,
-    Math.ceil(slideSeconds(heading, text).reduce((a, b) => a + b, 0)),
+export const posterMinimumSeconds = (heading: string, text: string): number => {
+  // Summed in tenths, so float error can't round 6.0 s up to 7.
+  const tenths = slideSeconds(heading, text).reduce(
+    (sum, seconds) => sum + Math.round(seconds * 10),
+    0,
   )
+  return Math.max(POSTER_SHORTEST_SECONDS, Math.ceil(tenths / 10))
+}
 
 /**
  * Which slide shows `elapsed` ms into a poster listed for `duration` ms. The

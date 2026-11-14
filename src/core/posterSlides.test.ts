@@ -9,6 +9,7 @@ import {
 describe("posterSlides", () => {
   it("starts a new slide at a blank line, not a single newline", () => {
     expect(posterSlides("a\nb\n\n  \nc\n\n")).toEqual(["a\nb", "c"])
+    expect(posterSlides("a\r\n\r\nb")).toEqual(["a", "b"])
   })
   it("has one empty slide for a heading-only poster", () => {
     expect(posterSlides("  ")).toEqual([""])
@@ -25,6 +26,10 @@ describe("reading time", () => {
   it("rounds the minimum up to whole seconds, at least five", () => {
     expect(posterMinimumSeconds("Hei", "")).toBe(5)
     expect(posterMinimumSeconds("To ord", "en to tre\n\nfire")).toBe(9)
+  })
+  it("doesn't round a whole number of seconds up", () => {
+    // 3 s + 15 words: 0.4 * 15 is 6.000000000000001 in floating point.
+    expect(posterMinimumSeconds("", Array(15).fill("ord").join(" "))).toBe(9)
   })
 })
 
