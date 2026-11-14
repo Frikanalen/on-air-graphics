@@ -4,6 +4,7 @@ import { PlayheadContext } from "../../sequencing/clock/PlayheadContext"
 import { useTimelinePlan } from "../../sequencing/plan/useTimelinePlan"
 import { AppContext } from "./AppContext"
 import { Background } from "./Background"
+import { MemberPosterView } from "./MemberPosterView"
 import { UnavailableView } from "./UnavailableView"
 
 export function Content() {
@@ -11,23 +12,38 @@ export function Content() {
   const plan = useTimelinePlan()
   const app = useContext(AppContext)
   const [sceneReady, setSceneReady] = useState(false)
-  const unavailable = new URLSearchParams(window.location.search).get(
-    "unavailable",
-  )
+  const query = new URLSearchParams(window.location.search)
+  const unavailable = query.get("unavailable")
+  const poster = query.get("poster")
+  // A notice or a member's poster holds still for its slot, instead of the
+  // sequence.
+  const still =
+    unavailable !== null ? (
+      <UnavailableView title={unavailable} />
+    ) : poster !== null ? (
+      <MemberPosterView
+        template={poster}
+        look={query.get("look")}
+        slide={query.get("slide")}
+        heading={query.get("heading") ?? ""}
+        text={query.get("text") ?? ""}
+        from={query.get("from") ?? ""}
+      />
+    ) : null
   return (
     <div
       className="broadcast-frame"
       style={{
-        visibility: unavailable !== null || sceneReady ? "visible" : "hidden",
+        visibility: still !== null || sceneReady ? "visible" : "hidden",
         opacity: app.state === "idle" ? 0 : 1,
       }}
     >
-      {unavailable !== null ? (
+      {still !== null ? (
         <div
           className="player"
           style={{ opacity: app.state === "active" ? 1 : 0 }}
         >
-          <UnavailableView title={unavailable} />
+          {still}
         </div>
       ) : (
         <>
