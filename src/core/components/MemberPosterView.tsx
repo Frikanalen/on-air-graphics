@@ -1,4 +1,4 @@
-import { useContext, useState, useSyncExternalStore } from "react"
+import { useContext, useRef, useState, useSyncExternalStore } from "react"
 import { sunElevation } from "../../graphics/sun"
 import { frameClock } from "../../graphics/time"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext"
@@ -71,6 +71,10 @@ export function MemberPosterView(props: MemberPosterViewProps) {
   const index = Number.isInteger(held)
     ? Math.min(Math.max(held, 0), slides.length - 1)
     : running
+  // The first slide comes up with the poster; each one after it fades in.
+  const [first] = useState(index)
+  const turned = useRef(false)
+  if (index !== first) turned.current = true
   const slide = slides[index]
   const paragraphs = slide.split(/\n+/).filter((line) => line.trim())
 
@@ -82,7 +86,11 @@ export function MemberPosterView(props: MemberPosterViewProps) {
       data-size={size(props.heading, slide)}
     >
       <Logo className="member-poster-logo" />
-      <div className="member-poster-copy">
+      <div
+        className="member-poster-copy"
+        key={index}
+        data-turned={turned.current && !Number.isInteger(held)}
+      >
         {template === "notice" && (
           <p className="member-poster-label">Viktig melding</p>
         )}

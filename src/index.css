@@ -420,8 +420,19 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   width: 190px;
   height: 41px;
 }
+/* About sixty characters to a line in the smallest type: a line that runs
+   the width of the frame is hard to follow back from a sofa. */
 .member-poster-copy {
-  max-width: 1080px;
+  max-width: 920px;
+}
+@keyframes member-poster-slide {
+  from {
+    opacity: 0;
+  }
+}
+/* A new slide fades up from the background rather than cutting in. */
+.member-poster-copy[data-turned="true"] {
+  animation: member-poster-slide 300ms linear;
 }
 .member-poster-label {
   color: var(--amber);
@@ -430,6 +441,10 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-bottom: 16px;
+}
+/* Amber on paper is 1.7:1. By day the label is ink; the amber edge stays. */
+.member-poster[data-look="day"] .member-poster-label {
+  color: var(--ink);
 }
 .member-poster h1 {
   font-family: "Inter Display", Inter, sans-serif;
@@ -466,8 +481,8 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .member-poster[data-size="small"]
   .member-poster-copy
   p:not(.member-poster-label) {
-  font-size: 25px;
-  margin-top: 14px;
+  font-size: 28px;
+  margin-top: 16px;
 }
 .member-poster-corner {
   position: absolute;
