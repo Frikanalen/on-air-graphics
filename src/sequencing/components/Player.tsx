@@ -1,4 +1,5 @@
-import { memberPageAt } from "../../core/memberMessage"
+import { slatePageAt } from "../../bulletins/slate"
+import { heldSlide } from "../../core/previewChannel"
 import { useContext, useRef } from "react"
 import { AppContext } from "../../core/components/AppContext"
 import { StationClock } from "../../core/components/StationClock"
@@ -33,19 +34,22 @@ export function Player({ plan, playhead }: PlayerProps) {
           : scene.outgoing,
       )
     }
-    for (const page of el.querySelectorAll<HTMLElement>(".slate-page")) {
-      page.style.opacity =
-        Number(page.dataset.page) ===
-        memberPageAt(
-          playhead.now() -
-            (plan.segments[
-              Number(
-                page.closest<HTMLElement>("[data-segment]")?.dataset.segment,
-              )
-            ]?.start ?? 0),
+    for (const slate of el.querySelectorAll<HTMLElement>(".org-slate")) {
+      const segment =
+        plan.segments[
+          Number(slate.closest<HTMLElement>("[data-segment]")?.dataset.segment)
+        ]
+      const pageMs = (slate.dataset.pageMs ?? "").split(",").map(Number)
+      // An editor's preview holds one page (`?slide=<n>`, or as it posts).
+      const held = heldSlide()
+      const shown =
+        held !== null
+          ? { index: Math.min(held, pageMs.length - 1), opacity: 1 }
+          : slatePageAt(pageMs, playhead.now() - (segment?.start ?? 0))
+      for (const page of slate.querySelectorAll<HTMLElement>(".slate-page"))
+        page.style.opacity = String(
+          Number(page.dataset.page) === shown.index ? shown.opacity : 0,
         )
-          ? "1"
-          : "0"
     }
     for (const view of el.querySelectorAll<HTMLElement>("[data-segment]")) {
       const pages = [...view.querySelectorAll<HTMLElement>(".schedule-page")]

@@ -8,4 +8,4 @@ export type ApiCollection<T> = {
 }
 
 export type IconType = keyof typeof icons
-export type SequenceName = typeof SEQUENCE_NAMES[number]
+export type SequenceName = (typeof SEQUENCE_NAMES)[number]

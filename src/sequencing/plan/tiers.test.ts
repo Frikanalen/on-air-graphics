@@ -1,18 +1,19 @@
 import { describe, expect, it } from "vitest"
 import { FADE_TRANSITION_MS } from "../../core/constants"
-import { planInputs, segment, tier } from "./fixtures"
+import { bulletin, planInputs, segment, tier } from "./fixtures"
 import {
   intro,
   logoSting,
   newsPosters,
   nextProgram,
-  orgSlate,
+  bulletinSlate,
   schedule,
 } from "./segments"
 import { INTERMISSION_TIERS, POSTER_TIERS, plan, tierThreshold } from "./tiers"
 import { type TimelineTier } from "./types"
 
 const data = planInputs()
+const slate = bulletinSlate(bulletin())
 
 const poor = tier("poor", 5000)
 const middling = tier("middling", 20000)
@@ -145,8 +146,8 @@ describe("the shipped tiers", () => {
       result.segments.map((s) => [s.spec.name, s.start, s.duration]),
     ).toEqual([
       ["intro", 0, 3200],
-      ["slate", 3200, orgSlate().min],
-      ["schedule", 3200 + orgSlate().min, 120000 - 500 - 3200 - orgSlate().min],
+      ["slate", 3200, slate.min],
+      ["schedule", 3200 + slate.min, 120000 - 500 - 3200 - slate.min],
     ])
     expect(result.total + FADE_TRANSITION_MS).toBe(120000)
   })
@@ -238,7 +239,7 @@ describe("the parked tiers", () => {
           intro(),
           schedule({ grow: 1, max: Infinity }),
           ...newsPosters(inputs.news),
-          orgSlate(),
+          slate,
         ],
       },
     ]

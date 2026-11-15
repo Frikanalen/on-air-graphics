@@ -48,7 +48,12 @@ export function useClockKey() {
             operator="over"
             result="opaqueCamera"
           />
-          <feBlend in="opaqueCamera" in2="lighting" mode="multiply" result="lit" />
+          <feBlend
+            in="opaqueCamera"
+            in2="lighting"
+            mode="multiply"
+            result="lit"
+          />
           <feColorMatrix in="lit" type="luminanceToAlpha" result="key" />
           <feFlood floodColor="#F5EFE4" />
           <feComposite in2="key" operator="in" />

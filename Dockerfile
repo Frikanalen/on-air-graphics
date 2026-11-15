@@ -12,5 +12,6 @@ FROM nginx:1.30.6-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html/graphics
 RUN test -s /usr/share/nginx/html/graphics/fonts/InterVariable.woff2 \
+    && test -s /usr/share/nginx/html/graphics/fonts/SchibstedGrotesk-latin.woff2 \
     && test -s /usr/share/nginx/html/graphics/scene/grain.png \
     && test -s /usr/share/nginx/html/graphics/scene/blade-0-lit.svg

@@ -1,4 +1,8 @@
-import { MEMBER_PAGES, MEMBER_ENTRANCE_MS } from "../../src/core/memberMessage"
+import {
+  SLATE_ENTRANCE_MS,
+  slatePageMs,
+  slatePages,
+} from "../../src/bulletins/slate"
 import { test, expect, type Page } from "@playwright/test"
 const items = Array.from({ length: 5 }, (_, i) => ({
   id: i,
@@ -16,12 +20,25 @@ const items = Array.from({ length: 5 }, (_, i) => ({
     organization: { id: 1, name: "Medlemsorganisasjonen" },
   },
 }))
+const bulletin = {
+  id: 1,
+  heading: "Melding fra kanalen",
+  text: "Dette er den første siden av en melding som går på lufta mellom programmene. Den står så lenge det tar å lese den.\n\nDette er den andre siden. Etter den kommer sendeplanen.",
+  template: "standard",
+  priority: 0,
+}
+const mockBulletins = (page: Page, results: object[] = [bulletin]) =>
+  page.route("**/api/news/bulletins*", (route) =>
+    route.fulfill({ json: { count: results.length, results } }),
+  )
 async function prepare(
   page: Page,
   view: string,
   time: string,
   renderer = "dom",
+  bulletins: object[] = [bulletin],
 ) {
+  await mockBulletins(page, bulletins)
   await page.route("**/api/scheduleitems*", (route) =>
     route.fulfill({ json: { count: 5, results: items } }),
   )
@@ -196,7 +213,7 @@ test("a frozen frame survives GPU context loss and restoration", async ({
   await expect(page.locator(".scene")).toHaveAttribute("data-renderer", "webgl")
 })
 
-test("no duration opens the dev menu and a long gap includes the complete member message", async ({
+test("no duration opens the dev menu and a long gap airs every page of a bulletin", async ({
   page,
 }, info) => {
   await prepare(page, "slate", "19:06:50")
@@ -238,15 +255,17 @@ test("no duration opens the dev menu and a long gap includes the complete member
     page
       .locator(".slate-page")
       .first()
-      .getByRole("heading", { name: "Til Frikanalens medlemmer", exact: true }),
+      .getByRole("heading", { name: bulletin.heading, exact: true }),
   ).toBeVisible()
   await expect(page.locator(".station-clock")).toHaveCSS("opacity", "0")
   await page
     .locator(".broadcast-frame")
     .screenshot({ path: info.outputPath("60-second-gap-slate.png") })
   let elapsed = 5500
-  let pageStart = 3200 + MEMBER_ENTRANCE_MS
-  for (const [index, memberPage] of MEMBER_PAGES.entries()) {
+  let pageStart = 3200 + SLATE_ENTRANCE_MS
+  const pageMs = slatePageMs(bulletin)
+  expect(pageMs).toHaveLength(2)
+  for (const [index, text] of slatePages(bulletin).entries()) {
     const target = pageStart + 1000
     while (elapsed < target) {
       await advance.click()
@@ -254,13 +273,13 @@ test("no duration opens the dev menu and a long gap includes the complete member
     }
     const copy = page.locator(`.slate-page[data-page="${index}"]`)
     await expect(copy).toHaveCSS("opacity", "1")
-    await expect(copy.locator("p")).toHaveText(memberPage.text)
+    await expect(copy.locator("p")).toHaveText(text)
     const box = await copy.boundingBox()
     expect(box!.y + box!.height).toBeLessThan(680)
     await page
       .locator(".broadcast-frame")
-      .screenshot({ path: info.outputPath(`member-page-${index + 1}.png`) })
-    pageStart += memberPage.duration
+      .screenshot({ path: info.outputPath(`bulletin-page-${index + 1}.png`) })
+    pageStart += pageMs[index]
   }
   while (elapsed < pageStart + 2000) {
     await advance.click()
@@ -280,6 +299,7 @@ test("loading time does not consume the opening scene", async ({ page }) => {
   const response = new Promise<void>((resolve) => {
     release = resolve
   })
+  await mockBulletins(page)
   await page.route("**/api/scheduleitems*", async (route) => {
     await response
     await route.fulfill({ json: { count: 5, results: items } })
@@ -399,6 +419,85 @@ for (const width of [1280, 1920])
     }
   })
 
+const posterLooks = [
+  ["standard", "12:00:00", "day"],
+  ["standard", "19:06:50", "night"],
+  ["notice", "12:00:00", "day"],
+  ["notice", "19:06:50", "night"],
+  ["unknown", "12:00:00", "day"],
+] as const
+for (const [template, time, look] of posterLooks)
+  test(`member poster in the ${template} template at ${time} is ${look}`, async ({
+    page,
+  }, info) => {
+    await prepare(page, "schedule", "19:06:50")
+    const query = new URLSearchParams({
+      dev: "false",
+      duration: "30000",
+      poster: template,
+      heading: "Neste: Debatt om byutvikling",
+      text: "Klokka 20.00 møtes partiene.\nStill spørsmål på telefon.",
+      from: "Bydelsradioen",
+      t: `2026-11-10T${time}`,
+    })
+    await page.goto(`/graphics/?${query}`)
+    await page.evaluate(() =>
+      (window as unknown as { play: () => void }).play(),
+    )
+    const poster = page.locator(".member-poster")
+    await expect(poster).toHaveAttribute(
+      "data-template",
+      template === "unknown" ? "standard" : template,
+    )
+    await expect(poster).toHaveAttribute("data-look", look)
+    await expect(poster.getByRole("heading")).toHaveText(
+      "Neste: Debatt om byutvikling",
+    )
+    await expect(poster.locator(".member-poster-copy p")).toHaveCount(
+      template === "notice" ? 3 : 2,
+    )
+    await expect(poster).toContainText("Bydelsradioen")
+    await expect(page.locator(".member-poster-page")).toHaveCount(0)
+    await expect(page.locator(".schedule-column, .station-clock")).toHaveCount(
+      0,
+    )
+    await expect(page.locator(".player")).toHaveCSS("opacity", "1")
+    await poster.screenshot({
+      path: info.outputPath(`poster-${template}-${look}.png`),
+    })
+  })
+
+test("member poster splits at a blank line and can hold a slide", async ({
+  page,
+}, info) => {
+  await prepare(page, "schedule", "19:06:50")
+  const query = (extra: Record<string, string>) =>
+    new URLSearchParams({
+      dev: "false",
+      duration: "30000",
+      poster: "standard",
+      heading: "Dugnad lørdag",
+      text: "Vi møtes klokka ti.\n\nTa med hansker og godt humør.",
+      from: "Velforeningen",
+      t: "2026-11-10T12:00:00",
+      ...extra,
+    })
+  await page.goto(`/graphics/?${query({})}`)
+  await page.evaluate(() => (window as unknown as { play: () => void }).play())
+  const poster = page.locator(".member-poster")
+  await expect(poster).toContainText("Vi møtes klokka ti.")
+  await expect(poster).not.toContainText("hansker")
+  await expect(page.locator(".member-poster-page")).toHaveText("1 / 2")
+
+  await page.goto(`/graphics/?${query({ slide: "1", look: "night" })}`)
+  await page.evaluate(() => (window as unknown as { play: () => void }).play())
+  await expect(poster).toHaveAttribute("data-look", "night")
+  await expect(poster).toContainText("Ta med hansker")
+  await expect(poster.getByRole("heading")).toHaveText("Dugnad lørdag")
+  await expect(page.locator(".member-poster-page")).toHaveText("2 / 2")
+  await poster.screenshot({ path: info.outputPath("poster-slide-2.png") })
+})
+
 test("a long schedule view turns pages and ends on the next programme", async ({
   page,
 }, info) => {
@@ -415,6 +514,7 @@ test("a long schedule view turns pages and ends on the next programme", async ({
       organization: { id: 1, name: "Medlemsorganisasjonen" },
     },
   }))
+  await mockBulletins(page, [])
   await page.route("**/api/scheduleitems*", (route) =>
     route.fulfill({ json: { count: many.length, results: many } }),
   )
@@ -505,13 +605,13 @@ for (const renderer of ["dom", "webgl"])
 
 for (const renderer of ["dom", "webgl"])
   for (const budget of [60000, 81660])
-    test(`short gap ${budget} goes from logo to schedule without slate in ${renderer}`, async ({
+    test(`gap ${budget} with no bulletins goes from logo to schedule without slate in ${renderer}`, async ({
       page,
     }, info) => {
       const initial = new Date("2026-11-10T18:06:50Z")
       await page.clock.install({ time: initial })
       await page.clock.pauseAt(new Date(+initial + 1000))
-      await prepare(page, "intro", "19:06:50", renderer)
+      await prepare(page, "intro", "19:06:50", renderer, [])
       await page.goto(
         `/graphics/?dev=false&duration=${budget}&renderer=${renderer}`,
       )

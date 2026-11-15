@@ -82,6 +82,10 @@ const injected = new URLSearchParams(
   typeof window === "undefined" ? "" : window.location.search,
 ).get("t")
 export const frozen = injected !== null
+// CSS reads this to hold its own movement still (the travelling light of
+// AliveRule), so a frozen frame gives the same pixels every time.
+if (frozen && typeof document !== "undefined")
+  document.documentElement.dataset.frozen = ""
 let timestamp = injected === null ? Date.now() : parseTimestamp(injected)
 const listeners = new Set<() => void>()
 let frame: number | undefined

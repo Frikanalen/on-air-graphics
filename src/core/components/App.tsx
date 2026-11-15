@@ -6,6 +6,9 @@ import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
 import { ScheduleContext } from "./ScheduleContext.tsx"
+import { BulletinContext } from "../../bulletins/BulletinContext"
+import { useBulletins } from "../../bulletins/useBulletins"
+import { announceReady } from "../previewChannel"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import { frozen } from "../../graphics/time"
 import { useSceneAssets } from "../../graphics/useSceneAssets"
@@ -25,7 +28,8 @@ window.handleWarning = console.error
 export function App() {
   const { schedule, loading } = useSchedule()
   const assetsReady = useSceneAssets()
-  const ready = !loading && assetsReady
+  const { bulletins, loading: bulletinsLoading } = useBulletins()
+  const ready = !loading && !bulletinsLoading && assetsReady
 
   const [state, setState] = useState<AppState>("idle")
   const [playhead] = useState(createPlayhead)
@@ -69,6 +73,10 @@ export function App() {
     } else playhead.pause()
   }, [state, playhead, preview, ready])
 
+  useEffect(() => {
+    if (ready) announceReady()
+  }, [ready])
+
   const context: AppContextT = {
     state,
     budget: params.duration,
@@ -79,15 +87,17 @@ export function App() {
   return (
     <AppContext.Provider value={context}>
       <ScheduleContext.Provider value={schedule}>
-        <PlayheadContext.Provider value={playhead}>
-          {dev ? (
-            <DevPanel />
-          ) : (
-            <div className="output-stage">
-              <Content />
-            </div>
-          )}
-        </PlayheadContext.Provider>
+        <BulletinContext.Provider value={bulletins}>
+          <PlayheadContext.Provider value={playhead}>
+            {dev ? (
+              <DevPanel />
+            ) : (
+              <div className="output-stage">
+                <Content />
+              </div>
+            )}
+          </PlayheadContext.Provider>
+        </BulletinContext.Provider>
       </ScheduleContext.Provider>
     </AppContext.Provider>
   )

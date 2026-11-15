@@ -2,7 +2,8 @@ import { FADE_TRANSITION_MS } from "../../core/constants"
 import { type SequenceName } from "../../core/types"
 import { allocate, minDuration } from "./allocate"
 // Logo sting, next programme and news remain available for future tiers.
-import { intro, orgSlate, poster, schedule } from "./segments"
+import { MAX_SLATES } from "../../bulletins/slate"
+import { bulletinSlate, intro, poster, schedule } from "./segments"
 import { type Plan, type PlanInputs, type TimelineTier } from "./types"
 
 /**
@@ -19,20 +20,30 @@ export const tierThreshold = (tier: TimelineTier, data: PlanInputs): number =>
  * whatever a tier does not spend lands there rather than on a closing beat
  * that would only be held longer.
  *
- * The cream organisation slate precedes the schedule whenever the budget
- * covers the complete member message as well as the intro and schedule minimums. Shorter
- * gaps retain the two-part composition. The schedule absorbs all surplus.
- * Logo-only, next-programme and news compositions remain parked.
+ * The channel's bulletins air on the cream slate before the schedule, each
+ * for as long as it takes to read. A tier with one more bulletin needs a
+ * budget that covers it whole, so a gap airs as many as it has time for, in
+ * the order they take their turn, and a short gap airs none. The schedule
+ * absorbs all surplus. Logo-only, next-programme and news compositions
+ * remain parked.
  */
 export const INTERMISSION_TIERS: TimelineTier[] = [
   {
     name: "schedule",
     build: () => [intro(), schedule({ grow: 1, max: Infinity })],
   },
-  {
-    name: "slate-and-schedule",
-    build: () => [intro(), orgSlate(), schedule({ grow: 1, max: Infinity })],
-  },
+  ...Array.from({ length: MAX_SLATES }, (_, index): TimelineTier => {
+    const count = index + 1
+    return {
+      name: count === 1 ? "slate-and-schedule" : `${count}-slates-and-schedule`,
+      available: (data) => (data.bulletins?.length ?? 0) >= count,
+      build: (data) => [
+        intro(),
+        ...(data.bulletins ?? []).slice(0, count).map(bulletinSlate),
+        schedule({ grow: 1, max: Infinity }),
+      ],
+    }
+  }),
 ]
 
 /** A text poster is its own programme; the caller asks for it by name. */
@@ -62,7 +73,8 @@ export const plan = (
 ): Plan => {
   const budget = Math.max(rawBudgetMs - FADE_TRANSITION_MS, 0)
 
-  const affordable = [...tiers]
+  const affordable = tiers
+    .filter((tier) => tier.available?.(data) ?? true)
     .reverse()
     .find((tier) => tierThreshold(tier, data) <= budget)
 

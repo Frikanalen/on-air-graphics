@@ -123,8 +123,9 @@ export const PAPER: LightState = {
 }
 export const RED: LightState = {
   ...LIGHTS[0],
-  stops: ["#EA5A4A", "#B5404A", "#6A2549"],
-  shadow: "#3A0F2C",
+  // Deep enough that paper-coloured text on it is easy to read.
+  stops: ["#C2413B", "#8E2E43", "#4F1B3D"],
+  shadow: "#2B0B22",
   tight: 7,
   wide: 36,
 }

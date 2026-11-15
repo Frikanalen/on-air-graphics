@@ -28,8 +28,8 @@ export function useSceneAssets() {
     })
     Promise.all([
       ...images,
-      document.fonts.load("400 26px Inter"),
-      document.fonts.load('800 84px "Inter Display"'),
+      document.fonts.load('400 26px "Schibsted Grotesk"'),
+      document.fonts.load('800 44px "Schibsted Grotesk"'),
       document.fonts.load('700 81px "Inter Display"'),
     ])
       .then(() => {

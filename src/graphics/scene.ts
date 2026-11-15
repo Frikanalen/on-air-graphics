@@ -79,7 +79,10 @@ export function sceneAt(plan: Plan, elapsed: number, timestamp: number) {
         ? clamp((local - duration) / 500)
         : crossCamera
           ? clamp((local - 1300) / 500)
-          : clamp(local / 500),
+          : previous && name === "slate" && oldName === "slate"
+            ? // One bulletin leaves before the next comes up.
+              clamp((local - 300) / 300)
+            : clamp(local / 500),
     outgoing: 1 - clamp(local / 300),
     clock: crossCamera
       ? toSheet

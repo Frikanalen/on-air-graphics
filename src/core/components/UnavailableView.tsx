@@ -1,3 +1,4 @@
+import { AliveRule } from "./AliveRule"
 import { Logo } from "./Logo"
 import { MusicCredit } from "./MusicCredit"
 
@@ -23,6 +24,7 @@ export function UnavailableView(props: UnavailableViewProps) {
       <div className="unavailable-copy">
         <div className="unavailable-body">
           <Logo className="unavailable-logo" />
+          <AliveRule brand className="unavailable-rule" />
           <h1>{HEADING}</h1>
           <div>
             {title && <p className="unavailable-title">{title}</p>}

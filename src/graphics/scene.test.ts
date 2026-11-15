@@ -5,17 +5,19 @@ import { type Plan } from "../sequencing/plan/types"
 import {
   intro,
   schedule,
-  orgSlate,
+  bulletinSlate,
   newsPosters,
 } from "../sequencing/plan/segments"
 import { LIGHTS, RED } from "./sun"
 import { parseTimestamp } from "./time"
+import { bulletin } from "../sequencing/plan/fixtures"
+const slate = bulletinSlate(bulletin())
 const timestamp = parseTimestamp("2026-11-10T20:59:00")
 const specs = [
   intro(),
   schedule(),
   newsPosters([{ id: "test", title: "Test", body: "Body" }])[0],
-  orgSlate(),
+  slate,
 ]
 const plan: Plan = {
   tierName: "test",
@@ -97,7 +99,11 @@ describe("deterministic camera choreography", () => {
     })
   })
   it("shows the cream slate between the wide intro and the sheet in the shipped long-gap plan", () => {
-    const gap = planGap(120000, { schedule: [], news: [] }, INTERMISSION_TIERS)
+    const gap = planGap(
+      120000,
+      { schedule: [], news: [], bulletins: [bulletin()] },
+      INTERMISSION_TIERS,
+    )
     expect(sceneAt(gap, 3199.99, timestamp).scale).toBe(3.25)
     expect(sceneAt(gap, 3200, timestamp)).toMatchObject({
       camera: "close",
@@ -115,7 +121,7 @@ describe("deterministic camera choreography", () => {
       expect(sceneAt(gap, elapsed, timestamp).incoming).toBe(0)
     expect(sceneAt(gap, 5250, timestamp).incoming).toBe(0.5)
     expect(sceneAt(gap, 5500, timestamp).incoming).toBe(1)
-    const scheduleStart = 3200 + orgSlate().min
+    const scheduleStart = 3200 + slate.min
     expect(sceneAt(gap, scheduleStart - 0.01, timestamp).scale).toBe(13.4)
     expect(sceneAt(gap, scheduleStart, timestamp)).toMatchObject({
       scale: 13.4,
