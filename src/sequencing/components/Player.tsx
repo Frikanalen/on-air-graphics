@@ -8,6 +8,11 @@ import { useFrame } from "../../graphics/useFrame"
 import { useRenderedSegments } from "../clock/useRenderedSegments"
 import { type Playhead } from "../clock/playhead"
 import { type Plan } from "../plan/types"
+import {
+  heldSchedulePage,
+  schedulePageAt,
+  type SchedulePageKind,
+} from "../../schedule/cycle"
 
 export interface PlayerProps {
   plan: Plan
@@ -41,6 +46,23 @@ export function Player({ plan, playhead }: PlayerProps) {
         )
           ? "1"
           : "0"
+    }
+    for (const view of el.querySelectorAll<HTMLElement>("[data-segment]")) {
+      const pages = [...view.querySelectorAll<HTMLElement>(".schedule-page")]
+      if (!pages.length) continue
+      const kinds = pages.map((page) => page.dataset.kind as SchedulePageKind)
+      const segment = plan.segments[Number(view.dataset.segment)]
+      const held = heldSchedulePage(kinds)
+      const shown =
+        held !== null
+          ? { index: held, opacity: 1 }
+          : schedulePageAt(
+              kinds,
+              segment?.duration ?? 0,
+              playhead.now() - (segment?.start ?? 0),
+            )
+      for (const [index, page] of pages.entries())
+        page.style.opacity = String(index === shown.index ? shown.opacity : 0)
     }
     const clock = el.querySelector<HTMLElement>(".station-clock")
     if (clock) {
