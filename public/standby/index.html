@@ -7,7 +7,8 @@
       Standby card for CasparCG (1280x720, scaled to the output), for when the
       ordinary programme and graphics cannot be shown. Deliberately one static
       page: no script, no bundle and nothing fetched but the typeface, so it
-      shows whatever else is broken. With the typeface missing it falls back
+      shows whatever else is broken. A light travels along the rule
+      without end, so a running picture can be told from a frozen one. With the typeface missing it falls back
       to the system sans-serif.
 
       Served by the graphics image at /graphics/standby/. To put it on air:
@@ -65,7 +66,7 @@
       }
       .rule {
         width: 55vw;
-        height: 0.23vw;
+        height: 0.4vw;
         margin-bottom: 3.4vw;
         background: linear-gradient(
           to right,
@@ -73,6 +74,42 @@
           #faaa3f 33.3% 66.6%,
           #64bc50 66.6%
         );
+      }
+      /* A light that keeps travelling along the rule: if it stands still,
+         the picture is frozen. */
+      .rule {
+        position: relative;
+        overflow: hidden;
+      }
+      .rule::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 30%;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgb(255 255 255 / 0.95) 50%,
+          transparent
+        );
+        animation: alive 4s linear infinite;
+      }
+      @keyframes alive {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(334%);
+        }
+      }
+      /* And the subtitle breathes, for a screen seen from across a room. */
+      p {
+        animation: breathe 6s ease-in-out infinite;
+      }
+      @keyframes breathe {
+        50% {
+          opacity: 0.45;
+        }
       }
     </style>
   </head>

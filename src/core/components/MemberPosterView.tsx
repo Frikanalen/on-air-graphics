@@ -4,7 +4,7 @@ import { frameClock } from "../../graphics/time"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext"
 import { posterSlides, slideAt } from "../posterSlides"
 import { AppContext } from "./AppContext"
-import { Logo } from "./Logo"
+import { AliveRule } from "./AliveRule"
 import { MusicCredit } from "./MusicCredit"
 
 /** The templates a member can pick for a text poster. Django keeps the same list. */
@@ -46,8 +46,10 @@ const size = (heading: string, text: string) => {
  * A member's text poster, which playout airs in their airtime for as long
  * as they listed it: `?poster=<template>&heading=…&text=…&from=…`, with an
  * optional `look=day|night` and `slide=<n>`. A blank line in the text starts
- * a new slide; the slides go round in whole cycles (posterSlides.ts). The music under it
- * is credited, as everywhere the graphics play it.
+ * a new slide; the slides go round in whole cycles (posterSlides.ts). It is
+ * the member's own message, so it is theirs to look at: their name where a
+ * logo would be, and no Frikanalen logo (the channel bug stays on over it).
+ * The music under it is credited, as everywhere the graphics play it.
  */
 export function MemberPosterView(props: MemberPosterViewProps) {
   const template = (MEMBER_POSTER_TEMPLATES as readonly string[]).includes(
@@ -85,7 +87,7 @@ export function MemberPosterView(props: MemberPosterViewProps) {
       data-look={look}
       data-size={size(props.heading, slide)}
     >
-      <Logo className="member-poster-logo" />
+      {props.from && <p className="member-poster-from">{props.from}</p>}
       <div
         className="member-poster-copy"
         key={index}
@@ -99,14 +101,12 @@ export function MemberPosterView(props: MemberPosterViewProps) {
           <p key={index}>{paragraph}</p>
         ))}
       </div>
-      <div className="member-poster-corner">
-        {props.from && <p>Fra {props.from}</p>}
-        {slides.length > 1 && (
-          <p className="member-poster-page">
-            {index + 1} / {slides.length}
-          </p>
-        )}
-      </div>
+      {slides.length > 1 && (
+        <p className="member-poster-page">
+          {index + 1} / {slides.length}
+        </p>
+      )}
+      <AliveRule className="member-poster-rule" />
       <MusicCredit light={look === "day"} />
     </div>
   )

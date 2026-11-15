@@ -456,7 +456,7 @@ for (const [template, time, look] of posterLooks)
     await expect(poster.locator(".member-poster-copy p")).toHaveCount(
       template === "notice" ? 3 : 2,
     )
-    await expect(poster).toContainText("Fra Bydelsradioen")
+    await expect(poster).toContainText("Bydelsradioen")
     await expect(page.locator(".member-poster-page")).toHaveCount(0)
     await expect(page.locator(".schedule-column, .station-clock")).toHaveCount(
       0,

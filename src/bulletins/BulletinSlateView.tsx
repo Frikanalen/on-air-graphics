@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react"
+import { AliveRule } from "../core/components/AliveRule"
 import { Logo } from "../core/components/Logo"
 import { type SegmentStatus } from "../sequencing/plan/types"
 import { slatePageMs, slatePages } from "./slate"
@@ -60,6 +61,7 @@ export function BulletinSlateView({
       data-page-ms={slatePageMs(bulletin).join(",")}
     >
       <Logo wordmarkOnly className="slate-wordmark" />
+      <AliveRule brand className="slate-rule" />
       {pages.map((page, index) => (
         <div
           className="slate-copy slate-page"

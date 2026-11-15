@@ -191,7 +191,15 @@ slide and a single newline a new paragraph. The slides go round in whole
 cycles within `duration`, each holding its share; `slide=<n>` holds one.
 `src/core/posterSlides.ts` has the reading-time rule that Django and the
 frontend repeat. The frontend's poster editor previews each slide, by day and
-by night, with `dev=false`.
+by night, with `dev=false`. A member's poster is neutral: the organization's
+name in place of the Frikanalen logo, which only the channel's own screens
+carry, so playout leaves the channel bug up over it.
+
+Every held screen has something that moves, so frozen video can be told from
+running video: the slate, the poster, the unavailable card and
+`/graphics/standby/` have a light travelling along their rule
+(`AliveRule`), and the schedule has the clock. With `t=` the frame is frozen
+and the light stands still.
 
 The refreshed frame retains main’s `unavailable` query option: a named or generic
 programme-unavailable notice replaces the sequence, scales with the broadcast

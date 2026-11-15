@@ -482,9 +482,8 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   max-width: 920px;
 }
 /* The logo has two sizes: 304px on the sheets, beside the clock, and 190px
-   in the corner of a notice (this one and the text poster). */
-.unavailable-logo,
-.member-poster-logo {
+   in the corner of this notice. */
+.unavailable-logo {
   position: absolute;
   top: 56px;
   left: 64px;
@@ -588,18 +587,96 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   font-size: 28px;
   margin-top: 16px;
 }
-.member-poster-corner {
+/* Whose message it is, where a logo would otherwise sit. */
+.member-poster-from {
+  position: absolute;
+  top: 60px;
+  left: 64px;
+  max-width: 900px;
+  font-size: 24px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.member-poster-page {
   position: absolute;
   top: 64px;
   right: 64px;
-  max-width: 760px;
-  text-align: right;
   font-size: 22px;
   font-weight: 600;
   opacity: 0.8;
 }
-.member-poster-page {
-  margin-top: 6px;
+
+/*
+ * AliveRule: a light that never stops travelling along a short rule, so a
+ * running picture can be told from a frozen one. Linear and endless on
+ * purpose; it is a sign of life, not an ornament.
+ */
+.alive-rule {
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 22%, transparent);
+}
+.alive-rule-brand {
+  background: linear-gradient(
+    to right,
+    var(--red) 0 33.4%,
+    var(--amber) 33.4% 66.7%,
+    var(--green) 66.7%
+  );
+}
+.alive-rule i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    currentColor 50%,
+    transparent
+  );
+  animation: alive-rule 4s linear infinite;
+}
+.alive-rule-brand i {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(255 255 255 / 0.9) 50%,
+    transparent
+  );
+}
+/* `?t=` freezes the picture, and this with it. */
+[data-frozen] .alive-rule i {
+  animation: none;
+  transform: translateX(97%);
+}
+@keyframes alive-rule {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(295%);
+  }
+}
+.member-poster-rule {
+  position: absolute;
+  left: 64px;
+  top: 104px;
+  width: 190px;
+}
+.slate-rule {
+  position: absolute;
+  left: 64px;
+  top: 134px;
+  width: 203px;
+}
+.unavailable-rule {
+  position: absolute;
+  left: 64px;
+  top: 112px;
+  width: 190px;
 }
 
 /* The line above .disclaimer, in its type. */
