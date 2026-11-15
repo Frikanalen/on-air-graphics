@@ -3,6 +3,7 @@ import { AppContext } from "../../core/components/AppContext"
 import { ScheduleContext } from "../../core/components/ScheduleContext"
 import { useSequenceName } from "../../core/hooks/useSequenceName"
 import { useNews } from "../../news/useNews"
+import { BulletinContext } from "../../bulletins/BulletinContext"
 import { plan, tiersFor } from "./tiers"
 import { previewPlan } from "../../graphics/preview"
 import { type Plan } from "./types"
@@ -18,10 +19,13 @@ export const useTimelinePlan = (): Plan => {
   const { budget } = useContext(AppContext)
   const schedule = useContext(ScheduleContext)
   const news = useNews()
+  const bulletins = useContext(BulletinContext)
   const sequence = useSequenceName()
 
   return useMemo(
-    () => previewPlan() ?? plan(budget, { schedule, news }, tiersFor(sequence)),
-    [budget, schedule, news, sequence],
+    () =>
+      previewPlan(bulletins) ??
+      plan(budget, { schedule, news, bulletins }, tiersFor(sequence)),
+    [budget, schedule, news, bulletins, sequence],
   )
 }

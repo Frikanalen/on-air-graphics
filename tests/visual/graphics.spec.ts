@@ -1,4 +1,8 @@
-import { MEMBER_PAGES, MEMBER_ENTRANCE_MS } from "../../src/core/memberMessage"
+import {
+  SLATE_ENTRANCE_MS,
+  slatePageMs,
+  slatePages,
+} from "../../src/bulletins/slate"
 import { test, expect, type Page } from "@playwright/test"
 const items = Array.from({ length: 5 }, (_, i) => ({
   id: i,
@@ -16,12 +20,25 @@ const items = Array.from({ length: 5 }, (_, i) => ({
     organization: { id: 1, name: "Medlemsorganisasjonen" },
   },
 }))
+const bulletin = {
+  id: 1,
+  heading: "Melding fra kanalen",
+  text: "Dette er den første siden av en melding som går på lufta mellom programmene. Den står så lenge det tar å lese den.\n\nDette er den andre siden. Etter den kommer sendeplanen.",
+  template: "standard",
+  priority: 0,
+}
+const mockBulletins = (page: Page, results: object[] = [bulletin]) =>
+  page.route("**/api/news/bulletins*", (route) =>
+    route.fulfill({ json: { count: results.length, results } }),
+  )
 async function prepare(
   page: Page,
   view: string,
   time: string,
   renderer = "dom",
+  bulletins: object[] = [bulletin],
 ) {
+  await mockBulletins(page, bulletins)
   await page.route("**/api/scheduleitems*", (route) =>
     route.fulfill({ json: { count: 5, results: items } }),
   )
@@ -196,7 +213,7 @@ test("a frozen frame survives GPU context loss and restoration", async ({
   await expect(page.locator(".scene")).toHaveAttribute("data-renderer", "webgl")
 })
 
-test("no duration opens the dev menu and a long gap includes the complete member message", async ({
+test("no duration opens the dev menu and a long gap airs every page of a bulletin", async ({
   page,
 }, info) => {
   await prepare(page, "slate", "19:06:50")
@@ -238,15 +255,17 @@ test("no duration opens the dev menu and a long gap includes the complete member
     page
       .locator(".slate-page")
       .first()
-      .getByRole("heading", { name: "Til Frikanalens medlemmer", exact: true }),
+      .getByRole("heading", { name: bulletin.heading, exact: true }),
   ).toBeVisible()
   await expect(page.locator(".station-clock")).toHaveCSS("opacity", "0")
   await page
     .locator(".broadcast-frame")
     .screenshot({ path: info.outputPath("60-second-gap-slate.png") })
   let elapsed = 5500
-  let pageStart = 3200 + MEMBER_ENTRANCE_MS
-  for (const [index, memberPage] of MEMBER_PAGES.entries()) {
+  let pageStart = 3200 + SLATE_ENTRANCE_MS
+  const pageMs = slatePageMs(bulletin)
+  expect(pageMs).toHaveLength(2)
+  for (const [index, text] of slatePages(bulletin).entries()) {
     const target = pageStart + 1000
     while (elapsed < target) {
       await advance.click()
@@ -254,13 +273,13 @@ test("no duration opens the dev menu and a long gap includes the complete member
     }
     const copy = page.locator(`.slate-page[data-page="${index}"]`)
     await expect(copy).toHaveCSS("opacity", "1")
-    await expect(copy.locator("p")).toHaveText(memberPage.text)
+    await expect(copy.locator("p")).toHaveText(text)
     const box = await copy.boundingBox()
     expect(box!.y + box!.height).toBeLessThan(680)
     await page
       .locator(".broadcast-frame")
-      .screenshot({ path: info.outputPath(`member-page-${index + 1}.png`) })
-    pageStart += memberPage.duration
+      .screenshot({ path: info.outputPath(`bulletin-page-${index + 1}.png`) })
+    pageStart += pageMs[index]
   }
   while (elapsed < pageStart + 2000) {
     await advance.click()
@@ -280,6 +299,7 @@ test("loading time does not consume the opening scene", async ({ page }) => {
   const response = new Promise<void>((resolve) => {
     release = resolve
   })
+  await mockBulletins(page)
   await page.route("**/api/scheduleitems*", async (route) => {
     await response
     await route.fulfill({ json: { count: 5, results: items } })
@@ -494,6 +514,7 @@ test("a long schedule view turns pages and ends on the next programme", async ({
       organization: { id: 1, name: "Medlemsorganisasjonen" },
     },
   }))
+  await mockBulletins(page, [])
   await page.route("**/api/scheduleitems*", (route) =>
     route.fulfill({ json: { count: many.length, results: many } }),
   )
@@ -584,13 +605,13 @@ for (const renderer of ["dom", "webgl"])
 
 for (const renderer of ["dom", "webgl"])
   for (const budget of [60000, 81660])
-    test(`short gap ${budget} goes from logo to schedule without slate in ${renderer}`, async ({
+    test(`gap ${budget} with no bulletins goes from logo to schedule without slate in ${renderer}`, async ({
       page,
     }, info) => {
       const initial = new Date("2026-11-10T18:06:50Z")
       await page.clock.install({ time: initial })
       await page.clock.pauseAt(new Date(+initial + 1000))
-      await prepare(page, "intro", "19:06:50", renderer)
+      await prepare(page, "intro", "19:06:50", renderer, [])
       await page.goto(
         `/graphics/?dev=false&duration=${budget}&renderer=${renderer}`,
       )

@@ -4,14 +4,23 @@ All output is opaque, progressive 16:9 at **50 fps**. The 1280×720 stage is
 scaled by viewport width / 1280, including DOM typography. 1920×1080 uses the
 same composition and 1080p blade masks. The editorial tier ladder, budget
 allocation, schedule fetching and live schedule-change subscription are retained.
-The cream organisation slate precedes the schedule in gaps of at least 81.68 seconds.
-Shorter gaps retain intro → schedule; news and the other optional compositions remain parked.
-The member message uses the supplied heading and four paragraphs verbatim, one
-paragraph per screen. It reserves 65.98 s, including a 2.3 s blade entrance and
-text fade, with reading time at 180 words/minute (minimum 12 s per page).
-A 120-second gap allocates 3.2 s to the intro, 65.98 s to the message, 50.32 s to
-the schedule, and 0.5 s for the external exit fade. A 60-second gap retains
-intro → schedule rather than showing a partial message.
+The cream slate carries the channel's bulletins, read from
+`/api/news/bulletins?placement=air` when the graphics load. Each bulletin is
+its own slate before the schedule. Its text is paged by the rule text posters
+use (`src/core/posterSlides.ts`, the same rule as `scheduling/posters.py` in
+django-api, both tested against `paging-cases.json`): a blank line starts a
+page, and a block over 280 characters is split at sentence ends into pages of
+even length. A page is held 3 s plus 0.4 s a word, the heading counted on the
+first page, and a slate takes 2.3 s of entrance plus its pages. One page fades
+out over 0.3 s before the next fades in. The type is stepped down by
+measurement when a full page would otherwise reach the footer.
+A bulletin airs whole or not at all: a gap airs as many as it has time for
+beside a 12 s schedule, at most three, highest priority first, and bulletins of
+equal priority take turns at going first every five minutes. With no bulletins,
+or a gap too short for the first, the gap is intro → schedule. News and the
+other optional compositions remain parked.
+`?view=slate&heading=…&text=…&template=standard|notice&slide=<n>` shows an
+unsaved bulletin held on one page, which is what the editor's preview frames.
 The slate text stays hidden during the 1.8 s blade movement, then fades in over
 0.5 s once the blades have settled.
 The schedule is one 704 px column with a shared 148 px time column, so the next

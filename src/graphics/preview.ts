@@ -1,7 +1,7 @@
 import {
   intro,
   logoSting,
-  orgSlate,
+  bulletinSlate,
   schedule,
   nextProgram,
   newsPosters,
@@ -9,8 +9,10 @@ import {
 } from "../sequencing/plan/segments"
 import { type Plan } from "../sequencing/plan/types"
 import { BULLETINS } from "../news/bulletins"
+import { bulletinFromQuery, SAMPLE_BULLETIN } from "../bulletins/slate"
+import { type Bulletin } from "../bulletins/types"
 /** Explicit review mode only; does not change the editorial tier ladder. */
-export function previewPlan(): Plan | null {
+export function previewPlan(bulletins: Bulletin[] = []): Plan | null {
   const view = new URLSearchParams(window.location.search).get("view")
   const spec =
     view === "intro"
@@ -18,7 +20,9 @@ export function previewPlan(): Plan | null {
       : view === "logo"
         ? logoSting()
         : view === "slate"
-          ? orgSlate()
+          ? bulletinSlate(
+              bulletinFromQuery() ?? bulletins[0] ?? SAMPLE_BULLETIN,
+            )
           : view === "schedule"
             ? schedule()
             : view === "next"

@@ -1,4 +1,5 @@
 import { type ReactNode } from "react"
+import { type Bulletin } from "../../bulletins/types"
 import { type NewsBulletin } from "../../news/types"
 import { type ScheduleItem } from "../../schedule/types"
 
@@ -99,6 +100,8 @@ export interface Plan {
 export interface PlanInputs {
   schedule: ScheduleItem[]
   news: NewsBulletin[]
+  /** The bulletins running on air, in the order they take their turn. */
+  bulletins?: Bulletin[]
 }
 
 /**
@@ -109,6 +112,8 @@ export interface PlanInputs {
 export interface TimelineTier {
   name: string
   build: (data: PlanInputs) => SegmentSpec[]
+  /** Whether there is the material for this tier at all. Defaults to yes. */
+  available?: (data: PlanInputs) => boolean
   /**
    * Editorial override for the budget this tier needs. Defaults to the sum of
    * its segments' minimums, so adding a segment moves the threshold on its own.

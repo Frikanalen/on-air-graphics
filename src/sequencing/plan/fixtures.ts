@@ -1,3 +1,4 @@
+import { type Bulletin } from "../../bulletins/types"
 import { type PlanInputs, type SegmentSpec, type TimelineTier } from "./types"
 
 /*
@@ -29,6 +30,15 @@ export const tier = (name: string, min: number): TimelineTier => ({
   build: () => [segment(name, { min, basis: min, grow: 1 })],
 })
 
+/** Two pages: the second block starts the second page. */
+export const bulletin = (overrides: Partial<Bulletin> = {}): Bulletin => ({
+  id: 1,
+  heading: "Melding fra kanalen",
+  text: "Første side av meldingen.\n\nAndre side av meldingen.",
+  template: "standard",
+  ...overrides,
+})
+
 /**
  * A full complement of news, since the richest tier's threshold depends on how
  * many bulletins there are to show.
@@ -42,5 +52,6 @@ export const planInputs = (
     title: `Sak ${id}`,
     body: "Plassholdertekst.",
   })),
+  bulletins: [bulletin()],
   ...overrides,
 })

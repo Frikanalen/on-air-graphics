@@ -433,23 +433,28 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   display: none;
 }
 
+/* --slate-scale is set by BulletinSlateView so a full page clears the footer. */
 .slate-copy h1 {
-  font-size: 44px;
+  font-size: calc(44px * var(--slate-scale, 1));
   line-height: 1.08;
 }
 .slate-copy p {
-  font-size: 26px;
+  font-size: calc(26px * var(--slate-scale, 1));
   line-height: 1.38;
   margin-top: 22px;
   opacity: 1;
 }
-.slate-page {
-  transition: opacity 500ms linear;
+.slate-copy p + p {
+  margin-top: 12px;
+}
+.slate-label {
+  margin-bottom: 12px;
 }
 .slate-page-number {
   margin-top: 24px;
-  font-size: 16px;
-  opacity: 0.6;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.7;
 }
 
 .unavailable-notice {

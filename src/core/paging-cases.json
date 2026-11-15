@@ -1,0 +1,113 @@
+[
+  {
+    "name": "empty",
+    "heading": "To ord",
+    "text": "  ",
+    "pages": [""],
+    "minimumSeconds": 5
+  },
+  {
+    "name": "blank line",
+    "heading": "To ord",
+    "text": "a\nb\n\n \nc\n\n",
+    "pages": ["a\nb", "c"],
+    "minimumSeconds": 8
+  },
+  {
+    "name": "crlf",
+    "heading": "To ord",
+    "text": "a\r\n\r\nb",
+    "pages": ["a", "b"],
+    "minimumSeconds": 8
+  },
+  {
+    "name": "short",
+    "heading": "To ord",
+    "text": "Vi møtes klokka ti.",
+    "pages": ["Vi møtes klokka ti."],
+    "minimumSeconds": 6
+  },
+  {
+    "name": "long",
+    "heading": "To ord",
+    "text": "Vi inviterer alle medlemmer og interesserte til åpent møte om framtidens lokal-TV. Møtet holdes i Folkets hus tirsdag 17. november kl. 18.00. Det blir innledninger fra tre av medlemsorganisasjonene, og deretter åpen debatt. Kaffe og enkel servering. Påmelding er ikke nødvendig, men gi gjerne beskjed på e-post dersom du trenger tilrettelegging. Vel møtt!",
+    "pages": [
+      "Vi inviterer alle medlemmer og interesserte til åpent møte om framtidens lokal-TV. Møtet holdes i Folkets hus tirsdag 17. november kl. 18.00.",
+      "Det blir innledninger fra tre av medlemsorganisasjonene, og deretter åpen debatt. Kaffe og enkel servering. Påmelding er ikke nødvendig, men gi gjerne beskjed på e-post dersom du trenger tilrettelegging. Vel møtt!"
+    ],
+    "minimumSeconds": 28
+  },
+  {
+    "name": "long then short",
+    "heading": "To ord",
+    "text": "Vi inviterer alle medlemmer og interesserte til åpent møte om framtidens lokal-TV. Møtet holdes i Folkets hus tirsdag 17. november kl. 18.00. Det blir innledninger fra tre av medlemsorganisasjonene, og deretter åpen debatt. Kaffe og enkel servering. Påmelding er ikke nødvendig, men gi gjerne beskjed på e-post dersom du trenger tilrettelegging. Vel møtt!\n\nTa med en venn.",
+    "pages": [
+      "Vi inviterer alle medlemmer og interesserte til åpent møte om framtidens lokal-TV. Møtet holdes i Folkets hus tirsdag 17. november kl. 18.00.",
+      "Det blir innledninger fra tre av medlemsorganisasjonene, og deretter åpen debatt. Kaffe og enkel servering. Påmelding er ikke nødvendig, men gi gjerne beskjed på e-post dersom du trenger tilrettelegging. Vel møtt!",
+      "Ta med en venn."
+    ],
+    "minimumSeconds": 33
+  },
+  {
+    "name": "member",
+    "heading": "To ord",
+    "text": "Beslutningen om å stanse sendingene var ikke lett, men den var nødvendig av hensyn til Frikanalens fremtid. En gruppe medlemmer har tatt kontroll over kanalen gjennom en udemokratisk prosess, der organisasjonens vedtekter og det ordinære årsmøtets beslutninger er satt til side. Vi kan ikke tillate at en kanal som skal være en åpen plattform for sivilsamfunnet, overtas på denne måten.",
+    "pages": [
+      "Beslutningen om å stanse sendingene var ikke lett, men den var nødvendig av hensyn til Frikanalens fremtid. En gruppe medlemmer har tatt kontroll over kanalen gjennom en udemokratisk prosess, der organisasjonens vedtekter og det ordinære årsmøtets beslutninger er satt til side.",
+      "Vi kan ikke tillate at en kanal som skal være en åpen plattform for sivilsamfunnet, overtas på denne måten."
+    ],
+    "minimumSeconds": 31
+  },
+  {
+    "name": "one long sentence",
+    "heading": "To ord",
+    "text": "ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet",
+    "pages": [
+      "ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet",
+      "ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet",
+      "ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet ordet"
+    ],
+    "minimumSeconds": 58
+  },
+  {
+    "name": "one long word",
+    "heading": "To ord",
+    "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "pages": [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ],
+    "minimumSeconds": 11
+  },
+  {
+    "name": "quote",
+    "heading": "To ord",
+    "text": "«Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Slutt.» Og så kom det mer tekst her. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger. ",
+    "pages": [
+      "«Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning. Dette er en setning.",
+      "Slutt.» Og så kom det mer tekst her. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger. Enda en setning følger."
+    ],
+    "minimumSeconds": 34
+  },
+  {
+    "name": "lines",
+    "heading": "To ord",
+    "text": "Linje nummer 1 i en lang liste med punkter\nLinje nummer 2 i en lang liste med punkter\nLinje nummer 3 i en lang liste med punkter\nLinje nummer 4 i en lang liste med punkter\nLinje nummer 5 i en lang liste med punkter\nLinje nummer 6 i en lang liste med punkter\nLinje nummer 7 i en lang liste med punkter\nLinje nummer 8 i en lang liste med punkter\nLinje nummer 9 i en lang liste med punkter\nLinje nummer 10 i en lang liste med punkter\nLinje nummer 11 i en lang liste med punkter",
+    "pages": [
+      "Linje nummer 1 i en lang liste med punkter\nLinje nummer 2 i en lang liste med punkter\nLinje nummer 3 i en lang liste med punkter\nLinje nummer 4 i en lang liste med punkter\nLinje nummer 5 i en lang liste med punkter\nLinje nummer 6 i en lang liste med punkter",
+      "Linje nummer 7 i en lang liste med punkter\nLinje nummer 8 i en lang liste med punkter\nLinje nummer 9 i en lang liste med punkter\nLinje nummer 10 i en lang liste med punkter\nLinje nummer 11 i en lang liste med punkter"
+    ],
+    "minimumSeconds": 47
+  },
+  {
+    "name": "emoji",
+    "heading": "To ord",
+    "text": "Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. ",
+    "pages": [
+      "Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀.",
+      "Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀. Hei 😀."
+    ],
+    "minimumSeconds": 47
+  }
+]

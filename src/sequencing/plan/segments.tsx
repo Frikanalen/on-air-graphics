@@ -1,7 +1,8 @@
-import { MEMBER_MESSAGE_MS } from "../../core/memberMessage"
 import { IntroView } from "../../core/components/IntroView"
 import { LogoStingView } from "../../core/components/LogoStingView"
-import { OrgSlateView } from "../../core/components/OrgSlateView"
+import { BulletinSlateView } from "../../bulletins/BulletinSlateView"
+import { slateMs } from "../../bulletins/slate"
+import { type Bulletin } from "../../bulletins/types"
 import { NewsPosterView } from "../../news/components/NewsPosterView"
 import { type NewsBulletin } from "../../news/types"
 import { PosterView } from "../../poster/components/PosterView"
@@ -59,9 +60,6 @@ const NEXT_BASIS_MS = 15000
 /** A headline and a sentence. */
 const NEWS_MIN_MS = 5000
 const NEWS_BASIS_MS = 8000
-
-/** Two sentences, read once, unhurried. */
-const SLATE_MS = MEMBER_MESSAGE_MS
 
 /*
  * However many bulletins the feed offers, only this many are ever planned.
@@ -160,15 +158,21 @@ export const newsPosters = (
     ...bounds,
   }))
 
-export const orgSlate = (bounds: Bounds = {}): SegmentSpec => ({
+/**
+ * A bulletin on the cream slate. Rigid: it is given exactly the time it takes
+ * to read every page once (slate.ts), and a gap that cannot pay for that
+ * goes without it.
+ */
+export const bulletinSlate = (bulletin: Bulletin): SegmentSpec => ({
   name: "slate",
-  min: SLATE_MS,
-  basis: SLATE_MS,
-  max: SLATE_MS,
+  min: slateMs(bulletin),
+  basis: slateMs(bulletin),
+  max: slateMs(bulletin),
   grow: 0,
   enter: POSTER_ENTER_MS,
   exit: POSTER_EXIT_MS,
   clock: false,
-  render: ({ status }) => <OrgSlateView status={status} />,
-  ...bounds,
+  render: ({ status }) => (
+    <BulletinSlateView status={status} bulletin={bulletin} />
+  ),
 })

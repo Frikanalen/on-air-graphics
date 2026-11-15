@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
+import cases from "./paging-cases.json"
 import {
+  PAGE_LENGTH,
   posterMinimumSeconds,
   posterSlides,
   slideAt,
@@ -51,5 +53,24 @@ describe("slideAt", () => {
   })
   it("holds a single slide", () => {
     expect(slideAt("Hei", "bare én", 60000, 59000)).toBe(0)
+  })
+})
+
+describe("paging", () => {
+  it("matches Django and the frontend on the shared cases", () => {
+    expect(cases.length).toBeGreaterThanOrEqual(10)
+    for (const { name, heading, text, pages, minimumSeconds } of cases) {
+      expect(posterSlides(text), name).toEqual(pages)
+      expect(posterMinimumSeconds(heading, text), name).toBe(minimumSeconds)
+      for (const page of pages)
+        expect(Array.from(page).length).toBeLessThanOrEqual(PAGE_LENGTH)
+    }
+  })
+  it("pages a long block at sentence ends, into even pages", () => {
+    const sentence =
+      "Dette er en setning som er akkurat passe lang til å fylle litt av en side. "
+    const pages = posterSlides(sentence.repeat(8))
+    expect(pages).toHaveLength(3)
+    for (const page of pages) expect(page.endsWith("side.")).toBe(true)
   })
 })

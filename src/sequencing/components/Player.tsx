@@ -1,4 +1,4 @@
-import { memberPageAt } from "../../core/memberMessage"
+import { slatePageAt } from "../../bulletins/slate"
 import { useContext, useRef } from "react"
 import { AppContext } from "../../core/components/AppContext"
 import { StationClock } from "../../core/components/StationClock"
@@ -13,6 +13,14 @@ import {
   schedulePageAt,
   type SchedulePageKind,
 } from "../../schedule/cycle"
+
+const HELD_SLIDE = Math.max(
+  0,
+  Number.parseInt(
+    new URLSearchParams(window.location.search).get("slide") ?? "",
+    10,
+  ),
+)
 
 export interface PlayerProps {
   plan: Plan
@@ -33,19 +41,20 @@ export function Player({ plan, playhead }: PlayerProps) {
           : scene.outgoing,
       )
     }
-    for (const page of el.querySelectorAll<HTMLElement>(".slate-page")) {
-      page.style.opacity =
-        Number(page.dataset.page) ===
-        memberPageAt(
-          playhead.now() -
-            (plan.segments[
-              Number(
-                page.closest<HTMLElement>("[data-segment]")?.dataset.segment,
-              )
-            ]?.start ?? 0),
+    for (const slate of el.querySelectorAll<HTMLElement>(".org-slate")) {
+      const segment =
+        plan.segments[
+          Number(slate.closest<HTMLElement>("[data-segment]")?.dataset.segment)
+        ]
+      const pageMs = (slate.dataset.pageMs ?? "").split(",").map(Number)
+      // `?slide=<n>` holds one page, as the editor's previews do.
+      const shown = Number.isInteger(HELD_SLIDE)
+        ? { index: Math.min(HELD_SLIDE, pageMs.length - 1), opacity: 1 }
+        : slatePageAt(pageMs, playhead.now() - (segment?.start ?? 0))
+      for (const page of slate.querySelectorAll<HTMLElement>(".slate-page"))
+        page.style.opacity = String(
+          Number(page.dataset.page) === shown.index ? shown.opacity : 0,
         )
-          ? "1"
-          : "0"
     }
     for (const view of el.querySelectorAll<HTMLElement>("[data-segment]")) {
       const pages = [...view.querySelectorAll<HTMLElement>(".schedule-page")]
