@@ -1,11 +1,28 @@
 @import "tailwindcss";
+/* Schibsted Grotesk sets all text, as on the website and the infographics. */
 @font-face {
-  font-family: Inter;
-  src: url("/fonts/InterVariable.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-latin.woff2") format("woff2");
+  font-weight: 400 900;
   font-style: normal;
   font-display: block;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
 }
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-latin-ext.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: block;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Inter stays for the numerals on the station clock, which are drawn with it. */
 @font-face {
   font-family: "Inter Display";
   src: url("/fonts/InterVariable.woff2") format("woff2");
@@ -39,9 +56,7 @@
     margin: 0;
     background: transparent;
     color: var(--paper);
-    font-family: Inter, sans-serif;
-    font-variation-settings: "opsz" 14;
-    font-feature-settings: "tnum";
+    font-family: "Schibsted Grotesk", sans-serif;
   }
   h1,
   h2,
@@ -200,8 +215,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   flex-shrink: 0;
 }
 .next-row time {
-  font-family: "Inter Display", Inter, sans-serif;
-  font-variation-settings: "opsz" 32;
+  font-family: "Schibsted Grotesk", sans-serif;
   font-weight: 800;
   font-size: 48px;
   line-height: 1.15;
@@ -220,8 +234,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   -webkit-box-orient: vertical;
 }
 .next-row h2 {
-  font-family: "Inter Display", Inter, sans-serif;
-  font-variation-settings: "opsz" 32;
+  font-family: "Schibsted Grotesk", sans-serif;
   font-size: 34px;
   line-height: 39px;
   font-weight: 800;
@@ -371,9 +384,9 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   position: absolute;
   left: 64px;
   bottom: 36px;
-  font-size: 14px;
-  line-height: 18px;
-  opacity: 0.5;
+  font-size: 16px;
+  line-height: 20px;
+  opacity: 0.7;
   letter-spacing: 0.01em;
 }
 .org-slate {
@@ -394,8 +407,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .slate-copy h1,
 .news-copy h1 {
-  font-family: "Inter Display", Inter, sans-serif;
-  font-variation-settings: "opsz" 32;
+  font-family: "Schibsted Grotesk", sans-serif;
   font-size: 84px;
   font-weight: 800;
   line-height: 1.02;
@@ -467,12 +479,17 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   align-items: center;
 }
 .unavailable-body {
-  max-width: 1000px;
+  max-width: 920px;
 }
-.unavailable-logo {
-  width: 380px;
-  height: 83px;
-  margin-bottom: 36px;
+/* The logo has two sizes: 304px on the sheets, beside the clock, and 190px
+   in the corner of a notice (this one and the text poster). */
+.unavailable-logo,
+.member-poster-logo {
+  position: absolute;
+  top: 56px;
+  left: 64px;
+  width: 190px;
+  height: 41px;
 }
 .unavailable-notice h1 {
   font-size: 54px;
@@ -508,13 +525,6 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 .member-poster[data-template="notice"] {
   border-left: 24px solid var(--amber);
 }
-.member-poster-logo {
-  position: absolute;
-  top: 56px;
-  left: 64px;
-  width: 190px;
-  height: 41px;
-}
 /* About sixty characters to a line in the smallest type: a line that runs
    the width of the frame is hard to follow back from a sofa. */
 .member-poster-copy {
@@ -542,8 +552,7 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   color: var(--ink);
 }
 .member-poster h1 {
-  font-family: "Inter Display", Inter, sans-serif;
-  font-variation-settings: "opsz" 32;
+  font-family: "Schibsted Grotesk", sans-serif;
   font-weight: 800;
   line-height: 1.08;
   overflow-wrap: anywhere;
@@ -591,7 +600,6 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
 }
 .member-poster-page {
   margin-top: 6px;
-  font-variant-numeric: tabular-nums;
 }
 
 /* The line above .disclaimer, in its type. */
@@ -599,11 +607,11 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   position: absolute;
   left: 64px;
   bottom: 56px;
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 20px;
   letter-spacing: 0.01em;
   color: var(--paper);
-  opacity: 0.5;
+  opacity: 0.7;
   pointer-events: none;
 }
 .music-credit.on-light {

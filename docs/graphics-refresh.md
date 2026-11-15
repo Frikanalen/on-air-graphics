@@ -110,8 +110,10 @@ perspective projected. Fonts and scene assets load before the scene mounts.
 (ImageMagick 7 and Playwright Chromium required). The first three paths are extracted unchanged from Logo.
 Masks use sigma 0, 12, 44 at the largest sheet scale; an extra 108 mask allows the
 close camera's 50-du soft shadow without runtime filtering.
-`public/fonts/InterVariable.woff2` is the official Inter variable font; body uses
-optical size 14 and display text 32. Its OFL license is shipped alongside it.
+All text is set in Schibsted Grotesk (`public/fonts/SchibstedGrotesk-*.woff2`),
+the typeface of the website and the infographics. Inter
+(`public/fonts/InterVariable.woff2`) remains only for the numerals drawn on the
+station clock. Both are under the OFL, shipped alongside them.
 
 Solar position follows NOAA's Julian-century formulas, geometric elevation:
 https://gml.noaa.gov/grad/solcalc/main.js . No weather or solar network request is
