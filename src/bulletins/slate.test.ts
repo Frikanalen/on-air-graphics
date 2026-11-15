@@ -45,10 +45,14 @@ describe("a bulletin on the slate", () => {
   })
 
   it("previews an unsaved bulletin from the address", () => {
-    expect(bulletinFromQuery("?view=slate")).toBeNull()
+    expect(bulletinFromQuery(null, "?view=slate")).toBeNull()
     expect(
-      bulletinFromQuery("?heading=Hei&text=En%0A%0ATo&template=notice"),
+      bulletinFromQuery(null, "?heading=Hei&text=En%0A%0ATo&template=notice"),
     ).toMatchObject({ heading: "Hei", text: "En\n\nTo", template: "notice" })
+    // What the editor posts takes over, field by field.
+    expect(
+      bulletinFromQuery({ text: "Ny tekst" }, "?heading=Hei&text=Gammel"),
+    ).toMatchObject({ heading: "Hei", text: "Ny tekst" })
   })
 })
 

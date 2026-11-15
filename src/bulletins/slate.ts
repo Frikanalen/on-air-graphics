@@ -1,5 +1,6 @@
 import { FRAME_MS } from "../graphics/time"
 import { posterSlides, slideSeconds } from "../core/posterSlides"
+import { type PreviewText } from "../core/previewChannel"
 import { type Bulletin } from "./types"
 
 /**
@@ -75,18 +76,22 @@ export function inTurn(bulletins: Bulletin[], now: number): Bulletin[] {
     })
 }
 
-/** `?view=slate&heading=…&text=…&template=…` previews a bulletin that is
- * not saved yet, as the editor does. */
+/**
+ * `?view=slate&heading=…&text=…&template=…` previews a bulletin that is not
+ * saved yet, as the editor does. What the editor has posted since
+ * (previewChannel.ts) takes the place of what the address said.
+ */
 export function bulletinFromQuery(
+  posted: PreviewText | null = null,
   search = window.location.search,
 ): Bulletin | null {
   const query = new URLSearchParams(search)
-  if (!query.has("heading") && !query.has("text")) return null
+  if (!posted && !query.has("heading") && !query.has("text")) return null
   return {
     id: "preview",
-    heading: query.get("heading") ?? "",
-    text: query.get("text") ?? "",
-    template: query.get("template") ?? "standard",
+    heading: posted?.heading ?? query.get("heading") ?? "",
+    text: posted?.text ?? query.get("text") ?? "",
+    template: posted?.template ?? query.get("template") ?? "standard",
   }
 }
 

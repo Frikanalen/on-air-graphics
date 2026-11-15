@@ -21,6 +21,9 @@ or a gap too short for the first, the gap is intro → schedule. News and the
 other optional compositions remain parked.
 `?view=slate&heading=…&text=…&template=standard|notice&slide=<n>` shows an
 unsaved bulletin held on one page, which is what the editor's preview frames.
+The editor then posts the text as it is typed (`src/core/previewChannel.ts`), so
+the frame follows without loading again; the text poster's preview
+(`?poster=…`) listens the same way.
 The slate text stays hidden during the 1.8 s blade movement, then fades in over
 0.5 s once the blades have settled.
 The schedule is one 704 px column with a shared 148 px time column, so the next

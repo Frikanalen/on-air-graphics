@@ -8,6 +8,7 @@ import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
 import { ScheduleContext } from "./ScheduleContext.tsx"
 import { BulletinContext } from "../../bulletins/BulletinContext"
 import { useBulletins } from "../../bulletins/useBulletins"
+import { announceReady } from "../previewChannel"
 import { PlayheadContext } from "../../sequencing/clock/PlayheadContext.ts"
 import { frozen } from "../../graphics/time"
 import { useSceneAssets } from "../../graphics/useSceneAssets"
@@ -71,6 +72,10 @@ export function App() {
       }
     } else playhead.pause()
   }, [state, playhead, preview, ready])
+
+  useEffect(() => {
+    if (ready) announceReady()
+  }, [ready])
 
   const context: AppContextT = {
     state,

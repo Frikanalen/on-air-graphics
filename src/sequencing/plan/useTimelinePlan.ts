@@ -4,6 +4,7 @@ import { ScheduleContext } from "../../core/components/ScheduleContext"
 import { useSequenceName } from "../../core/hooks/useSequenceName"
 import { useNews } from "../../news/useNews"
 import { BulletinContext } from "../../bulletins/BulletinContext"
+import { usePreviewText } from "../../core/previewChannel"
 import { plan, tiersFor } from "./tiers"
 import { previewPlan } from "../../graphics/preview"
 import { type Plan } from "./types"
@@ -21,11 +22,12 @@ export const useTimelinePlan = (): Plan => {
   const news = useNews()
   const bulletins = useContext(BulletinContext)
   const sequence = useSequenceName()
+  const posted = usePreviewText()
 
   return useMemo(
     () =>
-      previewPlan(bulletins) ??
+      previewPlan(bulletins, posted) ??
       plan(budget, { schedule, news, bulletins }, tiersFor(sequence)),
-    [budget, schedule, news, bulletins, sequence],
+    [budget, schedule, news, bulletins, sequence, posted],
   )
 }
