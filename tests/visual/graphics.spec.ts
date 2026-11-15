@@ -85,7 +85,7 @@ for (const [name, view, time] of stills)
     })
     expect(await frame.screenshot()).toEqual(image) // frozen input really is frozen
     if (["schedule", "next"].includes(view))
-      await expect(page.locator(".next-row")).toBeVisible()
+      await expect(page.locator(".next-row").first()).toBeVisible()
     if (view === "next") {
       const title = page.locator(".next-row h2")
       const size = await title.evaluate((el) => ({
@@ -106,7 +106,7 @@ for (const [name, view, time] of stills)
       if ((await title.textContent())?.startsWith("Veien videre"))
         expect(size.height).toBeGreaterThan(30)
       expect(size.contentHeight).toBeLessThanOrEqual(size.height + 1)
-      const list = await page.locator(".later-list").boundingBox()
+      const list = await page.locator(".later-list").first().boundingBox()
       const footer = await page.locator(".disclaimer").boundingBox()
       expect(list!.y + list!.height).toBeLessThan(footer!.y)
     }
@@ -399,6 +399,72 @@ for (const width of [1280, 1920])
     }
   })
 
+test("a long schedule view turns pages and ends on the next programme", async ({
+  page,
+}, info) => {
+  const start = Date.now() + 120000
+  const many = Array.from({ length: 16 }, (_, i) => ({
+    id: i,
+    starttime: new Date(start + i * 1800000).toISOString(),
+    endtime: new Date(start + (i + 1) * 1800000).toISOString(),
+    is_live: i === 0,
+    video: {
+      id: i,
+      name: `Program ${i + 1}`,
+      description: i === 0 ? "En samtale om byen og menneskene i den." : "",
+      organization: { id: 1, name: "Medlemsorganisasjonen" },
+    },
+  }))
+  await page.route("**/api/scheduleitems*", (route) =>
+    route.fulfill({ json: { count: many.length, results: many } }),
+  )
+  await page.route("**/api/playout/events", (route) =>
+    route.fulfill({
+      contentType: "text/event-stream",
+      body: ": connected\n\n",
+    }),
+  )
+  const shown = () =>
+    page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>(".schedule-page")]
+        .filter((el) => el.style.opacity === "1")
+        .map((el) => el.dataset.kind),
+    )
+  // One page at a time, whichever is held.
+  for (const [held, kind] of [
+    ["overview", "overview"],
+    ["1", "list"],
+    ["2", "list"],
+    ["focus", "focus"],
+  ]) {
+    await page.goto(`/graphics/?view=schedule&renderer=dom&page=${held}`)
+    await expect(page.locator(".player")).toHaveCSS("opacity", "1")
+    await expect(page.locator(".schedule-page")).toHaveCount(4)
+    expect(await shown()).toEqual([kind])
+    await page.screenshot({ path: info.outputPath(`cycle-${held}.png`) })
+  }
+  await expect(page.locator(".next-description")).toHaveText(
+    "En samtale om byen og menneskene i den.",
+  )
+  await expect(page.locator(".live-tag")).toBeVisible()
+  await expect(page.locator(".later-row")).toHaveCount(4 + 7 + 4)
+  const list = await page
+    .locator('.schedule-page[data-kind="list"] .later-list')
+    .first()
+    .boundingBox()
+  const footer = await page.locator(".music-credit").boundingBox()
+  expect(list!.y + list!.height).toBeLessThan(footer!.y)
+
+  // On air: the overview first, the next programme last. 27 s leaves the
+  // schedule 23.3 s, which is the overview and then the next programme.
+  await page.goto("/graphics/?dev=false&duration=27000&renderer=dom")
+  await page.evaluate(() => (window as unknown as { play: () => void }).play())
+  await expect.poll(shown, { timeout: 8000 }).toEqual(["overview"])
+  await expect.poll(shown, { timeout: 20000 }).toEqual(["focus"])
+  await page.waitForTimeout(3000)
+  expect(await shown()).toEqual(["focus"])
+})
+
 for (const renderer of ["dom", "webgl"])
   test(`preloaded ${renderer} output stays completely transparent until PLAY`, async ({
     page,
@@ -483,7 +549,7 @@ for (const renderer of ["dom", "webgl"])
       await expect(
         page.locator(".org-slate, .slate-copy, .wide-wordmark"),
       ).toHaveCount(0)
-      await expect(page.locator(".schedule-column")).toBeVisible()
+      await expect(page.locator(".schedule-column").first()).toBeVisible()
       await expect(page.locator(".station-clock")).toHaveCSS("opacity", "1")
       await page
         .locator(".broadcast-frame")
