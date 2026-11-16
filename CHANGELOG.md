@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.6.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.5.0...v1.6.0) (2026-11-15)
+
+
+### Features
+
+* an editor's preview frame follows the text as it is typed ([57d6082](https://github.com/Frikanalen/on-air-graphics/commit/57d6082271249c36ebdbd61ff236d0074dd79a61))
+* members' text posters in three looks ([9a1021c](https://github.com/Frikanalen/on-air-graphics/commit/9a1021ca0ba4aba7cfe424f77a3392175578e7ff))
+* neutral member posters and a moving light on every held screen ([b7b49ac](https://github.com/Frikanalen/on-air-graphics/commit/b7b49ac5cfa6c762fe5f009604988210476cd523))
+* **poster:** light by day, dark by night; slides split at blank lines ([9d5671d](https://github.com/Frikanalen/on-air-graphics/commit/9d5671d2a6b5c58a830b70df3f8ac99c133c644f))
+* schedule page on one grid, turning pages when it has the time ([#42](https://github.com/Frikanalen/on-air-graphics/issues/42)) ([c0404eb](https://github.com/Frikanalen/on-air-graphics/commit/c0404eba238f33a769b6443a522b5425b0010a9d))
+* Schibsted Grotesk, readable footer, one notice logo, a standby card ([d4219ac](https://github.com/Frikanalen/on-air-graphics/commit/d4219aca64dfc37e4bf42f2adb776e53b11b8498))
+* the channel's bulletins on the slate, paged ([099b578](https://github.com/Frikanalen/on-air-graphics/commit/099b578c78ab742343445ed7b4eba91a94599d3a))
+* the channel's bulletins on the slate, paged, and the design review changes ([bd28344](https://github.com/Frikanalen/on-air-graphics/commit/bd2834440836c6de59f03230118feb9e664acf7c))
+
+
+### Bug Fixes
+
+* **poster:** readable label by day, shorter lines, slides fade in ([914b3b5](https://github.com/Frikanalen/on-air-graphics/commit/914b3b597bf84d124e3b6c8b7cc668cbcc0643f1))
+* **poster:** sum reading time in tenths; accept CRLF ([99625e1](https://github.com/Frikanalen/on-air-graphics/commit/99625e1caf04097aa68632b4c1d753b8ca69f8af))
+
 ## [1.5.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.4.0...v1.5.0) (2026-11-11)
 
 
