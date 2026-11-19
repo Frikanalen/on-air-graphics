@@ -37,7 +37,8 @@ export function upcoming(
  * The airtime the gap now on screen leads into, when it is someone else's
  * than the airtime the gap is in: the next programme is in a window that has
  * not started, held by another organization than the one holding this moment
- * (or by anyone, when nobody holds it). A window opens with its first entry,
+ * (or by anyone, when nobody holds it). The station's own airtime is not
+ * handed over to: it is the channel carrying on. A window opens with its first entry,
  * so the gap before that programme ends where the window starts.
  */
 export function handoverTo(
@@ -46,7 +47,8 @@ export function handoverTo(
   now: number,
 ): Grant | undefined {
   const grant = next && grants.find(({ id }) => id === next.grant)
-  if (!grant || Date.parse(grant.starttime) <= now) return undefined
+  if (!grant || grant.station || Date.parse(grant.starttime) <= now)
+    return undefined
   const holder = holderAt(grants, now)
   return holder?.organization.id === grant.organization.id ? undefined : grant
 }

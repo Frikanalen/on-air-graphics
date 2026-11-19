@@ -49,6 +49,9 @@ window, «De neste 90 minuttene disponeres av vårt medlem», the holder's name
 and the first programme. It replaces only the last page of the last cycle; a
 gap too short to turn pages holds it throughout. It needs
 `/api/grants/public`, and without an answer from it the cycle is as before.
+A grant the API marks `station` is the channel's own airtime (the jukebox,
+Stortinget): no handover leads into it, and the line naming who holds the
+airtime now is left out while it runs.
 
 ## Build and deploy
 
