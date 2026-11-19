@@ -1,6 +1,6 @@
 import { api } from "../../core/network"
 import { ApiCollection } from "../../core/types"
-import { ScheduleItem } from "../types"
+import { Grant, ScheduleItem } from "../types"
 
 /*
  * The endpoint returns the schedule from the start of the day and pages it at
@@ -35,4 +35,22 @@ export const fetchSceduleItems = async () => {
   )
 
   return data.results
+}
+
+/**
+ * Whose airtime today and tomorrow is. The views work without it, so an API
+ * that cannot answer costs only the lines that name the holder.
+ */
+export const fetchGrants = async () => {
+  try {
+    const { data } = await api.get<Grant[]>("/grants/public", {
+      params: { days: 2 },
+      headers: FRESH,
+      // The schedule waits for this answer, so it does not wait long.
+      timeout: 5000,
+    })
+    return Array.isArray(data) ? data : []
+  } catch {
+    return []
+  }
 }

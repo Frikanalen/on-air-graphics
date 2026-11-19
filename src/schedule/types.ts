@@ -17,6 +17,16 @@ export type ScheduleItem = {
   starttime: string
   endtime: string
   is_live?: boolean
+  /** The airtime grant the airing belongs to, if any. */
+  grant?: number | null
+}
+
+/** A window of airtime and the organization holding it. */
+export type Grant = {
+  id: number
+  organization: Organization & { fkmember?: boolean }
+  starttime: string
+  endtime: string
 }
 
 /** An airing the schedule view can list. */

@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import { type ScheduleItem } from "../../schedule/types"
+import { type Grant, type ScheduleItem } from "../../schedule/types"
 
 /*
  * The schedule is fetched once, in App, which holds the loading screen until
@@ -8,3 +8,6 @@ import { type ScheduleItem } from "../../schedule/types"
  * on its first render, so the cards would paint blank until it resolved.
  */
 export const ScheduleContext = createContext<ScheduleItem[]>([])
+
+/** Whose airtime it is, fetched with the schedule. */
+export const GrantsContext = createContext<Grant[]>([])

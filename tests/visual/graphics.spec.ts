@@ -42,6 +42,9 @@ async function prepare(
   await page.route("**/api/scheduleitems*", (route) =>
     route.fulfill({ json: { count: 5, results: items } }),
   )
+  await page.route("**/api/grants/public*", (route) =>
+    route.fulfill({ json: [] }),
+  )
   await page.route("**/api/playout/events", (route) =>
     route.fulfill({
       contentType: "text/event-stream",

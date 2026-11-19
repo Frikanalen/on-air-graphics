@@ -1,8 +1,12 @@
 import { useContext } from "react"
 import { type SegmentStatus } from "../../sequencing/plan/types"
 import { CHANNEL_DISCLAIMER } from "../../core/constants"
-import { ScheduleContext } from "../../core/components/ScheduleContext"
-import { useTimestamp } from "../../graphics/time"
+import {
+  GrantsContext,
+  ScheduleContext,
+} from "../../core/components/ScheduleContext"
+import { formatTime, useTimestamp } from "../../graphics/time"
+import { holderAt, upcoming, type Upcoming } from "../airtime"
 import {
   LIST_HORIZON_MS,
   LIST_ROWS,
@@ -22,6 +26,38 @@ const Tricolour = () => (
   </div>
 )
 
+/** Who holds the airtime the graphics are showing in, and until when. */
+const Holder = ({ now }: { now: number }) => {
+  const grant = holderAt(useContext(GrantsContext), now)
+  if (!grant) return null
+  return (
+    <div className="airtime-holder">
+      Sendetiden disponeres nå av{" "}
+      {grant.organization.fkmember !== false && "vårt medlem "}
+      <b>{grant.organization.name}</b> til{" "}
+      {formatTime(Date.parse(grant.endtime))}
+    </div>
+  )
+}
+
+const Later = ({ entry }: { entry: Upcoming }) =>
+  "airtime" in entry ? (
+    <div className="later-row airtime-row">
+      <time dateTime={entry.airtime.starttime}>
+        {formatTime(Date.parse(entry.airtime.starttime))}
+      </time>
+      <div className="programme-info">
+        <h2>Sendetid: {entry.airtime.organization.name}</h2>
+        <div className="organisation">Programmet er ikke klart ennå</div>
+      </div>
+    </div>
+  ) : (
+    <ScheduleItemSummary item={entry} />
+  )
+
+const keyOf = (entry: Upcoming) =>
+  "airtime" in entry ? `airtime-${entry.airtime.id}` : entry.id
+
 const chunks = <T,>(items: T[], size: number): T[][] =>
   Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
     items.slice(index * size, (index + 1) * size),
@@ -36,13 +72,26 @@ const chunks = <T,>(items: T[], size: number): T[][] =>
 export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
   const schedule = useContext(ScheduleContext),
     now = useTimestamp()
-  const [next, ...later] = schedule.filter(
+  const grants = useContext(GrantsContext)
+  const [next, ...programmes] = schedule.filter(
     (item): item is Programme =>
       item.video !== null && now < Date.parse(item.endtime),
   )
+  const later = upcoming(
+    programmes,
+    schedule,
+    grants,
+    next ? Date.parse(next.starttime) : now,
+  )
   const rest = later
     .slice(OVERVIEW_ROWS)
-    .filter((item) => Date.parse(item.starttime) < now + LIST_HORIZON_MS)
+    .filter(
+      (entry) =>
+        Date.parse(
+          "airtime" in entry ? entry.airtime.starttime : entry.starttime,
+        ) <
+        now + LIST_HORIZON_MS,
+    )
   const lists = nextOnly ? [] : chunks(rest, LIST_ROWS).slice(0, MAX_LIST_PAGES)
   return (
     <div>
@@ -52,6 +101,7 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
           data-kind="overview"
           style={{ opacity: 1 }}
         >
+          <Holder now={now} />
           <div className="label amber">Neste program</div>
           {next ? (
             <ScheduleItemSummary item={next} next />
@@ -61,8 +111,8 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
           <Tricolour />
           <div className="label later-label">Senere</div>
           <div className="later-list">
-            {later.slice(0, OVERVIEW_ROWS).map((item) => (
-              <ScheduleItemSummary key={item.id} item={item} />
+            {later.slice(0, OVERVIEW_ROWS).map((entry) => (
+              <Later key={keyOf(entry)} entry={entry} />
             ))}
           </div>
         </div>
@@ -83,8 +133,8 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
             )}
           </div>
           <div className="later-list">
-            {items.map((item) => (
-              <ScheduleItemSummary key={item.id} item={item} />
+            {items.map((entry) => (
+              <Later key={keyOf(entry)} entry={entry} />
             ))}
           </div>
         </div>
@@ -95,6 +145,7 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
           data-kind="focus"
           style={{ opacity: nextOnly ? 1 : 0 }}
         >
+          <Holder now={now} />
           <div className="label amber">
             Neste program
             {next.is_live && <span className="live-tag">Direkte</span>}

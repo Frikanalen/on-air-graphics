@@ -194,6 +194,24 @@ svg[data-wordmark] > g > path:nth-child(-n + 3) {
   text-transform: uppercase;
   letter-spacing: 0.16em;
 }
+/* Who holds the airtime now: one quiet line over the page's label. */
+.airtime-holder {
+  flex-shrink: 0;
+  margin-bottom: 14px;
+  font-size: 18px;
+  line-height: 24px;
+  color: rgb(245 239 228 / 0.7);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.airtime-holder b {
+  font-weight: 700;
+  color: var(--paper);
+}
+.airtime-row h2 {
+  opacity: 0.7;
+}
 .amber {
   color: var(--amber);
 }
