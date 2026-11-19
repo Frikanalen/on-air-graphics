@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.6.0...v1.7.0) (2026-11-19)
+
+
+### Features
+
+* **schedule:** say whose airtime it is, and list airtime without programmes ([#45](https://github.com/Frikanalen/on-air-graphics/issues/45)) ([f9ea28f](https://github.com/Frikanalen/on-air-graphics/commit/f9ea28fcc2b734671f2c05c55bfdf7e62903f2a3))
+
+
+### Bug Fixes
+
+* update nginx to 1.30.7 (nginx2root CVEs) ([#47](https://github.com/Frikanalen/on-air-graphics/issues/47)) ([bf00254](https://github.com/Frikanalen/on-air-graphics/commit/bf00254845c6d609a0a37482ec1cbf9317af730e))
+
 ## [1.6.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.5.0...v1.6.0) (2026-11-15)
 
 
