@@ -5,7 +5,7 @@ import { Content } from "./Content"
 import { useSchedule } from "../useSchedule"
 import { DevPanel } from "./DevPanel"
 import { AppContext, type AppContextT, type AppState } from "./AppContext.tsx"
-import { ScheduleContext } from "./ScheduleContext.tsx"
+import { GrantsContext, ScheduleContext } from "./ScheduleContext.tsx"
 import { BulletinContext } from "../../bulletins/BulletinContext"
 import { useBulletins } from "../../bulletins/useBulletins"
 import { announceReady } from "../previewChannel"
@@ -26,7 +26,7 @@ window.handleError = console.error
 window.handleWarning = console.error
 
 export function App() {
-  const { schedule, loading } = useSchedule()
+  const { schedule, grants, loading } = useSchedule()
   const assetsReady = useSceneAssets()
   const { bulletins, loading: bulletinsLoading } = useBulletins()
   const ready = !loading && !bulletinsLoading && assetsReady
@@ -87,17 +87,19 @@ export function App() {
   return (
     <AppContext.Provider value={context}>
       <ScheduleContext.Provider value={schedule}>
-        <BulletinContext.Provider value={bulletins}>
-          <PlayheadContext.Provider value={playhead}>
-            {dev ? (
-              <DevPanel />
-            ) : (
-              <div className="output-stage">
-                <Content />
-              </div>
-            )}
-          </PlayheadContext.Provider>
-        </BulletinContext.Provider>
+        <GrantsContext.Provider value={grants}>
+          <BulletinContext.Provider value={bulletins}>
+            <PlayheadContext.Provider value={playhead}>
+              {dev ? (
+                <DevPanel />
+              ) : (
+                <div className="output-stage">
+                  <Content />
+                </div>
+              )}
+            </PlayheadContext.Provider>
+          </BulletinContext.Provider>
+        </GrantsContext.Provider>
       </ScheduleContext.Provider>
     </AppContext.Provider>
   )
