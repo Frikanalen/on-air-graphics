@@ -658,3 +658,44 @@ for (const renderer of ["dom", "webgl"])
         .locator(".broadcast-frame")
         .screenshot({ path: info.outputPath("direct-to-schedule.png") })
     })
+
+test("a gap before another holder's airtime ends on the handover", async ({
+  page,
+}) => {
+  const grant = {
+    id: 7,
+    organization: { id: 82, name: "NUUG", fkmember: true },
+    starttime: "2026-11-10T19:00:00+01:00",
+    endtime: "2026-11-10T20:30:00+01:00",
+  }
+  await mockBulletins(page, [])
+  await page.route("**/api/scheduleitems*", (route) =>
+    route.fulfill({
+      json: {
+        count: 5,
+        results: [{ ...items[0], grant: 7 }, ...items.slice(1)],
+      },
+    }),
+  )
+  await page.route("**/api/grants/public*", (route) =>
+    route.fulfill({ json: [grant] }),
+  )
+  await page.route("**/api/playout/events", (route) =>
+    route.fulfill({
+      contentType: "text/event-stream",
+      body: ": connected\n\n",
+    }),
+  )
+  await page.goto(
+    "/graphics/?view=schedule&page=handover&t=2026-11-10T18:59:48&renderer=dom",
+  )
+  const handover = page.locator(".handover")
+  await expect(handover).toHaveCSS("opacity", "1")
+  await expect(handover).toContainText(
+    "De neste 90 minuttene disponeres av vårt medlem",
+  )
+  await expect(handover.locator("h1")).toHaveText("NUUG")
+  const box = await handover.locator(".handover-first").boundingBox()
+  const footer = await page.locator(".disclaimer").boundingBox()
+  expect(box!.y + box!.height).toBeLessThan(footer!.y)
+})

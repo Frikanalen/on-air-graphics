@@ -1,3 +1,4 @@
+import { formatTime } from "../graphics/time"
 import { type Grant, type Programme, type ScheduleItem } from "./types"
 
 /** The grant whose window `now` is in. */
@@ -30,4 +31,53 @@ export function upcoming(
   return [...later, ...open.map((airtime) => ({ airtime }))].sort(
     (a, b) => startOf(a) - startOf(b),
   )
+}
+
+/**
+ * The airtime the gap now on screen leads into, when it is someone else's
+ * than the airtime the gap is in: the next programme is in a window that has
+ * not started, held by another organization than the one holding this moment
+ * (or by anyone, when nobody holds it). A window opens with its first entry,
+ * so the gap before that programme ends where the window starts.
+ */
+export function handoverTo(
+  next: Programme | undefined,
+  grants: Grant[],
+  now: number,
+): Grant | undefined {
+  const grant = next && grants.find(({ id }) => id === next.grant)
+  if (!grant || Date.parse(grant.starttime) <= now) return undefined
+  const holder = holderAt(grants, now)
+  return holder?.organization.id === grant.organization.id ? undefined : grant
+}
+
+const HOURS = [
+  "to",
+  "tre",
+  "fire",
+  "fem",
+  "seks",
+  "sju",
+  "åtte",
+  "ni",
+  "ti",
+  "elleve",
+  "tolv",
+]
+
+/**
+ * How long a window of airtime is, as the subject of "… disponeres av": a
+ * round length in words, any other by when it ends.
+ */
+export function stretchOf(grant: Grant): string {
+  const end = Date.parse(grant.endtime)
+  const minutes = (end - Date.parse(grant.starttime)) / 60000
+  const hours = minutes / 60
+  if (minutes === 30) return "Den neste halvtimen"
+  if (minutes === 60) return "Den neste timen"
+  if (Number.isInteger(hours) && hours >= 2 && hours <= 12)
+    return `De neste ${HOURS[hours - 2]} timene`
+  if (minutes >= 10 && minutes < 100 && minutes % 5 === 0)
+    return `De neste ${minutes} minuttene`
+  return `Sendetiden fram til ${formatTime(end)}`
 }

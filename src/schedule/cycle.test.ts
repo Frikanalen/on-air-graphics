@@ -85,3 +85,26 @@ describe("heldSchedulePage", () => {
     expect(heldSchedulePage(full, "")).toBeNull()
   })
 })
+
+describe("a handover page", () => {
+  const kinds: SchedulePageKind[] = [...full, "handover"]
+  it("takes the place of the last page of the gap, and only that one", () => {
+    for (const duration of [22000, 45000, 119500, 1800000]) {
+      expect(schedulePageAt(kinds, duration, duration - 1)).toEqual({
+        index: 4,
+        opacity: 1,
+      })
+      expect(schedulePageAt(kinds, duration, 0).index).toBe(0)
+    }
+    // Two cycles: the first still ends on the focus.
+    expect(schedulePageAt(kinds, 80000, 39000).index).toBe(3)
+    expect(schedulePageAt(kinds, 80000, 79000).index).toBe(4)
+  })
+  it("is held throughout a gap too short to turn pages", () => {
+    expect(schedulePageAt(kinds, 15000, 0)).toEqual({ index: 4, opacity: 1 })
+    expect(schedulePageAt(kinds, 15000, 14000).index).toBe(4)
+  })
+  it("can be held by name", () => {
+    expect(heldSchedulePage(kinds, "?page=handover")).toBe(4)
+  })
+})

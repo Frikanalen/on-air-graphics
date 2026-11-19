@@ -40,7 +40,15 @@ each, up to three pages, 18 hours ahead), then the next programme on its own
 with its length and description (10 s). Under 22 s it holds the overview. The
 cycle is stretched to fill the time and repeats in whole cycles, so it always
 ends on the next programme. A page fades out over 300 ms before the next fades
-in. `page=overview|focus|<index>` holds one page for review.
+in. `page=overview|focus|handover|<index>` holds one page for review.
+
+When the next programme opens another holder's airtime (a grant that has not
+started, held by another organization than the one whose airtime the gap is
+in), the gap ends on a handover page instead of the next programme: the
+window, «De neste 90 minuttene disponeres av vårt medlem», the holder's name
+and the first programme. It replaces only the last page of the last cycle; a
+gap too short to turn pages holds it throughout. It needs
+`/api/grants/public`, and without an answer from it the cycle is as before.
 
 ## Build and deploy
 

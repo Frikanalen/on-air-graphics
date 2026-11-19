@@ -6,14 +6,20 @@ import {
   ScheduleContext,
 } from "../../core/components/ScheduleContext"
 import { formatTime, useTimestamp } from "../../graphics/time"
-import { holderAt, upcoming, type Upcoming } from "../airtime"
+import {
+  handoverTo,
+  holderAt,
+  stretchOf,
+  upcoming,
+  type Upcoming,
+} from "../airtime"
 import {
   LIST_HORIZON_MS,
   LIST_ROWS,
   MAX_LIST_PAGES,
   OVERVIEW_ROWS,
 } from "../cycle"
-import { type Programme } from "../types"
+import { type Grant, type Programme } from "../types"
 import { ScheduleItemSummary } from "./ScheduleItemSummary"
 
 export type ScheduleViewProps = { status: SegmentStatus; nextOnly?: boolean }
@@ -40,6 +46,41 @@ const Holder = ({ now }: { now: number }) => {
   )
 }
 
+/** Short names are set large; a long one gets the lines it needs. */
+const nameSize = (name: string) =>
+  name.length <= 12 ? "short" : name.length <= 32 ? "medium" : "long"
+
+/**
+ * The page a gap ends on when the programme after it opens another holder's
+ * airtime: whose it is, for how long, and what they start with.
+ */
+const Handover = ({ grant, first }: { grant: Grant; first: Programme }) => (
+  <div
+    className="schedule-column schedule-page handover"
+    data-kind="handover"
+    style={{ opacity: 0 }}
+  >
+    <div className="label amber">
+      Sendetid {formatTime(Date.parse(grant.starttime))}–
+      {formatTime(Date.parse(grant.endtime))}
+    </div>
+    <p className="handover-lead">
+      {stretchOf(grant)} disponeres av
+      {grant.organization.fkmember !== false && " vårt medlem"}
+    </p>
+    <h1
+      className="handover-holder"
+      data-size={nameSize(grant.organization.name)}
+    >
+      {grant.organization.name}
+    </h1>
+    <Tricolour />
+    <p className="handover-first">
+      Først: <b>{first.video.name}</b>
+    </p>
+  </div>
+)
+
 const Later = ({ entry }: { entry: Upcoming }) =>
   "airtime" in entry ? (
     <div className="later-row airtime-row">
@@ -65,7 +106,8 @@ const chunks = <T,>(items: T[], size: number): T[][] =>
 
 /**
  * The pages the schedule turns through (cycle.ts decides when): the overview,
- * the rest of the day's schedule, then the next programme on its own. They
+ * the rest of the day's schedule, then the next programme on its own, or
+ * the handover to another holder's airtime when that is what comes next. They
  * are all mounted, in that order, and the Player fades between them each
  * frame, as it does for the member message. `nextOnly` is the last page alone.
  */
@@ -92,6 +134,7 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
         ) <
         now + LIST_HORIZON_MS,
     )
+  const handover = nextOnly ? undefined : handoverTo(next, grants, now)
   const lists = nextOnly ? [] : chunks(rest, LIST_ROWS).slice(0, MAX_LIST_PAGES)
   return (
     <div>
@@ -154,6 +197,7 @@ export function ScheduleView({ nextOnly = false }: ScheduleViewProps) {
           <Tricolour />
         </div>
       )}
+      {next && handover && <Handover grant={handover} first={next} />}
       {nextOnly && !next && (
         <div className="schedule-column schedule-page" data-kind="overview">
           <div className="label amber">Neste program</div>
