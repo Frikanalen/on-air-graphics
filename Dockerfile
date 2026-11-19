@@ -8,7 +8,7 @@ RUN yarn install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN yarn test && yarn lint && yarn build
 
-FROM nginx:1.30.6-alpine
+FROM nginx:1.30.7-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html/graphics
 RUN test -s /usr/share/nginx/html/graphics/fonts/InterVariable.woff2 \
