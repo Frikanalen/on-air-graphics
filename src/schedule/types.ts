@@ -25,6 +25,11 @@ export type ScheduleItem = {
 export type Grant = {
   id: number
   organization: Organization & { fkmember?: boolean }
+  /**
+   * The station's own airtime (the jukebox, Stortinget): its organization is
+   * the channel itself, so there is no holder to name.
+   */
+  station?: boolean
   starttime: string
   endtime: string
 }

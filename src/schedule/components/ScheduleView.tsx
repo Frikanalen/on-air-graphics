@@ -35,7 +35,8 @@ const Tricolour = () => (
 /** Who holds the airtime the graphics are showing in, and until when. */
 const Holder = ({ now }: { now: number }) => {
   const grant = holderAt(useContext(GrantsContext), now)
-  if (!grant) return null
+  // In the station's own airtime there is no holder to name.
+  if (!grant || grant.station) return null
   return (
     <div className="airtime-holder">
       Sendetiden disponeres nå av{" "}

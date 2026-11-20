@@ -70,6 +70,13 @@ describe("handoverTo", () => {
       handoverTo(programme(2, "20:30", 3), same, now("20:29")),
     ).toBeUndefined()
   })
+  it("is nothing before the station's own airtime, and is something after it", () => {
+    const own = [{ ...grants[0], station: true }, grants[1]]
+    expect(
+      handoverTo(programme(1, "19:00", 1), own, now("18:59")),
+    ).toBeUndefined()
+    expect(handoverTo(programme(2, "20:30", 2), own, now("20:29"))?.id).toBe(2)
+  })
   it("is nothing before a programme outside any airtime", () => {
     expect(
       handoverTo(programme(1, "18:00", null), grants, now("17:59")),
