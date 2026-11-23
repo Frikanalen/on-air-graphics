@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.7.0...v1.8.0) (2026-11-20)
+
+
+### Features
+
+* **schedule:** a gap before another holder's airtime ends on a handover page ([#48](https://github.com/Frikanalen/on-air-graphics/issues/48)) ([2124b73](https://github.com/Frikanalen/on-air-graphics/commit/2124b736e89328a10dc75fe1c2bd8c2c037da590))
+
+
+### Bug Fixes
+
+* **schedule:** no handover or holder line for the station's own airtime ([#50](https://github.com/Frikanalen/on-air-graphics/issues/50)) ([fe4b705](https://github.com/Frikanalen/on-air-graphics/commit/fe4b705c803e7dd1f01d338e646146653808b27a))
+
 ## [1.7.0](https://github.com/Frikanalen/on-air-graphics/compare/v1.6.0...v1.7.0) (2026-11-19)
 
 
